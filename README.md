@@ -1,38 +1,25 @@
-# LÀNG YÊN · GitHub + Netlify + Supabase Realtime
+# LÀNG YÊN · GitHub → Netlify → Supabase
 
-## 1. Những gì đã thay đổi
-- Khôi phục biểu tượng nến kiểu trước (🕯) trong nghi thức Thắp nến.
-- Người dùng có thể kết nối thực qua Supabase: nickname, màu trang phục, danh sách người cùng phòng, avatar 3D và di chuyển, lời chào.
-- Avatar mô phỏng được ẩn khi kết nối thành công, tránh nhầm với khách thật.
-- Phòng Riêng chưa được mở vì chưa có cơ chế xác thực lời mời. Phòng Sen/Trúc chưa thực thi giới hạn số người.
-- Không đồng bộ Nhật ký hoặc thông tin đóng góp.
+## Nội dung thay đổi
+- Khôi phục hình **bát nến 🪔** trong Nghi thức, cả trước và sau khi nhấn Thắp nến.
+- Cập nhật VietQR Quỹ Quý Nhân và QR Zalo WellNest từ ảnh người dùng cung cấp, lưu thành file JPG riêng.
+- Giữ nguyên chức năng 3D, nhật ký, âm thanh và multiplayer từ bản 2.8.
+- Điền sẵn Supabase Project URL trong `config.js`, **chưa có publishable key**.
 
-## 2. GitHub → Netlify
-1. Tạo nhánh `realtime-beta` trên GitHub (không cập nhật `main` trước khi thử).
-2. Upload toàn bộ file trong thư mục này vào **gốc repo** (nếu site đang dùng thư mục khác, đặt vào đúng Publish directory hiện tại).
-3. Netlify > Project configuration > Build & deploy > Continuous deployment: xác nhận repo GitHub đã kết nối.
-4. Netlify > Deploys: tạo branch deploy cho `realtime-beta` hoặc deploy preview để kiểm thử. Nếu đang dùng site chính `www.anyen.space`, không merge `main` cho đến khi test đạt.
-5. File `netlify.toml` dành cho site tĩnh; không cần npm build.
+## Triển khai vào repository chính
+1. Mở https://github.com/koikoi369/anyenspace, sao lưu branch main hoặc tạo nhánh dự phòng trước khi sửa.
+2. Upload **các file bên trong thư mục này** vào thư mục gốc repository, giữ nguyên đường dẫn `./quy-quy-nhan-vietqr.jpg` và `./wellnest-zalo-qr.jpg`.
+3. Tại Supabase project `tgaigagmkrkwnzcyfoir`, bật Auth > Anonymous Sign-Ins.
+4. Trong SQL Editor, chạy `supabase_policies.sql` sau khi rà soát. Tại Realtime Settings, tắt Allow public access nếu muốn private channel authorization.
+5. Lấy **Publishable Key** (không phải Secret/Service Role Key) ở Project Settings > API Keys và điền vào `config.js`. Publishable Key là khóa phía trình duyệt, không phải bí mật.
+6. Đảm bảo Netlify đang liên kết đúng repository, production branch main, publish directory là thư mục chứa index.html. Commit mới sẽ trigger deploy.
+7. Kiểm tra QR trên website bằng điện thoại khác; xác nhận người nhận và thông tin trong app ngân hàng **trước** khi chuyển khoản.
+8. Trên hai thiết bị, đặt hai nickname, chọn Sảnh chung, bấm Kết nối, thử di chuyển và gửi lời chào.
 
-## 3. Supabase
-1. Tạo project tại https://supabase.com/dashboard
-2. Authentication > Providers > Anonymous Sign-Ins: Enable.
-3. Realtime Settings: Disable `Allow public access`.
-4. SQL Editor: chạy `supabase_policies.sql`.
-5. Project Settings > API Keys (hoặc Connect): lấy Project URL và Publishable key.
-6. Điền `config.js` theo mẫu `window.ANYEN_CONFIG = { supabaseUrl: "https://YOURPROJECT.supabase.co", publishableKey: "sb_publishable_..." };`
-7. Commit và push. Publishable key là public; **không đưa service_role, sb_secret, password hoặc database connection string lên GitHub**.
-
-## 4. Kiểm thử 2 thiết bị
-- Mở cùng URL HTTPS trên iPhone và laptop, 2 trình duyệt hoặc tab độc lập.
-- Chọn 2 nickname khác nhau, cùng phòng Sảnh chung, bấm Kết nối trên cả hai.
-- Kiểm tra danh sách 2 người, vào 3D, di chuyển, gửi lời chào, đổi phòng, ngắt kết nối.
-- Chuyển sang Phòng Sen/Trúc: người khác phòng không hiển thị.
-- Kiểm tra Thắp nến, Dâng hoa sen, Gõ Chuông, Tràng hạt, âm thanh iPhone.
-
-## 5. Giới hạn Beta
-- Phòng Sen (10) / Phòng Trúc (20) hiện là nhãn thiết kế, **chưa có giới hạn cứng**.
-- Người dùng có thể tự khai nickname/vị trí; chưa có hệ thống kiểm duyệt, chặn quấy rối hoặc xác minh danh tính.
-- Phòng Riêng chưa được bảo mật theo lời mời, nên bị khóa kết nối.
-- Không thể kiểm thử realtime thật nếu chưa cung cấp cấu hình Supabase và deploy lên HTTPS.
-- Có thể rollback bằng Netlify > Deploys > chọn deploy trước đó > Publish deploy.
+## Lưu ý an toàn
+- Chưa có xác minh giao dịch, thanh toán hay quản lý credit.
+- Không có giới hạn người/phòng phía máy chủ, chống spam, kiểm duyệt hay bảo mật phòng riêng.
+- Không lưu nhật ký lên Supabase trong giai đoạn này.
+- Đăng nhập ẩn danh tạo tài khoản Supabase nhưng không cần người dùng đăng ký; cần biện pháp chống lạm dụng trước khi công bố rộng.
+- Việc đặt tên file JPG riêng giúp dễ thay QR sau này mà không phải chỉnh HTML dài.
+- Không upload mật khẩu, secret key, service_role key hoặc database connection string lên GitHub.
