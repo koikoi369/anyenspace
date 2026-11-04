@@ -1,14 +1,7 @@
-# LÀNG YÊN · Cập nhật Nghi thức gọn
+LÀNG YÊN · Cập nhật giao diện nghi thức
 
-- Gộp **Thắp nến**, **Dâng hoa sen**, **Gõ Chuông Tây Tạng** vào một hàng nút trong tab Nghi thức (trên mobile xếp dọc).
-- Dâng hoa sen hiện hoa sen SVG rõ nét, không phụ thuộc emoji iPhone, có hiệu ứng nở mỗi lần bấm.
-- Bỏ nút nhạc nền Home và toàn bộ cơ chế tự phát nhạc khi chạm trang chủ. Nhạc luyện thở và Âm nhạc vẫn giữ.
-- Giữ cấu hình Netlify và Supabase trong bộ triển khai.
+- Giữ biểu tượng ngọn nến truyền thống trong nghi thức Thắp nến.
+- Đổi nhãn nút “Gõ Chuông Tây Tạng” thành “Gõ Chuông”, giữ nguyên hình bát chuông và âm thanh.
+- Giữ nguyên Dâng hoa sen và các chức năng khác.
 
-## Deploy www.anyen.space
-1. Lưu bản deploy hiện tại ở Netlify để có thể rollback.
-2. Giữ thông số Supabase publishable URL/key trong config.js nếu đã cấu hình.
-3. Kéo toàn bộ thư mục này vào Deploys của site Netlify phục vụ www.anyen.space.
-4. Kiểm tra Nghi thức và Home trên iPhone Safari; refresh mạnh nếu trình duyệt còn cache.
-
-Chưa thử trực tiếp trên iPhone. Không có chức năng thanh toán.
+Triển khai: giải nén và tải nội dung thư mục lên Netlify site www.anyen.space. Nên lưu deploy hiện tại trước khi thay.
