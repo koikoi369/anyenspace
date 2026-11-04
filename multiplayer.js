@@ -1,20 +1,88 @@
+// LÀNG YÊN: Supabase Realtime (beta). No journal or donation data is transmitted.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const $=s=>document.querySelector(s);
-const status=$('#realtimeStatus'), count=$('#onlineCount'), people=$('#onlinePeople');
-const cfg=window.ANYEN_CONFIG||{};
-const valid= /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.supabaseUrl||'') && /^(sb_publishable_|eyJ)/.test(cfg.publishableKey||'');
-let client=null,channel=null,uid=null,room=null,peers={},lastMove=0,connected=false;
-const roomIds={'Sảnh chung':'lobby','Phòng Sen':'sen','Phòng Trúc':'truc','Phòng Riêng':'private-demo'};
-const colors=['#d9b67d','#90b7a5','#f0e5d4','#b5a1c7','#687b48','#e8a1b4'];
-function profile(){const p=JSON.parse(localStorage.getItem('yenGuestProfile17')||'null')||{name:'Khách Yên',style:'robe',color:'#687b48'};return {name:String(p.name||'Khách Yên').slice(0,24),style:['robe','linen','casual'].includes(p.style)?p.style:'robe',color:colors.includes(p.color)?p.color:'#687b48'};}
-function setStatus(s){status.textContent=s}
-function redraw(){const others={};let n=0;for(const [key,states] of Object.entries(channel?.presenceState()||{})){for(const p of states){if(key===uid)continue;n++;others[key]={name:String(p.name||'Khách Yên').slice(0,24),color:colors.includes(p.color)?p.color:'#687b48',x:Number(p.x)||0,z:Number(p.z)||0}}}peers=others;count.textContent=`${n+1} người trong phòng (gồm bạn)`;people.replaceChildren();Object.values(others).slice(0,30).forEach(p=>{const d=document.createElement('div');d.textContent='● '+p.name;d.style.color=p.color;people.appendChild(d)});window.dispatchEvent(new CustomEvent('anyen-peers',{detail:peers}));}
-async function disconnect(){connected=false;if(channel){try{await channel.untrack()}catch{}await client.removeChannel(channel);channel=null}peers={};window.dispatchEvent(new CustomEvent('anyen-peers',{detail:{}}));count.textContent='0 người trực tuyến';people.replaceChildren();setStatus('Đã rời phòng')}
-async function connect(){if(!valid){setStatus('Cần điền config.js với Supabase URL và Publishable Key');return}try{if(!client)client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});const {data:{user}}=await client.auth.getUser();let identity=user;if(!identity){const r=await client.auth.signInAnonymously();if(r.error)throw r.error;identity=r.data.user}uid=identity.id;await disconnect();room=roomIds[document.querySelector('[data-room].selected')?.dataset.room]||'lobby';const topic='anyen:room:'+room;channel=client.channel(topic,{config:{private:true,presence:{key:uid}}});channel.on('presence',{event:'sync'},redraw).on('broadcast',{event:'move'},({payload})=>{if(!payload||payload.id===uid||!peers[payload.id])return;const x=Number(payload.x),z=Number(payload.z);if(!Number.isFinite(x)||!Number.isFinite(z)||Math.abs(x)>35||Math.abs(z)>30)return;peers[payload.id].x=x;peers[payload.id].z=z;window.dispatchEvent(new CustomEvent('anyen-peers',{detail:peers}))}).on('broadcast',{event:'greet'},({payload})=>{if(payload?.id!==uid)setStatus('🙏 Một lời chào bình an từ '+String(payload?.name||'khách').slice(0,24))});channel.subscribe(async (state,err)=>{if(state==='SUBSCRIBED'){connected=true;await channel.track({...profile(),x:0,z:8});setStatus('Đã kết nối · '+(document.querySelector('[data-room].selected')?.dataset.room||'Sảnh chung'));redraw()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(state)){connected=false;setStatus('Lỗi kết nối: '+(err?.message||state))}})}catch(e){setStatus('Lỗi: '+(e?.message||e))}}
-$('#connectRealtime').onclick=connect;$('#disconnectRealtime').onclick=disconnect;
-window.addEventListener('anyen-position',e=>{if(!connected||!channel)return;const now=Date.now();if(now-lastMove<200)return;lastMove=now;const x=Math.round(e.detail.x*10)/10,z=Math.round(e.detail.z*10)/10;channel.send({type:'broadcast',event:'move',payload:{id:uid,x,z}})});
-window.addEventListener('yen-profile',()=>{if(connected&&channel)channel.track({...profile(),x:0,z:8})});
-document.querySelectorAll('[data-room]').forEach(b=>b.addEventListener('click',()=>{if(connected){disconnect();setStatus('Đã đổi phòng. Bấm Kết nối để tham gia phòng mới.')}}));
-$('#sendGreeting')?.addEventListener('click',()=>{if(connected&&channel)channel.send({type:'broadcast',event:'greet',payload:{id:uid,name:profile().name}})});
+const $ = s => document.querySelector(s);
+const status = $('#realtimeStatus'), count = $('#onlineCount'), people = $('#onlinePeople');
+const cfg = window.ANYEN_CONFIG || {};
+const valid = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.supabaseUrl||'') && /^(sb_publishable_|eyJ)/.test(cfg.publishableKey||'');
+const topics = {'Sảnh chung':'lobby','Phòng Sen · 10 người':'sen','Phòng Trúc · 20 người':'truc'};
+const colors = new Set(['#d9b67d','#90b7a5','#f0e5d4','#b5a1c7','#687b48','#e8a1b4']);
+let client, channel, uid, peers={}, joined=false, lastMove=0, position={x:0,z:8}, generation=0;
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const cleanName=s=>String(s||'Khách Làng Yên').replace(/[<>]/g,'').slice(0,24);
+function profile(){let p={};try{p=JSON.parse(localStorage.getItem('yenGuestProfile17')||'{}')||{}}catch{}return {name:cleanName(p.name),style:['robe','linen','casual'].includes(p.style)?p.style:'robe',color:colors.has(p.color)?p.color:'#687b48'};}
+function state(s){if(status)status.textContent=s;}
+function publishPeers(){window.dispatchEvent(new CustomEvent('anyen-peers',{detail:{...peers}}));}
+function live(on){window.dispatchEvent(new CustomEvent('anyen-live',{detail:{connected:on}}));}
+function update(){
+ const incoming={};let online=0;
+ for(const [key,entries] of Object.entries(channel?.presenceState()||{})){
+  if(key===uid)continue;
+  const p=entries[0];if(!p)continue;
+  const x=Number(p.x),z=Number(p.z);
+  incoming[key]={name:cleanName(p.name),color:colors.has(p.color)?p.color:'#687b48',x:Number.isFinite(x)?clamp(x,-35,35):0,z:Number.isFinite(z)?clamp(z,-30,30):8};online++;
+ }
+ peers=incoming;count.textContent=`${online+1} người trong phòng (gồm bạn)`;
+ people.replaceChildren();Object.values(peers).slice(0,35).forEach(p=>{const d=document.createElement('div');d.textContent='● '+p.name;d.style.color=p.color;people.appendChild(d)});
+ publishPeers();
+}
+async function leave(){
+ generation++;joined=false;live(false);
+ const old=channel;channel=null;
+ if(old){try{await old.untrack()}catch{}try{await client.removeChannel(old)}catch{}}
+ peers={};publishPeers();count.textContent='0 người trực tuyến';people.replaceChildren();state('Đã rời phòng');
+}
+async function join(){
+ if(!valid){state('Chưa cấu hình Supabase trong config.js');return;}
+ const selected=$('[data-room].selected')?.dataset.room||'Sảnh chung';
+ const room=topics[selected];
+ if(!room){state('Phòng Riêng chưa mở: cần cơ chế mời và quyền riêng tư.');return;}
+ await leave();const myGeneration=++generation;
+ try{
+  if(!client)client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
+  let {data:{user},error}=await client.auth.getUser();if(error&&!/missing auth session/i.test(error.message))throw error;
+  if(!user){const r=await client.auth.signInAnonymously();if(r.error)throw r.error;user=r.data.user;}
+  if(myGeneration!==generation)return;
+  uid=user.id;
+  const c=client.channel('anyen:room:'+room,{config:{private:true,presence:{key:uid}}});channel=c;
+  c.on('presence',{event:'sync'},()=>{if(c===channel)update()})
+   .on('broadcast',{event:'move'},({payload})=>{
+    if(c!==channel||!payload||payload.id===uid||!peers[payload.id])return;
+    const x=Number(payload.x),z=Number(payload.z);
+    if(!Number.isFinite(x)||!Number.isFinite(z)||Math.abs(x)>35||Math.abs(z)>30)return;
+    peers[payload.id].x=x;peers[payload.id].z=z;publishPeers();
+   })
+   .on('broadcast',{event:'greet'},({payload})=>{
+    if(c!==channel||!payload||payload.id===uid)return;
+    state('🙏 '+cleanName(payload.name)+' gửi lời chào bình an');
+   });
+  state('Đang kết nối '+selected+'…');
+  c.subscribe(async (s,err)=>{
+   if(c!==channel)return;
+   if(s==='SUBSCRIBED'){
+    joined=true;live(true);
+    try{await c.track({...profile(),...position})}catch(e){state('Lỗi hiển thị: '+e.message);return}
+    state('Đang ở '+selected+' · Đã kết nối');update();
+   }else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(s)){
+    joined=false;live(false);state('Kết nối gặp lỗi: '+(err?.message||s));
+   }
+  });
+ }catch(e){state('Không kết nối được: '+(e?.message||e));live(false)}
+}
+$('#connectRealtime')?.addEventListener('click',join);
+$('#disconnectRealtime')?.addEventListener('click',leave);
+window.addEventListener('anyen-position',e=>{
+ const x=Number(e.detail?.x),z=Number(e.detail?.z);
+ if(!Number.isFinite(x)||!Number.isFinite(z))return;
+ position={x:clamp(x,-35,35),z:clamp(z,-30,30)};
+ if(!joined||!channel||Date.now()-lastMove<250)return;
+ lastMove=Date.now();
+ channel.send({type:'broadcast',event:'move',payload:{id:uid,...position}});
+});
+window.addEventListener('yen-profile',()=>{if(joined&&channel)channel.track({...profile(),...position})});
+$$Rooms();
+function $$Rooms(){document.querySelectorAll('[data-room]').forEach(b=>b.addEventListener('click',()=>{if(joined||channel){leave().then(()=>state('Đã chọn phòng mới. Bấm Kết nối để tham gia.'))}}));}
+function greet(){if(joined&&channel){channel.send({type:'broadcast',event:'greet',payload:{id:uid,name:profile().name}});state('🙏 Đã gửi lời chào tới phòng')}else state('Hãy kết nối vào phòng để gửi lời chào')}
+window.addEventListener('anyen-greet',greet);
+// Avoid a second click handler overriding the 3D scene handler.
 window.addEventListener('pagehide',()=>{if(channel)channel.untrack()});
-setStatus(valid?'Sẵn sàng · Chọn phòng rồi bấm Kết nối':'Chế độ demo · Chưa cấu hình Supabase');
+state(valid?'Sẵn sàng · Chọn phòng và bấm Kết nối':'Chưa kết nối Supabase · Cần cấu hình config.js');
