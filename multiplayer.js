@@ -6,7 +6,7 @@ const cfg = window.ANYEN_CONFIG || {};
 const valid = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.supabaseUrl||'') && /^(sb_publishable_|eyJ)/.test(cfg.publishableKey||'');
 const topics = {'Sảnh chung':'lobby','Phòng Sen · 10 người':'sen','Phòng Trúc · 20 người':'truc'};
 const colors = new Set(['#d9b67d','#90b7a5','#f0e5d4','#b5a1c7','#687b48','#e8a1b4']);
-let client, channel, uid, peers={}, joined=false, lastMove=0, position={x:0,z:8}, generation=0;
+let client, channel, uid, peers={}, joined=false, lastMove=0, position={x:0,z:8}, generation=0, activity='idle';
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const cleanName=s=>String(s||'Khách Làng Yên').replace(/[<>]/g,'').slice(0,24);
 function profile(){let p={};try{p=JSON.parse(localStorage.getItem('yenGuestProfile17')||'{}')||{}}catch{}return {name:cleanName(p.name),style:['robe','linen','casual'].includes(p.style)?p.style:'robe',color:colors.has(p.color)?p.color:'#687b48'};}
@@ -19,7 +19,7 @@ function update(){
   if(key===uid)continue;
   const p=entries[0];if(!p)continue;
   const x=Number(p.x),z=Number(p.z);
-  incoming[key]={name:cleanName(p.name),color:colors.has(p.color)?p.color:'#687b48',x:Number.isFinite(x)?clamp(x,-35,35):0,z:Number.isFinite(z)?clamp(z,-30,30):8};online++;
+  incoming[key]={name:cleanName(p.name),color:colors.has(p.color)?p.color:'#687b48',x:Number.isFinite(x)?clamp(x,-35,35):0,z:Number.isFinite(z)?clamp(z,-30,30):8,activity:['idle','sit','walk','bell'].includes(p.activity)?p.activity:'idle'};online++;
  }
  peers=incoming;count.textContent=`${online+1} người trong phòng (gồm bạn)`;
  people.replaceChildren();Object.values(peers).slice(0,35).forEach(p=>{const d=document.createElement('div');d.textContent='● '+p.name;d.style.color=p.color;people.appendChild(d)});
@@ -60,6 +60,7 @@ async function join(){
     if(!Number.isFinite(x)||!Number.isFinite(z)||Math.abs(x)>35||Math.abs(z)>30)return;
     peers[payload.id].x=x;peers[payload.id].z=z;publishPeers();
    })
+   .on('broadcast',{event:'activity'},({payload})=>{if(c!==channel||!payload||payload.id===uid||!peers[payload.id])return;const a=payload.activity;if(!['idle','sit','walk','bell'].includes(a))return;peers[payload.id].activity=a;publishPeers();if(a==='bell')state('🥣 '+cleanName(peers[payload.id].name)+' vừa gõ chuông');})
    .on('broadcast',{event:'greet'},({payload})=>{
     if(c!==channel||!payload||payload.id===uid)return;
     state('🙏 '+cleanName(payload.name)+' gửi lời chào bình an');
@@ -69,7 +70,7 @@ async function join(){
    if(c!==channel)return;
    if(s==='SUBSCRIBED'){
     joined=true;live(true);
-    try{await c.track({...profile(),...position})}catch(e){state('Lỗi hiển thị: '+e.message);return}
+    try{await c.track({...profile(),...position,activity})}catch(e){state('Lỗi hiển thị: '+e.message);return}
     state('Đang ở '+selected+' · Đã kết nối');update();
    }else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(s)){
     joined=false;live(false);state('Kết nối gặp lỗi: '+(err?.message||s));
@@ -87,11 +88,14 @@ window.addEventListener('anyen-position',e=>{
  lastMove=Date.now();
  channel.send({type:'broadcast',event:'move',payload:{id:uid,...position}});
 });
-window.addEventListener('yen-profile',()=>{if(joined&&channel)channel.track({...profile(),...position})});
+window.addEventListener('yen-profile',()=>{if(joined&&channel)channel.track({...profile(),...position,activity})});
 $$Rooms();
 function $$Rooms(){document.querySelectorAll('[data-room]').forEach(b=>b.addEventListener('click',()=>{if(joined||channel){leave().then(()=>state('Đã chọn phòng mới. Bấm Kết nối để tham gia.'))}}));}
 function greet(){if(joined&&channel){channel.send({type:'broadcast',event:'greet',payload:{id:uid,name:profile().name}});state('🙏 Đã gửi lời chào tới phòng')}else state('Hãy kết nối vào phòng để gửi lời chào')}
 window.addEventListener('anyen-greet',greet);
+window.addEventListener('anyen-activity',e=>{const a=e.detail?.activity;if(!['idle','sit','walk','bell'].includes(a))return;activity=a;if(joined&&channel){channel.track({...profile(),...position,activity});channel.send({type:'broadcast',event:'activity',payload:{id:uid,activity}})}});
+window.addEventListener('anyen-connection-request',()=>join());
+window.addEventListener('anyen-room-request',e=>{const target=[...document.querySelectorAll('[data-room]')].find(b=>b.dataset.room===e.detail?.room);if(target){target.click();join()}});
 // Avoid a second click handler overriding the 3D scene handler.
 window.addEventListener('pagehide',()=>{if(channel)channel.untrack()});
 state(valid?'Sẵn sàng · Chọn phòng và bấm Kết nối':'Chưa kết nối Supabase · Cần cấu hình config.js');
