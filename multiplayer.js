@@ -1,101 +1,37 @@
-// LÀNG YÊN: Supabase Realtime (beta). No journal or donation data is transmitted.
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const $ = s => document.querySelector(s);
-const status = $('#realtimeStatus'), count = $('#onlineCount'), people = $('#onlinePeople');
-const cfg = window.ANYEN_CONFIG || {};
-const valid = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.supabaseUrl||'') && /^(sb_publishable_|eyJ)/.test(cfg.publishableKey||'');
-const topics = {'Sảnh chung':'lobby','Phòng Sen · 10 người':'sen','Phòng Trúc · 20 người':'truc'};
-const colors = new Set(['#d9b67d','#90b7a5','#f0e5d4','#b5a1c7','#687b48','#e8a1b4']);
-let client, channel, uid, peers={}, joined=false, lastMove=0, position={x:0,z:8}, generation=0, activity='idle';
-const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+// LÀNG YÊN 3.1: Presence + Broadcast, authenticated private channels.
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+const $=s=>document.querySelector(s), status=$('#realtimeStatus'), count=$('#onlineCount'), people=$('#onlinePeople');
+const cfg=window.ANYEN_CONFIG||{};
+const valid=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.supabaseUrl||'')&&/^(sb_publishable_|eyJ)/.test(cfg.publishableKey||'');
+const topics={'Sảnh chung':'lobby','Phòng Sen · 10 người':'sen','Phòng Trúc · 20 người':'truc'};
+const colors=new Set(['#d9b67d','#90b7a5','#f0e5d4','#b5a1c7','#687b48','#e8a1b4']);
+let client,channel,uid,peers={},joined=false,position={x:0,z:8},activity='idle',generation=0,lastMove=0,retryTimer=null,manualLeave=false,roomName='',lastRoomTopic='';
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const cleanName=s=>String(s||'Khách Làng Yên').replace(/[<>]/g,'').slice(0,24);
-function profile(){let p={};try{p=JSON.parse(localStorage.getItem('yenGuestProfile17')||'{}')||{}}catch{}return {name:cleanName(p.name),style:['robe','linen','casual'].includes(p.style)?p.style:'robe',color:colors.has(p.color)?p.color:'#687b48'};}
-function state(s){if(status)status.textContent=s;}
-function publishPeers(){window.dispatchEvent(new CustomEvent('anyen-peers',{detail:{...peers}}));}
-function live(on){window.dispatchEvent(new CustomEvent('anyen-live',{detail:{connected:on}}));}
-function update(){
- const incoming={};let online=0;
- for(const [key,entries] of Object.entries(channel?.presenceState()||{})){
-  if(key===uid)continue;
-  const p=entries[0];if(!p)continue;
-  const x=Number(p.x),z=Number(p.z);
-  incoming[key]={name:cleanName(p.name),color:colors.has(p.color)?p.color:'#687b48',x:Number.isFinite(x)?clamp(x,-35,35):0,z:Number.isFinite(z)?clamp(z,-30,30):8,activity:['idle','sit','walk','bell'].includes(p.activity)?p.activity:'idle'};online++;
- }
- peers=incoming;count.textContent=`${online+1} người trong phòng (gồm bạn)`;
- people.replaceChildren();Object.values(peers).slice(0,35).forEach(p=>{const d=document.createElement('div');d.textContent='● '+p.name;d.style.color=p.color;people.appendChild(d)});
- publishPeers();
-}
-async function leave(){
- generation++;joined=false;live(false);
- const old=channel;channel=null;
- if(old){try{await old.untrack()}catch{}try{await client.removeChannel(old)}catch{}}
- peers={};publishPeers();count.textContent='0 người trực tuyến';people.replaceChildren();state('Đã rời phòng');
-}
-async function join(){
- if(!valid){state('Chưa cấu hình Supabase trong config.js');return;}
- const selected=$('[data-room].selected')?.dataset.room||'Sảnh chung';
- const room=topics[selected];
- if(!room){state('Phòng Riêng chưa mở: cần cơ chế mời và quyền riêng tư.');return;}
- await leave();const myGeneration=++generation;
- try{
-  if(!client)client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
-  // getUser() returns 'Auth session missing!' for first-time visitors.
-  // Check the local session first, then create an anonymous session if needed.
-  const sessionResult=await client.auth.getSession();
-  if(sessionResult.error)throw sessionResult.error;
-  let user=sessionResult.data.session?.user;
-  if(!user){
-   const signInResult=await client.auth.signInAnonymously();
-   if(signInResult.error)throw signInResult.error;
-   user=signInResult.data.user;
-  }
-  if(!user)throw new Error('Không tạo được phiên khách ẩn danh. Kiểm tra Anonymous Sign-Ins trong Supabase.');
-  if(myGeneration!==generation)return;
-  uid=user.id;
-  const c=client.channel('anyen:room:'+room,{config:{private:true,presence:{key:uid}}});channel=c;
-  c.on('presence',{event:'sync'},()=>{if(c===channel)update()})
-   .on('broadcast',{event:'move'},({payload})=>{
-    if(c!==channel||!payload||payload.id===uid||!peers[payload.id])return;
-    const x=Number(payload.x),z=Number(payload.z);
-    if(!Number.isFinite(x)||!Number.isFinite(z)||Math.abs(x)>35||Math.abs(z)>30)return;
-    peers[payload.id].x=x;peers[payload.id].z=z;publishPeers();
-   })
-   .on('broadcast',{event:'activity'},({payload})=>{if(c!==channel||!payload||payload.id===uid||!peers[payload.id])return;const a=payload.activity;if(!['idle','sit','walk','bell'].includes(a))return;peers[payload.id].activity=a;publishPeers();if(a==='bell')state('🥣 '+cleanName(peers[payload.id].name)+' vừa gõ chuông');})
-   .on('broadcast',{event:'greet'},({payload})=>{
-    if(c!==channel||!payload||payload.id===uid)return;
-    state('🙏 '+cleanName(payload.name)+' gửi lời chào bình an');
-   });
-  state('Đang kết nối '+selected+'…');
-  c.subscribe(async (s,err)=>{
-   if(c!==channel)return;
-   if(s==='SUBSCRIBED'){
-    joined=true;live(true);
-    try{await c.track({...profile(),...position,activity})}catch(e){state('Lỗi hiển thị: '+e.message);return}
-    state('Đang ở '+selected+' · Đã kết nối');update();
-   }else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(s)){
-    joined=false;live(false);state('Kết nối gặp lỗi: '+(err?.message||s));
-   }
-  });
- }catch(e){state('Không kết nối được: '+(e?.message||e));live(false)}
-}
-$('#connectRealtime')?.addEventListener('click',join);
-$('#disconnectRealtime')?.addEventListener('click',leave);
-window.addEventListener('anyen-position',e=>{
- const x=Number(e.detail?.x),z=Number(e.detail?.z);
- if(!Number.isFinite(x)||!Number.isFinite(z))return;
- position={x:clamp(x,-35,35),z:clamp(z,-30,30)};
- if(!joined||!channel||Date.now()-lastMove<250)return;
- lastMove=Date.now();
- channel.send({type:'broadcast',event:'move',payload:{id:uid,...position}});
-});
-window.addEventListener('yen-profile',()=>{if(joined&&channel)channel.track({...profile(),...position,activity})});
-$$Rooms();
-function $$Rooms(){document.querySelectorAll('[data-room]').forEach(b=>b.addEventListener('click',()=>{if(joined||channel){leave().then(()=>state('Đã chọn phòng mới. Bấm Kết nối để tham gia.'))}}));}
-function greet(){if(joined&&channel){channel.send({type:'broadcast',event:'greet',payload:{id:uid,name:profile().name}});state('🙏 Đã gửi lời chào tới phòng')}else state('Hãy kết nối vào phòng để gửi lời chào')}
-window.addEventListener('anyen-greet',greet);
-window.addEventListener('anyen-activity',e=>{const a=e.detail?.activity;if(!['idle','sit','walk','bell'].includes(a))return;activity=a;if(joined&&channel){channel.track({...profile(),...position,activity});channel.send({type:'broadcast',event:'activity',payload:{id:uid,activity}})}});
-window.addEventListener('anyen-connection-request',()=>join());
+function profile(){let p={};try{p=JSON.parse(localStorage.getItem('yenGuestProfile17')||'{}')}catch{}return{name:cleanName(p.name),style:['robe','linen','casual'].includes(p.style)?p.style:'robe',color:colors.has(p.color)?p.color:'#687b48'}}
+function state(s){if(status)status.textContent=s}
+function publish(){window.dispatchEvent(new CustomEvent('anyen-peers',{detail:{...peers}}))}
+function live(on){window.dispatchEvent(new CustomEvent('anyen-live',{detail:{connected:on}}))}
+function update(){if(!channel)return;const incoming={};for(const [key,entries] of Object.entries(channel.presenceState()||{})){if(key===uid)continue;const p=entries[0];if(!p)continue;incoming[key]={name:cleanName(p.name),color:colors.has(p.color)?p.color:'#687b48',x:clamp(Number(p.x)||0,-35,35),z:clamp(Number(p.z)||8,-30,30),activity:['idle','sit','walk','bell'].includes(p.activity)?p.activity:'idle'}}peers=incoming;count.textContent=`${Object.keys(peers).length+1} người trong phòng (gồm bạn)`;people.replaceChildren();Object.values(peers).slice(0,35).forEach(p=>{const d=document.createElement('div');d.textContent='● '+p.name;d.style.color=p.color;people.appendChild(d)});publish()}
+function reset(){joined=false;live(false);peers={};publish();count.textContent='0 người trực tuyến';people.replaceChildren()}
+async function leave(manual=true){manualLeave=manual;generation++;clearTimeout(retryTimer);const old=channel;channel=null;reset();if(old){try{await old.untrack()}catch{}try{await client.removeChannel(old)}catch{}}if(manual)state('Đã rời phòng')}
+function selectedRoom(){return $('[data-room].selected')?.dataset.room||'Sảnh chung'}
+async function auth(){if(!client){client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});client.auth.onAuthStateChange((_event,session)=>{if(session?.access_token)client.realtime.setAuth(session.access_token)})}const r=await client.auth.getSession();if(r.error)throw r.error;let session=r.data.session;if(!session){const sign=await client.auth.signInAnonymously();if(sign.error)throw sign.error;session=sign.data.session}if(!session?.access_token||!session.user)throw Error('Chưa tạo được phiên đăng nhập ẩn danh.');uid=session.user.id;client.realtime.setAuth(session.access_token);return session}
+async function resolveTopic(name){if(name!=='Phòng Riêng')return 'anyen:room:'+topics[name];const code=$('#privateRoomCode')?.value.trim();if(!code)throw Error('Nhập mã mời Phòng Riêng hoặc bấm Tạo phòng riêng.');const r=await client.rpc('anyen_join_private_room',{invite_code:code});if(r.error)throw r.error;if(!r.data)throw Error('Mã mời không hợp lệ.');return 'anyen:private:'+r.data}
+async function join(){if(!valid){state('Chưa cấu hình Supabase trong config.js');return}await leave(false);manualLeave=false;const g=++generation;roomName=selectedRoom();try{await auth();if(g!==generation)return;lastRoomTopic=await resolveTopic(roomName);if(g!==generation)return;const c=client.channel(lastRoomTopic,{config:{private:true,presence:{key:uid}}});channel=c;c.on('presence',{event:'sync'},()=>{if(c===channel)update()}).on('broadcast',{event:'move'},({payload:p})=>{if(c!==channel||!p||p.id===uid||!peers[p.id])return;const x=Number(p.x),z=Number(p.z);if(!Number.isFinite(x)||!Number.isFinite(z)||Math.abs(x)>35||Math.abs(z)>30)return;peers[p.id].x=x;peers[p.id].z=z;publish()}).on('broadcast',{event:'activity'},({payload:p})=>{if(c!==channel||!p||p.id===uid||!peers[p.id]||!['idle','sit','walk','bell'].includes(p.activity))return;peers[p.id].activity=p.activity;publish();if(p.activity==='bell')state('🥣 '+cleanName(peers[p.id].name)+' vừa gõ chuông')}).on('broadcast',{event:'greet'},({payload:p})=>{if(c===channel&&p&&p.id!==uid)state('🙏 '+cleanName(p.name)+' gửi lời chào bình an')}).on('broadcast',{event:'session'},({payload:p})=>{if(c!==channel||!p||p.id===uid)return;if(p.kind==='start')state('🧘 '+cleanName(p.name)+' mời cùng ngồi thiền '+p.minutes+' phút');if(p.kind==='end')state('🌿 '+cleanName(p.name)+' vừa kết thúc phiên thiền')});
+ state('Đang kết nối '+roomName+'…');c.subscribe(async (s,err)=>{if(c!==channel||g!==generation)return;if(s==='SUBSCRIBED'){joined=true;live(true);clearTimeout(retryTimer);try{await c.track({...profile(),...position,activity})}catch(e){state('Lỗi Presence: '+e.message);return}state('Đang ở '+roomName+' · Đã kết nối');update()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(s)){joined=false;live(false);state('Kết nối gián đoạn: '+(err?.message||s)+' · Đang thử lại…');if(!manualLeave){clearTimeout(retryTimer);retryTimer=setTimeout(()=>{if(g===generation&&!manualLeave)join()},3500)}}})
+ }catch(e){state('Không kết nối được: '+(e?.message||e));reset()}}
+$('#connectRealtime')?.addEventListener('click',join);$('#disconnectRealtime')?.addEventListener('click',()=>leave());
+window.addEventListener('anyen-position',e=>{const x=Number(e.detail?.x),z=Number(e.detail?.z);if(!Number.isFinite(x)||!Number.isFinite(z))return;position={x:clamp(x,-35,35),z:clamp(z,-30,30)};if(!joined||!channel||Date.now()-lastMove<250)return;lastMove=Date.now();channel.send({type:'broadcast',event:'move',payload:{id:uid,...position}})});
+window.addEventListener('yen-profile',()=>{if(joined&&channel)channel.track({...profile(),...position,activity}).catch(()=>{})});
+document.querySelectorAll('[data-room]').forEach(b=>b.addEventListener('click',()=>{if(joined||channel)leave().then(()=>state('Đã chọn phòng mới. Bấm Kết nối để tham gia.'))}));
+window.addEventListener('anyen-greet',()=>{if(joined&&channel){channel.send({type:'broadcast',event:'greet',payload:{id:uid,name:profile().name}});state('🙏 Đã gửi lời chào bình an')}else state('Hãy kết nối vào phòng trước')});
+window.addEventListener('anyen-activity',e=>{const a=e.detail?.activity;if(!['idle','sit','walk','bell'].includes(a))return;activity=a;if(joined&&channel){channel.track({...profile(),...position,activity}).catch(()=>{});channel.send({type:'broadcast',event:'activity',payload:{id:uid,activity}})}});
+window.addEventListener('anyen-connection-request',join);
 window.addEventListener('anyen-room-request',e=>{const target=[...document.querySelectorAll('[data-room]')].find(b=>b.dataset.room===e.detail?.room);if(target){target.click();join()}});
-// Avoid a second click handler overriding the 3D scene handler.
-window.addEventListener('pagehide',()=>{if(channel)channel.untrack()});
+window.addEventListener('anyen-private-create',async()=>{if(!valid)return state('Thiếu cấu hình Supabase');try{await auth();const r=await client.rpc('anyen_create_private_room');if(r.error)throw r.error;const code=String(r.data||'');$('#privateRoomCode').value=code;state('🔒 Đã tạo phòng. Sao chép mã mời và bấm Kết nối.');if(navigator.clipboard?.writeText)navigator.clipboard.writeText(code).catch(()=>{})}catch(e){state('Không tạo được phòng: '+e.message)}});
+window.addEventListener('anyen-session',e=>{if(!joined||!channel)return;const p=e.detail||{};if(!['start','end'].includes(p.kind))return;channel.send({type:'broadcast',event:'session',payload:{id:uid,name:profile().name,kind:p.kind,minutes:Math.min(30,Math.max(1,Number(p.minutes)||5))}})});
+
+window.addEventListener('pagehide',()=>{clearTimeout(retryTimer);if(channel)channel.untrack().catch(()=>{})});
+window.addEventListener('online',()=>{if(!joined&&!manualLeave&&roomName)join()});
 state(valid?'Sẵn sàng · Chọn phòng và bấm Kết nối':'Chưa kết nối Supabase · Cần cấu hình config.js');
