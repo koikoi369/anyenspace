@@ -39,8 +39,17 @@ async function join(){
  await leave();const myGeneration=++generation;
  try{
   if(!client)client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
-  let {data:{user},error}=await client.auth.getUser();if(error&&!/missing auth session/i.test(error.message))throw error;
-  if(!user){const r=await client.auth.signInAnonymously();if(r.error)throw r.error;user=r.data.user;}
+  // getUser() returns 'Auth session missing!' for first-time visitors.
+  // Check the local session first, then create an anonymous session if needed.
+  const sessionResult=await client.auth.getSession();
+  if(sessionResult.error)throw sessionResult.error;
+  let user=sessionResult.data.session?.user;
+  if(!user){
+   const signInResult=await client.auth.signInAnonymously();
+   if(signInResult.error)throw signInResult.error;
+   user=signInResult.data.user;
+  }
+  if(!user)throw new Error('Không tạo được phiên khách ẩn danh. Kiểm tra Anonymous Sign-Ins trong Supabase.');
   if(myGeneration!==generation)return;
   uid=user.id;
   const c=client.channel('anyen:room:'+room,{config:{private:true,presence:{key:uid}}});channel=c;
