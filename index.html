@@ -371,7 +371,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   });
   let previousActivity='idle',pendingSeat=null,occupiedPositions=[];
   function seatDistance(s){return Math.hypot(s.x-mePosition.x,s.z-mePosition.z)}
-  function seatAvailable(s){return !occupiedPositions.some(p=>p.activity==='sit'&&Math.hypot(p.x-s.x,p.z-s.z)<1.65);}
+  function seatAvailable(s){return !occupiedPositions.some(p=>Math.hypot(p.x-s.x,p.z-s.z)<1.65 || (Number.isFinite(p.seatX)&&Math.hypot(p.seatX-s.x,p.seatZ-s.z)<.7));}
   function chooseSeat(){return cushions.filter(seatAvailable).sort((a,b)=>Number(b.inner)-Number(a.inner)||seatDistance(a)-seatDistance(b))[0]||null;}
   function requestSeat(seat){
     if(!seat||!seatAvailable(seat))seat=chooseSeat();
@@ -379,7 +379,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
     if(meActivity==='walk')document.getElementById('realtimeWalk')?.click();
     if(meActivity==='sit')return;
     if(seatDistance(seat)<.35){mePosition.set(seat.x,0,seat.z);document.getElementById('realtimeSit')?.click();return;}
-    if(navigateTo(seat.x,seat.z)){pendingSeat=seat;document.getElementById('zenHint').textContent=seat.inner?'Đang đến tọa cụ hoa sen trong Chánh điện…':'Chánh điện đã kín, đang đến tọa cụ ngoài sân…';}
+    if(navigateTo(seat.x,seat.z)){pendingSeat=seat;window.dispatchEvent(new CustomEvent('anyen-seat-intent',{detail:{x:seat.x,z:seat.z}}));document.getElementById('zenHint').textContent=seat.inner?'Đang đến tọa cụ hoa sen trong Chánh điện…':'Chánh điện đã kín, đang đến tọa cụ ngoài sân…';}
   }
   function sitNaturally(){
     // Không dịch chuyển tức thời: chỉ ngồi sau khi đến đúng tọa cụ.
@@ -395,7 +395,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   const roomPalettes={'Sảnh chung':'#092d27','Phòng Sen · 10 người':'#263d36','Phòng Trúc · 20 người':'#183e30','Phòng Riêng':'#342e3e'};
   window.addEventListener('anyen-room-scene',e=>{const r=e.detail?.room||'Sảnh chung';scene.background=new THREE.Color(roomPalettes[r]||roomPalettes['Sảnh chung']);document.body.dataset.yenRoom=r==='Phòng Riêng'?'private':r.includes('Sen')?'lotus':r.includes('Trúc')?'bamboo':'lobby';});
   paintMe();window.addEventListener('yen-profile',paintMe);
-  window.addEventListener('anyen-activity',e=>{previousActivity=meActivity;meActivity=e.detail?.activity||'idle';if(meActivity==='sit'&&previousActivity!=='sit'){tapTarget=null;walkRoute.length=0;sitNaturally();}if(meActivity==='walk'){pendingSeat=null;tapTarget=null;walkRoute.length=0;walkGoal=null;}});
+  window.addEventListener('anyen-activity',e=>{previousActivity=meActivity;meActivity=e.detail?.activity||'idle';if(meActivity==='sit'&&previousActivity!=='sit'){tapTarget=null;walkRoute.length=0;sitNaturally();}if(meActivity==='walk'){pendingSeat=null;window.dispatchEvent(new CustomEvent('anyen-seat-intent',{detail:{clear:true}}));tapTarget=null;walkRoute.length=0;walkGoal=null;}});
   let walkGoal=null,walkSeed=Math.random()*Math.PI*2,walkCount=0;window.addEventListener('anyen-walk-step',()=>{if(meActivity!=='walk')return;if(!walkGoal){const a=walkSeed+(walkCount++*.87);const r=5+(walkCount%4)*1.3;walkGoal=[Math.sin(a)*r,21+Math.cos(a)*r];}});
 
   window.addEventListener('anyen-peers',e=>{
@@ -441,7 +441,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
       if(meActivity==='walk'){if(!walkGoal){const a=walkSeed+(walkCount++*.87),r=5+(walkCount%4)*1.3;walkGoal=[Math.sin(a)*r,21+Math.cos(a)*r];}const dx=walkGoal[0]-mePosition.x,dz=walkGoal[1]-mePosition.z,dist=Math.hypot(dx,dz);if(dist<.35)walkGoal=null;else{const d=Math.min(dist,dt*1.35),nx=mePosition.x+dx/dist*d,nz=mePosition.z+dz/dist*d;if(walkable(nx,nz)){mePosition.set(nx,0,nz);walkYaw=Math.atan2(dx,dz);}else walkGoal=null;}}
       if(walkRoute.length&&meActivity!=='sit'&&meActivity!=='walk'){
         const goal=walkRoute[0],dx=goal[0]-mePosition.x,dz=goal[1]-mePosition.z,dist=Math.hypot(dx,dz);
-        if(dist<.16){walkRoute.shift();if(!walkRoute.length){if(pendingSeat){const s=pendingSeat;pendingSeat=null;mePosition.set(s.x,0,s.z);window.dispatchEvent(new CustomEvent('anyen-position',{detail:{x:s.x,z:s.z}}));document.getElementById('realtimeSit')?.click();}document.getElementById('zenHint').textContent='Chạm đất để đi · Chạm tọa cụ để ngồi · Chạm người để chào';}}
+        if(dist<.16){walkRoute.shift();if(!walkRoute.length){if(pendingSeat){const s=pendingSeat;pendingSeat=null;if(!seatAvailable(s)){window.dispatchEvent(new CustomEvent('anyen-seat-intent',{detail:{clear:true}}));requestSeat(chooseSeat());}else{mePosition.set(s.x,0,s.z);window.dispatchEvent(new CustomEvent('anyen-position',{detail:{x:s.x,z:s.z}}));document.getElementById('realtimeSit')?.click();window.dispatchEvent(new CustomEvent('anyen-seat-intent',{detail:{clear:true}}));}}document.getElementById('zenHint').textContent='Chạm đất để đi · Chạm tọa cụ để ngồi · Chạm người để chào';}}
         else{const step=Math.min(dist,dt*3.2),nx=mePosition.x+dx/dist*step,nz=mePosition.z+dz/dist*step;
           if(walkable(nx,nz)){mePosition.set(nx,0,nz);walkYaw=Math.atan2(dx,dz);}else{walkRoute.length=0;document.getElementById('zenHint').textContent='Đường bị chắn, vui lòng chọn điểm khác';}}
       }
@@ -533,7 +533,7 @@ document.querySelector('#openRooms').onclick=()=>go('community');document.queryS
  document.body.append(rituals);rituals.addEventListener('click',e=>{const key=e.target.closest('[data-ritual]')?.dataset.ritual;if(!key)return;window.dispatchEvent(new CustomEvent('anyen-offering',{detail:{kind:key}}));setSheet(null)});
  document.body.append(bar,close);
  const unified=document.createElement('section');unified.id='zenUnifiedMenu';unified.setAttribute('aria-label','Menu Làng Yên');
- unified.innerHTML='<div class="zen-menu-heading"><strong>🌿 Khám phá Làng Yên</strong><button type="button" id="zenMenuDismiss">✕ Đóng</button></div><div class="zen-menu-grid"><button data-zen-action="places">📍 Điểm đến</button><button data-zen-action="gestures">🙏 Tương tác</button><button data-zen-action="people">👥 Người trong làng</button><button data-zen-action="connect">🔗 Kết nối Sảnh chung</button><button data-zen-action="profile">🎨 Trang phục</button></div>';
+ unified.innerHTML='<div class="zen-menu-heading"><strong>🌿 Khám phá Làng Yên</strong><button type="button" id="zenMenuDismiss">✕ Đóng</button></div><div class="zen-menu-grid"><button data-zen-action="places">📍 Điểm đến</button><button data-zen-action="people">👥 Người trong làng</button><button data-zen-action="connect">🔗 Kết nối Sảnh chung</button><button data-zen-action="profile">🎨 Trang phục</button></div>';
  document.body.append(unified);
  unified.querySelector('#zenMenuDismiss').onclick=()=>setSheet(null);
  unified.addEventListener('click',e=>{const action=e.target.closest('[data-zen-action]')?.dataset.zenAction;if(!action)return;if(action==='places')setSheet('zones');if(action==='gestures')setSheet('gestures');if(action==='people')setSheet('people');if(action==='connect'){document.getElementById('connectRealtime')?.click();setSheet(null);}if(action==='profile'){setSheet(null);document.getElementById('openProfile')?.click();}});
