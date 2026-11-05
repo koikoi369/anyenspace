@@ -248,9 +248,14 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
       for(let j=0;j<9;j++){const a=j*Math.PI*2/9,p=new THREE.Mesh(new THREE.SphereGeometry(.11,9,8),mat(j%2?'#f5c6d5':'#e79fb8'));p.scale.set(.65,1.4,.5);p.position.set(Math.cos(a)*.12,.14,Math.sin(a)*.12);p.rotation.y=-a;obj.add(p)}
       const center=new THREE.Mesh(new THREE.SphereGeometry(.065,10,8),mat('#f2d28c'));center.position.y=.18;obj.add(center);
     }else{
-      const holder=new THREE.Mesh(new THREE.CylinderGeometry(.14,.18,.09,14),mat('#bd9a55'));obj.add(holder);
-      const wax=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.28,14),mat('#f7e9cf'));wax.position.y=.18;obj.add(wax);
-      const flame=new THREE.Mesh(new THREE.ConeGeometry(.06,.19,12),new THREE.MeshBasicMaterial({color:'#ffb650'}));flame.position.y=.43;obj.add(flame);(window.anyenFlames ||= []).push({mesh:flame,phase:count});
+      // Đèn dầu đất nung dạng chén, tương ứng hình nghi thức bình an.
+      const clay=mat('#ad4f34'),rimMat=mat('#d77b52'),oilMat=new THREE.MeshStandardMaterial({color:'#6d3928',metalness:.12,roughness:.42,side:THREE.DoubleSide});
+      const foot=new THREE.Mesh(new THREE.CylinderGeometry(.105,.13,.06,24),clay);foot.position.y=.035;obj.add(foot);
+      const bowl=new THREE.Mesh(new THREE.CylinderGeometry(.20,.115,.14,32,1,true),clay);bowl.position.y=.13;obj.add(bowl);
+      const lip=new THREE.Mesh(new THREE.TorusGeometry(.19,.025,8,32),rimMat);lip.rotation.x=Math.PI/2;lip.position.y=.205;obj.add(lip);
+      const oil=new THREE.Mesh(new THREE.CircleGeometry(.168,32),oilMat);oil.rotation.x=-Math.PI/2;oil.position.y=.192;obj.add(oil);
+      const wick=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,.07,8),mat('#33221b'));wick.position.set(.09,.225,0);obj.add(wick);
+      const flame=new THREE.Mesh(new THREE.ConeGeometry(.046,.15,14),new THREE.MeshBasicMaterial({color:'#ffba55'}));flame.position.set(.09,.33,0);obj.add(flame);(window.anyenFlames ||= []).push({mesh:flame,phase:count});
     }
     offerings.push(obj);
     document.getElementById('zenHint').textContent=kind==='flower'?'🪷 Đã dâng hoa sen':kind==='incense'?'🪔 Đã dâng hương':'🕯️ Đã dâng nến';
@@ -399,7 +404,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
       dressAvatar(mesh.outfit,mesh.torso,entry.color,entry.style,entry.activity==='sit');
       const label=String(entry.name||'Khách Yên').slice(0,24);if(mesh.lastName!==label){const c=mesh.tagCtx;c.clearRect(0,0,512,112);c.font='bold 36px sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f4e2b9';c.fillText(label,256,57,470);mesh.tagTex.needsUpdate=true;mesh.lastName=label;}
       const sitting=entry.activity==='sit';poseAvatar(mesh.torso,mesh.head,mesh.tag,sitting);dressAvatar(mesh.outfit,mesh.torso,entry.color,entry.style,sitting);
-      mesh.group.position.set(Math.max(-34,Math.min(34,entry.x)),0,Math.max(-28,Math.min(28,entry.z)));
+      const peerSeat=sitting?cushions.find(c=>Math.hypot(c.x-entry.x,c.z-entry.z)<.8):null;mesh.group.position.set(Math.max(-34,Math.min(34,entry.x)),peerSeat?peerSeat.group.position.y+.14:0,Math.max(-28,Math.min(28,entry.z)));
     }
     for(const [id,obj] of onlineAvatars){if(!incoming[id]){scene.remove(obj.group);onlineAvatars.delete(id)}}
   });
@@ -410,6 +415,12 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   const gestureNames={hello:'Xin chào',handshake:'Bắt tay',namaste:'Chắp tay chào',jump:'Nhảy lên',spin:'Xoay một vòng'};
   let gesture=null;
   window.addEventListener('anyen-gesture',e=>{const kind=e.detail?.kind;if(!gestureNames[kind])return;gesture={kind,start:performance.now()};document.getElementById('zenHint').textContent=gestureNames[kind]+' 🙏';window.dispatchEvent(new CustomEvent('anyen-greet',{detail:{gesture:kind}}));});
+  window.addEventListener('anyen-remote-gesture',e=>{
+    const id=e.detail?.id,kind=e.detail?.kind,peer=onlineAvatars.get(id);
+    if(!peer||!gestureNames[kind])return;
+    peer.gesture={kind,start:performance.now()};
+    document.getElementById('zenHint').textContent=(e.detail?.name||'Một người bạn')+' · '+gestureNames[kind];
+  });
   const walkButtons=document.querySelectorAll('[data-walk]');walkButtons.forEach(b=>{let key=b.dataset.walk;b.addEventListener('pointerdown',e=>{e.preventDefault();if(key==='stop'){walkingKeys.clear();return}walkingKeys.add(key);b.setPointerCapture(e.pointerId)});for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,()=>walkingKeys.delete(key))});
   document.addEventListener('keydown',e=>{if(!document.body.classList.contains('immersive')||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;const k=e.key.toLowerCase();if('wasd'.includes(k)&&k.length===1){walkingKeys.add(({w:'forward',s:'back',a:'turnleft',d:'turnright'})[k]);e.preventDefault()}if(k==='arrowup'){walkingKeys.add('forward');e.preventDefault()}if(k==='arrowdown'){walkingKeys.add('back');e.preventDefault()}if(k==='arrowleft'){walkingKeys.add('turnleft');e.preventDefault()}if(k==='arrowright'){walkingKeys.add('turnright');e.preventDefault()}});
   document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();const map={w:'forward',s:'back',a:'turnleft',d:'turnright',arrowup:'forward',arrowdown:'back',arrowleft:'turnleft',arrowright:'turnright'};if(map[k])walkingKeys.delete(map[k])});
@@ -431,9 +442,20 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
         else{const step=Math.min(dist,dt*3.2),nx=mePosition.x+dx/dist*step,nz=mePosition.z+dz/dist*step;
           if(walkable(nx,nz)){mePosition.set(nx,0,nz);walkYaw=Math.atan2(dx,dz);}else{walkRoute.length=0;document.getElementById('zenHint').textContent='Đường bị chắn, vui lòng chọn điểm khác';}}
       }
-      const sittingNow=meActivity==='sit';const behind=sittingNow?4.8:6.7,up=sittingNow?3.2:4.2;if(sittingNow)walkYaw=Math.PI;camera.position.lerp(new THREE.Vector3(mePosition.x-Math.sin(walkYaw)*behind,up,mePosition.z-Math.cos(walkYaw)*behind),.13);camera.lookAt(mePosition.x,1.45+Math.sin(walkPitch)*2,mePosition.z);
+      const sittingNow=meActivity==='sit';const behind=sittingNow?4.8:6.7,up=sittingNow?3.2:4.2;camera.position.lerp(new THREE.Vector3(mePosition.x-Math.sin(walkYaw)*behind,up,mePosition.z-Math.cos(walkYaw)*behind),.13);camera.lookAt(mePosition.x,1.45+Math.sin(walkPitch)*2,mePosition.z);
     }else{camera.position.lerp(targetPosition,.035);currentLook.lerp(targetLook,.04);camera.lookAt(currentLook.x+Math.sin(lookOffset)*7,currentLook.y,currentLook.z)}
     me.visible=document.body.classList.contains('immersive');me.position.copy(mePosition);if(meActivity==='sit'){const seat=cushions.find(c=>Math.hypot(c.x-mePosition.x,c.z-mePosition.z)<.8);if(seat)me.position.y=seat.group.position.y+.14;}me.rotation.y=0;if(gesture){const u=(performance.now()-gesture.start)/1100;if(u>=1){gesture=null;}else if(gesture.kind==='jump'){me.position.y+=Math.sin(Math.PI*u)*.8;}else if(gesture.kind==='spin'){me.rotation.y=u*Math.PI*2;}else if(gesture.kind==='namaste'){me.rotation.z=Math.sin(Math.PI*u)*.12;}else if(gesture.kind==='handshake'){me.rotation.z=Math.sin(u*Math.PI*6)*.09;}else if(gesture.kind==='hello'){me.rotation.z=Math.sin(u*Math.PI*4)*.07;}}poseAvatar(meTorso,meHead,meTag,meActivity==='sit');dressAvatar(meOutfit,meTorso,myColor,myStyle,meActivity==='sit');
+    for(const peer of onlineAvatars.values()){
+      peer.group.rotation.set(0,0,0);
+      if(!peer.gesture)continue;
+      const u=(performance.now()-peer.gesture.start)/1100;
+      if(u>=1){peer.gesture=null;continue;}
+      if(peer.gesture.kind==='jump')peer.group.position.y+=Math.sin(Math.PI*u)*.015;
+      else if(peer.gesture.kind==='spin')peer.group.rotation.y=u*Math.PI*2;
+      else if(peer.gesture.kind==='namaste')peer.group.rotation.z=Math.sin(Math.PI*u)*.12;
+      else if(peer.gesture.kind==='handshake')peer.group.rotation.z=Math.sin(u*Math.PI*6)*.09;
+      else if(peer.gesture.kind==='hello')peer.group.rotation.z=Math.sin(u*Math.PI*4)*.07;
+    }
     if(document.body.classList.contains('immersive')){const d=Math.min(...guests.map(g=>g.position.distanceTo(camera.position)));document.querySelector('#nearGuest').textContent=d<7?'Có một khách tham quan gần bạn':'Dạo gần một người để chào'};
     markers.forEach((m,i)=>{m.rotation.y=t*.3;m.children[0].rotation.z=t*.35;m.position.y=(i===0?2.5:i===1?2.2:i===2?2.8:4)+Math.sin(t*1.2+i)*.13});
     flowers.forEach((f,i)=>f.position.y=.13+Math.sin(t*.8+i)*.035);(window.anyenSmokePuffs||[]).forEach(o=>{o.mesh.position.x=Math.sin(t*.7+o.phase)*.07;o.mesh.material.opacity=.16+.11*Math.sin(t+o.phase)**2;});(window.anyenFlames||[]).forEach(o=>{o.mesh.scale.setScalar(.9+.12*Math.sin(t*6+o.phase));});
@@ -504,7 +526,7 @@ document.querySelector('#openRooms').onclick=()=>go('community');document.queryS
  const bar=document.createElement('nav');bar.id='zenToolbar';bar.setAttribute('aria-label','Điều khiển không gian 3D');
  bar.innerHTML='<button type="button" data-zen="sit" aria-label="Ngồi thiền" title="Ngồi thiền">🧘<small>Ngồi thiền</small></button><button type="button" data-zen="medwalk" aria-label="Thiền hành" title="Thiền hành">🚶<small>Thiền hành</small></button><button type="button" data-zen="bell" aria-label="Gõ chuông" title="Gõ chuông">🥣<small>Gõ chuông</small></button><button type="button" data-zen="ritual" aria-label="Mở nghi thức" title="Nghi thức">🪷<small>Nghi thức</small></button><button type="button" data-zen="people" aria-label="Mở menu" title="Menu">☰<small>Menu</small></button>';
  const close=document.createElement('button');close.id='zenPanelClose';close.textContent='✕ Đóng bảng';close.type='button';
- const rituals=document.createElement('div');rituals.id='zenRitualPanel';rituals.innerHTML='<button data-ritual="incense">🪔 Dâng hương</button><button data-ritual="flower">🪷 Dâng hoa sen</button><button data-ritual="candle">🕯️ Dâng nến</button>';
+ const rituals=document.createElement('div');rituals.id='zenRitualPanel';rituals.innerHTML='<button data-ritual="incense">🪔 Dâng hương</button><button data-ritual="flower">🪷 Dâng hoa sen</button><button data-ritual="candle">🪔 Dâng đèn</button>';
  document.body.append(rituals);rituals.addEventListener('click',e=>{const key=e.target.closest('[data-ritual]')?.dataset.ritual;if(!key)return;window.dispatchEvent(new CustomEvent('anyen-offering',{detail:{kind:key}}));setSheet(null)});
  document.body.append(bar,close);
  const unified=document.createElement('section');unified.id='zenUnifiedMenu';unified.setAttribute('aria-label','Menu Làng Yên');
