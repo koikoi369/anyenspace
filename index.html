@@ -69,6 +69,25 @@ body.immersive .zone-help{display:block}
 .resonance-clock{font:600 39px Georgia,serif;text-align:center;color:#f0d497;font-variant-numeric:tabular-nums}
 .resonance-state,.resonance-offerings{text-align:center;font-size:12px;line-height:1.5}
 @media(max-width:650px){#resonancePanel{padding:10px}.resonance-clock{font-size:33px}}
+
+/* 3.5.4: one uncluttered 3D interface on laptop and mobile */
+body.immersive .profile-bar,body.immersive #realtimeBox,body.immersive .social-demo,body.immersive .walk-panel,body.immersive .zone-nav,body.immersive #zoneAction,body.immersive .zone-help,body.immersive .immersive-bottom,body.immersive #zenGestureOpen,body.immersive #zenGestures,body.immersive .connections-strip{display:none!important}
+body.immersive .immersive-top{top:12px;left:14px;right:14px;align-items:center}
+body.immersive .immersive-name{font-size:clamp(15px,2vw,22px)}
+body.immersive #zenPlaces{display:none!important}
+body.immersive #zenToolbar{position:fixed!important;left:50%!important;right:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 12px)!important;transform:translateX(-50%)!important;width:min(680px,calc(100vw - 20px))!important;max-width:none!important;z-index:45!important}
+body.immersive #zenToolbar button{min-width:0!important;flex:1!important}
+body.immersive.zen-sheet-people #realtimeBox{display:block!important;position:fixed!important;top:auto!important;left:12px!important;right:12px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 85px)!important;max-height:55dvh!important;overflow:auto!important;z-index:44!important}
+body.immersive.zen-sheet-people #realtimeBox #rtContent{display:block!important}
+body.immersive.zen-sheet-zones .zone-nav{display:flex!important;position:fixed!important;top:auto!important;left:12px!important;right:12px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 85px)!important;width:auto!important;max-height:45dvh!important;overflow:auto!important;z-index:44!important}
+body.immersive.zen-sheet-ritual #zenRitualPanel,body.immersive.zen-sheet-people #zenGestures{display:flex!important}
+#zenRitualPanel{display:none;position:fixed;z-index:47;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 85px);transform:translateX(-50%);width:min(420px,calc(100vw - 24px));padding:12px;gap:8px;flex-direction:column;border:1px solid #c8a96a88;border-radius:18px;background:#0a302aef;box-shadow:0 18px 40px #0008}
+#zenRitualPanel button{background:#1b4332;border:1px solid #c8a96a77;color:#f7e8cd;border-radius:13px;padding:12px;text-align:left}
+body.immersive.zen-sheet-gestures #zenGestures{position:fixed;z-index:47;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 85px);transform:translateX(-50%);width:min(420px,calc(100vw - 24px));display:flex;flex-direction:column;gap:8px;background:#0a302aef;padding:12px;border-radius:18px}
+body.immersive #zenHint{position:fixed;top:66px;bottom:auto;left:50%;transform:translateX(-50%);z-index:30;max-width:80vw;pointer-events:none}
+body.immersive.yen-3d-error #zenToolbar{display:none!important}
+@media(max-width:760px){body.immersive .immersive-name{font-size:15px}body.immersive #zenToolbar button small{font-size:10px}}
+#zenQuickMenu{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}#zenQuickMenu button{background:#1c483b;border:1px solid #c8a96a88;border-radius:12px;color:#f5e9d2;padding:9px 11px}
 </style><style>
 .breath-studio{margin:18px 0;padding:20px;border:1px solid #c8a96a55;border-radius:22px;background:#082c26aa;text-align:center}.breath-orb{width:126px;height:126px;border-radius:50%;margin:12px auto 20px;background:radial-gradient(circle at 40% 35%,#e6cfa2,#3e8b78 45%,#113e36 75%);box-shadow:0 0 30px #b9d2b455;transform:scale(.78);transition:transform 1s linear;display:grid;place-items:center;color:#fff4d8;font:16px Georgia,serif}.breath-orb.inhale{transform:scale(1.13)}.breath-orb.hold{transform:scale(1.13)}.breath-orb.exhale{transform:scale(.78)}.breath-settings{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;align-items:center}.breath-settings select,.breath-settings button{background:#173e35;color:#f4e8d1;border:1px solid #c8a96a66;border-radius:14px;padding:9px}.breath-note{font-size:12px;color:#c7d2c6;margin-top:12px}
 .walk-panel{position:fixed;left:16px;bottom:24px;z-index:15;display:none;background:#092b26e8;border:1px solid #c8a96a77;border-radius:18px;padding:12px;color:#f8edd8;max-width:280px;font-size:12px}.walk-panel button{padding:9px 12px;margin:3px;border-radius:12px;background:#28564a;color:#fff;border:1px solid #c8a96a55;cursor:pointer}.walk-panel .walk-pad{display:grid;grid-template-columns:repeat(3,42px);justify-content:center}.walk-panel .walk-pad button:first-child{grid-column:2}.walk-panel .walk-pad button:nth-child(2){grid-column:1}.walk-panel .walk-pad button:nth-child(3){grid-column:2}.walk-panel .walk-pad button:nth-child(4){grid-column:3}.walk-panel .walk-pad button:nth-child(5){grid-column:2}.walk-panel .walk-pad button{touch-action:none}body.immersive .walk-panel{display:block}.walk-panel small{display:block;color:#d2c5a9}.social-demo{position:fixed;right:16px;bottom:24px;z-index:15;display:none;background:#092b26e8;border:1px solid #c8a96a77;border-radius:18px;padding:13px;color:#f8edd8;max-width:230px;font-size:13px}body.immersive .social-demo{display:block}.social-demo button{background:#28564a;color:#fff;border:1px solid #c8a96a55;border-radius:12px;padding:8px;cursor:pointer;margin-top:7px}.social-demo p{margin:5px 0;font-size:11px;color:#dfd3bc}@media(max-width:700px){.walk-panel{left:8px;bottom:8px;padding:8px}.social-demo{right:8px;bottom:8px;padding:8px;max-width:160px}.walk-panel small{display:none}.walk-panel .walk-pad{grid-template-columns:repeat(3,34px)}.walk-panel .walk-pad button{padding:7px}}
@@ -132,7 +151,7 @@ body:not(.immersive) #zenGestureOpen{display:none}
 </section><div id="rtActivityStatus" aria-live="polite"></div><small>Chỉ chia sẻ nickname, trang phục và vị trí khi bạn chọn Kết nối. Không chia sẻ nhật ký.</small></div></aside><div aria-label="Cá nhân hóa khách tham quan" aria-modal="true" class="profile-modal" id="profileModal" role="dialog"><div class="profile-dialog"><div class="eyebrow">YOUR QUIET PRESENCE</div><h2>Chọn dáng vẻ bình an</h2><p>Không cần đăng ký tài khoản. Tên và trang phục chỉ lưu trên thiết bị này.</p><label for="guestName">Tên hoặc nickname</label><input id="guestName" maxlength="24" placeholder="Ví dụ: Một người đang Yên"/><label for="outfitStyle">Kiểu trang phục</label><select id="outfitStyle"><option value="robe">Thiền phục truyền thống</option><option value="linen">Trang phục linen tối giản</option><option value="casual">Trang phục thường ngày</option></select><label>Màu sắc trang phục</label><div class="color-options"><label><input checked="" name="outfitColor" type="radio" value="#d9b67d"/> Vàng</label><label><input name="outfitColor" type="radio" value="#90b7a5"/> Xanh</label><label><input name="outfitColor" type="radio" value="#f0e5d4"/> Kem</label><label><input name="outfitColor" type="radio" value="#b5a1c7"/> Tím</label><label><input name="outfitColor" type="radio" value="#687b48"/> Rêu</label><label><input name="outfitColor" type="radio" value="#e8a1b4"/> Hồng</label></div><div class="row"><button class="cta" id="saveProfile">Lưu &amp; tiếp tục</button><button class="chip" id="closeProfile">Đóng</button></div></div></div><div class="toast" id="toast"></div></div><script>
 window.LangYenAudio={current:null,stopAll(except){window.dispatchEvent(new CustomEvent('langyen-audio-stop',{detail:{except:except||null}}));this.current=except||null},claim(name){this.stopAll(name)}};
 </script><script>
-const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);window.addEventListener('langyen-audio-stop',e=>{if(e.detail.except!=='rain'&&typeof stopRain==='function')stopRain();if(e.detail.except!=='youtube'){const f=document.getElementById('ytFrame');if(f&&f.hasAttribute('src')){f.removeAttribute('src');document.getElementById('ytContainer')?.classList.add('hidden')}}});let page='home';function go(p){if(p===page&&p!=='home')p='home';if(p!=='home')window.dispatchEvent(new CustomEvent('langyen-audio-stop',{detail:{except:null}}));page=p;$$('main section').forEach(x=>x.classList.toggle('hidden',x.id!==p));$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));}$$('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('main section.panel').forEach(panel=>{const b=document.createElement('button');b.className='panel-close';b.type='button';b.setAttribute('aria-label','Đóng '+(panel.querySelector('h2')?.textContent||'bảng'));b.textContent='✕ Đóng';b.onclick=()=>go('home');panel.insertBefore(b,panel.firstChild)});function enter3D(){go('home');document.body.classList.add('immersive');selectZone('gate');$('#exit3D').focus()}function exit3D(){document.body.classList.remove('immersive');$('#enter3D').focus()}let activeZone='gate';
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);window.addEventListener('langyen-audio-stop',e=>{if(e.detail.except!=='rain'&&typeof stopRain==='function')stopRain();if(e.detail.except!=='youtube'){const f=document.getElementById('ytFrame');if(f&&f.hasAttribute('src')){f.removeAttribute('src');document.getElementById('ytContainer')?.classList.add('hidden')}}});let page='home';function go(p){if(p===page&&p!=='home')p='home';if(p!=='home')window.dispatchEvent(new CustomEvent('langyen-audio-stop',{detail:{except:null}}));page=p;$$('main section').forEach(x=>x.classList.toggle('hidden',x.id!==p));$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));}$$('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('main section.panel').forEach(panel=>{const b=document.createElement('button');b.className='panel-close';b.type='button';b.setAttribute('aria-label','Đóng '+(panel.querySelector('h2')?.textContent||'bảng'));b.textContent='✕ Đóng';b.onclick=()=>go('home');panel.insertBefore(b,panel.firstChild)});function enter3D(){go('home');if(document.body.classList.contains('yen-3d-error')){toast('3D chưa tải được. Hãy kiểm tra kết nối rồi tải lại trang.');return;}document.body.classList.add('immersive');selectZone('gate');$('#exit3D').focus()}function exit3D(){document.body.classList.remove('immersive');$('#enter3D').focus()}let activeZone='gate';
 const zoneInfo={gate:['Cổng Yên','Bước vào hành trình bình an','meditate'],garden:['Sân vườn','Dạo giữa thiên nhiên và hơi thở','sound'],lotus:['Hồ sen','Nghe nhạc InWellness bên hồ sen','sound'],meditation:['Thiền đường','Bắt đầu phiên Tĩnh Tâm','meditate'],sanctuary:['Chánh điện','Thực hành nghi thức chánh niệm','ritual']};
 function selectZone(z){if(!zoneInfo[z])return;activeZone=z;document.querySelectorAll('[data-zone]').forEach(b=>b.classList.toggle('active',b.dataset.zone===z));$('#zoneHelp').textContent=zoneInfo[z][0]+' · '+zoneInfo[z][1]+' · Dùng các nút để chuyển khu vực';$('#zoneAction').textContent=z==='lotus'||z==='garden'?'♫ Mở Âm nhạc':z==='sanctuary'?'✧ Mở Nghi thức':'🪷 Bắt đầu Tĩnh Tâm';window.dispatchEvent(new CustomEvent('yen-zone',{detail:z}));document.body.classList.remove('zen-sheet-zones');}
 document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>selectZone(b.dataset.zone));
@@ -177,7 +196,19 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   box(11,.6,7,stone,0,.35,-15);for(let x of [-4.6,4.6])for(let z of [-17.5,-12.5])box(.55,6,.55,wood,x,3.5,z);
   box(12.5,.6,8.6,roof,0,6.8,-15);let ridge=box(13,.55,1.2,roof,0,8,-15);ridge.rotation.z=.03;
   for(let i=0;i<6;i++){box(1.8,.14,2.2,stone,-5.2+i*2.1,.12+i*.03,-9.5+i*.6)}
+  // Visible footbridge linking the garden to the sanctuary across the lotus pond.
+  const bridgeDeck=new THREE.Mesh(new THREE.BoxGeometry(3.6,.15,27),stone);bridgeDeck.position.set(0,.18,1.2);scene.add(bridgeDeck);
   const buddha=new THREE.Group();let base=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.7,.6,24),gold);buddha.add(base);let torso=new THREE.Mesh(new THREE.SphereGeometry(.78,20,16),gold);torso.scale.set(1,1.2,.8);torso.position.y=1.1;buddha.add(torso);let head=new THREE.Mesh(new THREE.SphereGeometry(.47,20,16),gold);head.position.y=2.18;buddha.add(head);buddha.position.set(0,.9,-15);scene.add(buddha);
+  // Simple ritual altar within sanctuary; all offerings are local visual feedback for now.
+  const altar=new THREE.Group();altar.position.set(0,.7,-18.3);scene.add(altar);
+  const altarBase=new THREE.Mesh(new THREE.CylinderGeometry(.75,.9,.25,24),gold);altar.add(altarBase);
+  const offerings=[];
+  window.addEventListener('anyen-offering',e=>{const kind=e.detail?.kind;if(!['incense','flower','candle'].includes(kind))return;
+    const count=offerings.length;const x=(count%5-2)*.28,z=Math.floor(count/5)*.24;
+    const color=kind==='flower'?'#e9a9bd':kind==='incense'?'#9d7a56':'#f5ddac';
+    const o=new THREE.Mesh(new THREE.CylinderGeometry(kind==='incense'?.025:.11,kind==='incense'?.025:.13,kind==='incense'?.8:.35,12),mat(color));o.position.set(x,.35,z);altar.add(o);offerings.push(o);
+    document.getElementById('zenHint').textContent=kind==='flower'?'🪷 Đã dâng hoa sen':kind==='incense'?'🪔 Đã dâng hương':'🕯️ Đã dâng nến';
+  });
   const leaf=mat('#47745c'),pink=mat('#e5a9aa'),petal=mat('#edc6b4');
   const flowers=[];for(let i=0;i<23;i++){let a=i*2.399,r=2.5+(i%5)*1.4,x=Math.cos(a)*r,z=-4+Math.sin(a)*r;let lotus=new THREE.Group();let pad=new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,.035,14),leaf);lotus.add(pad);for(let j=0;j<7;j++){let p=new THREE.Mesh(new THREE.SphereGeometry(.22,9,8),j%2?pink:petal);let t=j*Math.PI*2/7;p.position.set(Math.cos(t)*.22,.17,Math.sin(t)*.22);p.scale.set(.7,.5,1.4);p.rotation.y=t;lotus.add(p)}lotus.position.set(x,.13,z);scene.add(lotus);flowers.push(lotus)}
   for(let i=0;i<32;i++){let x=(i%8-3.5)*4.4,z=-29+Math.floor(i/8)*18;if(Math.abs(x)<11&&z>-15&&z<7)continue;let trunk=new THREE.Mesh(new THREE.CylinderGeometry(.18,.28,3,8),wood);trunk.position.set(x,1.4,z);scene.add(trunk);let canopy=new THREE.Mesh(new THREE.ConeGeometry(1.4,4,9),leaf);canopy.position.set(x,4.6,z);scene.add(canopy)}
@@ -221,12 +252,12 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   }
   renderer.domElement.addEventListener('pointerup',e=>{dragging3d=false;if(moved)return;handleSceneTap(e);});
   // Desktop clicks may land on transparent overlays rather than the WebGL canvas.
-  document.addEventListener('click',e=>{if(!document.body.classList.contains('immersive')||e.detail===0||(e.pointerType&&e.pointerType!=='mouse'))return;if(e.target===renderer.domElement||e.target.closest('button,a,input,select,textarea,nav,aside,#zenToolbar,#zenPanelClose,.profile-bar,.social-demo,.walk-panel,.zone-nav,.immersive-top'))return;handleSceneTap(e);},true);
+  document.addEventListener('click',e=>{if(!document.body.classList.contains('immersive')||e.detail===0)return;if(e.target===renderer.domElement||e.target.closest('button,a,input,select,textarea,nav,aside,#zenToolbar,#zenPanelClose,.profile-bar,.social-demo,.walk-panel,.zone-nav,.immersive-top'))return;handleSceneTap(e);},true);
   window.addEventListener('yen-zone',e=>{let dest=destinations[e.detail];if(!dest)return;targetPosition.set(...dest.pos);targetLook.set(...dest.look);lookOffset=0;if(document.body.classList.contains('immersive')&&zoneWalkPoints[e.detail]){if(meActivity==='sit')document.getElementById('realtimeSit')?.click();if(meActivity==='walk')document.getElementById('realtimeWalk')?.click();navigateTo(...zoneWalkPoints[e.detail]);}});
   $('#left').addEventListener('click',()=>{lookOffset-=.2});$('#right').addEventListener('click',()=>{lookOffset+=.2});
   document.addEventListener('keydown',e=>{if(!document.body.classList.contains('immersive'))return;const keys=['gate','garden','lotus','meditation','sanctuary'];if(e.key==='PageUp'||e.key==='PageDown'){let i=keys.indexOf(activeZone);selectZone(keys[(i+(e.key==='PageUp'?1:4))%5]);e.preventDefault()}});
   window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-  document.querySelector('#sceneMode').textContent='Không gian 3D · Hành trình tương tác';
+  document.querySelector('#sceneMode').textContent='Không gian 3D · Hành trình tương tác';document.body.classList.add('yen-3d-ready');
   // Free-walk demo: first-person camera on navigable ground; lake and temple are bounded.
   let walking=false,walkYaw=Math.PI,walkPitch=0,tapTarget=null;const walkRoute=[];const walkingKeys=new Set();
   const onlineAvatars=new Map();
@@ -253,11 +284,11 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
     
   }
   const meOutfit=outfitParts(me,meTorso);let myStyle='robe',myColor='#687b48';
-  let meActivity='idle', mePosition=new THREE.Vector3(0,0,10), thirdPerson=true;
+  let meActivity='idle', mePosition=new THREE.Vector3(0,0,24), thirdPerson=true;
   // Navigation around the lotus pond and temple: visibility graph, shortest valid route.
-  const zoneWalkPoints={gate:[0,10],garden:[-15,8],lotus:[14,7],meditation:[-16,-9],sanctuary:[11,-17]};
-  const routeGuides=[[-17,-19],[-17,-10],[-17,4],[-17,13],[17,-19],[17,-10],[17,4],[17,13],[-11,-22],[11,-22],[-23,0],[23,0]];
-  function walkable(x,z){return Math.abs(x)<34&&z>-28&&z<35&&Math.hypot(x,z+4)>12.3&&!(z<-12&&Math.abs(x)<8.5);}
+  const zoneWalkPoints={gate:[0,24],garden:[-17,8],lotus:[13,7],meditation:[0,-13],sanctuary:[0,-16]};
+  const routeGuides=[[-17,-19],[-17,-10],[-17,4],[-17,13],[17,-19],[17,-10],[17,4],[17,13],[-11,-22],[11,-22],[-23,0],[23,0],[0,24],[0,14],[0,9],[0,3],[0,-3],[0,-9],[0,-12],[0,-15],[0,-18],[-3,-12],[3,-12]];
+  function walkable(x,z){if(Math.abs(x)>=34||z<=-28||z>=35)return false;const temple=(Math.abs(x)<=5.2&&z>=-19.5&&z<=-11.2);const bridge=(Math.abs(x)<=2.3&&z>=-12.5&&z<=15);return temple||bridge||Math.hypot(x,z+4)>12.3;}
   function clearWalk(a,b){for(let i=0;i<=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/.35);i++){const n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/.35)),t=i/n;if(!walkable(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t))return false;}return true;}
   function navigateTo(x,z){pendingSeat=null;if(meActivity==='sit'||meActivity==='walk'){document.getElementById('zenHint').textContent='Kết thúc ngồi thiền / thiền hành để tự do di chuyển';return false;}
     if(!walkable(x,z)){document.getElementById('zenHint').textContent='Điểm này không thể đến. Hãy chạm lối đi gần đó.';return false;}
@@ -272,9 +303,18 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   // Tọa cụ ưu tiên Chánh điện; mở rộng theo vòng ngoài khi đầy.
   const cushions=[];
   const seatLocations=[];
-  for(const z of [-18,-15,-12])for(const x of [10.5,13,15.5,18])seatLocations.push([x,z]);
-  for(const z of [-10,-7,-4,0,4,8,12,16])for(const x of [-20,-17,20,23])seatLocations.push([x,z]);
-  seatLocations.forEach(([x,z],i)=>{if(!walkable(x,z))return;const mesh=new THREE.Mesh(new THREE.CylinderGeometry(.72,.75,.16,24),mat(i%2?'#a48b64':'#b6a077'));mesh.position.set(x,.12,z);scene.add(mesh);cushions.push({x,z,mesh,inner:i<12});});
+  // Six visible lotus cushions INSIDE the sanctuary, not around the pond.
+  for(const z of [-16.8,-14.0])for(const x of [-3,0,3])seatLocations.push([x,z,true]);
+  // Overflow seats outside only when the sanctuary is full.
+  for(const z of [-22,-20,18,21])for(const x of [-8,-4,0,4,8])seatLocations.push([x,z,false]);
+  seatLocations.forEach(([x,z,inner],i)=>{
+    if(!walkable(x,z))return;
+    const group=new THREE.Group();group.position.set(x,inner?.72:.12,z);
+    const base=new THREE.Mesh(new THREE.CylinderGeometry(.73,.79,.14,24),mat(inner?'#b9986d':'#8c9c78'));group.add(base);
+    const pinkPetal=mat(inner?'#e6b3bd':'#c7b49c');
+    for(let p=0;p<8;p++){const a=p*Math.PI/4;const petal=new THREE.Mesh(new THREE.SphereGeometry(.24,9,7),pinkPetal);petal.scale.set(.8,.27,1.35);petal.position.set(Math.cos(a)*.38,.13,Math.sin(a)*.38);petal.rotation.y=-a;group.add(petal);}
+    scene.add(group);cushions.push({x,z,mesh:base,inner,group});
+  });
   let previousActivity='idle',pendingSeat=null,occupiedPositions=[];
   function seatDistance(s){return Math.hypot(s.x-mePosition.x,s.z-mePosition.z)}
   function seatAvailable(s){return !occupiedPositions.some(p=>p.activity==='sit'&&Math.hypot(p.x-s.x,p.z-s.z)<1.15);}
@@ -285,7 +325,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
     if(meActivity==='walk')document.getElementById('realtimeWalk')?.click();
     if(meActivity==='sit')return;
     if(seatDistance(seat)<.35){mePosition.set(seat.x,0,seat.z);document.getElementById('realtimeSit')?.click();return;}
-    if(navigateTo(seat.x,seat.z)){pendingSeat=seat;document.getElementById('zenHint').textContent='Đang đến tọa cụ ở Chánh điện…';}
+    if(navigateTo(seat.x,seat.z)){pendingSeat=seat;document.getElementById('zenHint').textContent=seat.inner?'Đang đến tọa cụ hoa sen trong Chánh điện…':'Chánh điện đã kín, đang đến tọa cụ ngoài sân…';}
   }
   function sitNaturally(){
     // Không dịch chuyển tức thời: chỉ ngồi sau khi đến đúng tọa cụ.
@@ -337,10 +377,10 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
       if(!walking){walking=true;walkYaw=Math.PI}
       if(walkingKeys.has('turnleft'))walkYaw+=dt*1.5;if(walkingKeys.has('turnright'))walkYaw-=dt*1.5;
       let step=(walkingKeys.has('forward')?1:0)-(walkingKeys.has('back')?1:0);
-      if(step&&meActivity!=='sit'&&meActivity!=='walk'){let nx=mePosition.x+Math.sin(walkYaw)*dt*4*step,nz=mePosition.z+Math.cos(walkYaw)*dt*4*step;const lake=Math.hypot(nx,nz+4)<11.5;const temple=nz<-13&&Math.abs(nx)<7;if(Math.abs(nx)<35&&nz>-29&&nz<36&&!lake&&!temple){mePosition.x=nx;mePosition.z=nz}}
+      if(step&&meActivity!=='sit'&&meActivity!=='walk'){let nx=mePosition.x+Math.sin(walkYaw)*dt*4*step,nz=mePosition.z+Math.cos(walkYaw)*dt*4*step;if(walkable(nx,nz)){mePosition.x=nx;mePosition.z=nz}}
       if(walkRoute.length&&meActivity!=='sit'&&meActivity!=='walk'){
         const goal=walkRoute[0],dx=goal[0]-mePosition.x,dz=goal[1]-mePosition.z,dist=Math.hypot(dx,dz);
-        if(dist<.16){walkRoute.shift();if(!walkRoute.length){if(pendingSeat){const s=pendingSeat;pendingSeat=null;mePosition.set(s.x,0,s.z);document.getElementById('realtimeSit')?.click();}document.getElementById('zenHint').textContent='Chạm đất để đi · Chạm tọa cụ để ngồi · Chạm người để chào';}}
+        if(dist<.16){walkRoute.shift();if(!walkRoute.length){if(pendingSeat){const s=pendingSeat;pendingSeat=null;mePosition.set(s.x,0,s.z);window.dispatchEvent(new CustomEvent('anyen-position',{detail:{x:s.x,z:s.z}}));document.getElementById('realtimeSit')?.click();}document.getElementById('zenHint').textContent='Chạm đất để đi · Chạm tọa cụ để ngồi · Chạm người để chào';}}
         else{const step=Math.min(dist,dt*3.2),nx=mePosition.x+dx/dist*step,nz=mePosition.z+dz/dist*step;
           if(walkable(nx,nz)){mePosition.set(nx,0,nz);walkYaw=Math.atan2(dx,dz);}else{walkRoute.length=0;document.getElementById('zenHint').textContent='Đường bị chắn, vui lòng chọn điểm khác';}}
       }
@@ -353,7 +393,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
     water.material.color.setHSL(.48,.31,.27+Math.sin(t*.5)*.01);renderer.render(scene,camera)
   }animate();
 
- }catch(err){document.querySelector('#sceneMode').textContent='Không gian phong cảnh · Chế độ tương thích';}
+ }catch(err){console.error('LÀNG YÊN 3D:',err);document.querySelector('#sceneMode').textContent='3D chưa tải được';document.getElementById('zenHint').textContent='Không tải được 3D. Hãy kiểm tra kết nối mạng và tải lại trang.';document.body.classList.add('yen-3d-error');}
 })();
 
 // Official YouTube iframe embed; no scraping, audio extraction, or hidden player.
@@ -413,10 +453,12 @@ document.querySelector('#openRooms').onclick=()=>go('community');document.queryS
 </script><script src="config.js"></script><script src="multiplayer.js" type="module"></script>
 <script>
 (function(){
- const names=['zones','walk','people','profile'];
+ const names=['zones','walk','people','profile','ritual','gestures'];
  const bar=document.createElement('nav');bar.id='zenToolbar';bar.setAttribute('aria-label','Điều khiển không gian 3D');
- bar.innerHTML='<button type="button" data-zen="sit" aria-label="Ngồi thiền" title="Ngồi thiền">🧘<small>Ngồi thiền</small></button><button type="button" data-zen="medwalk" aria-label="Thiền hành" title="Thiền hành">🚶<small>Thiền hành</small></button><button type="button" data-zen="bell" aria-label="Gõ chuông" title="Gõ chuông">🥣<small>Gõ chuông</small></button><button type="button" data-zen="people" aria-label="Mở tương tác" title="Tương tác">☰<small>Menu</small></button>';
+ bar.innerHTML='<button type="button" data-zen="sit" aria-label="Ngồi thiền" title="Ngồi thiền">🧘<small>Ngồi thiền</small></button><button type="button" data-zen="medwalk" aria-label="Thiền hành" title="Thiền hành">🚶<small>Thiền hành</small></button><button type="button" data-zen="bell" aria-label="Gõ chuông" title="Gõ chuông">🥣<small>Gõ chuông</small></button><button type="button" data-zen="ritual" aria-label="Mở nghi thức" title="Nghi thức">🪷<small>Nghi thức</small></button><button type="button" data-zen="people" aria-label="Mở menu" title="Menu">☰<small>Menu</small></button>';
  const close=document.createElement('button');close.id='zenPanelClose';close.textContent='✕ Đóng bảng';close.type='button';
+ const rituals=document.createElement('div');rituals.id='zenRitualPanel';rituals.innerHTML='<button data-ritual="incense">🪔 Dâng hương</button><button data-ritual="flower">🪷 Dâng hoa sen</button><button data-ritual="candle">🕯️ Dâng nến</button>';
+ document.body.append(rituals);rituals.addEventListener('click',e=>{const key=e.target.closest('[data-ritual]')?.dataset.ritual;if(!key)return;window.dispatchEvent(new CustomEvent('anyen-offering',{detail:{kind:key}}));setSheet(null)});
  document.body.append(bar,close);const places=document.createElement('button');places.id='zenPlaces';places.type='button';places.textContent='📍 Điểm đến';places.onclick=()=>{document.body.classList.toggle('zen-sheet-zones');document.body.classList.remove('zen-sheet-people')};document.body.append(places);const roomLink=document.createElement('button');roomLink.type='button';roomLink.textContent='🌿 Sảnh chung';roomLink.className='zen-room-link';roomLink.onclick=()=>{document.getElementById('rtToggle')?.click();setSheet('people')};document.querySelector('.social-demo')?.append(roomLink);
  function setSheet(name){names.forEach(n=>document.body.classList.toggle('zen-sheet-'+n,n===name));bar.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.zen===name)));}
  bar.addEventListener('click',e=>{const b=e.target.closest('button[data-zen]');if(!b)return;const n=b.dataset.zen;if(n==='sit'){window.dispatchEvent(new Event('anyen-request-sit'));setSheet(null);return;}if(n==='medwalk'){document.getElementById('realtimeWalk')?.click();setSheet(null);return;}if(n==='bell'){document.getElementById('realtimeBell')?.click();setSheet(null);return;}document.body.classList.remove('zen-clean');setSheet(document.body.classList.contains('zen-sheet-'+n)?null:n);});
