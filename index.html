@@ -313,7 +313,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
   document.querySelector('#sceneMode').textContent='Không gian 3D · Hành trình tương tác';document.body.classList.add('yen-3d-ready');
   // Free-walk demo: first-person camera on navigable ground; lake and temple are bounded.
-  let walking=false,walkYaw=Math.PI,walkPitch=0,tapTarget=null;const walkRoute=[];const walkingKeys=new Set();
+  let walking=false,walkYaw=Math.PI,viewYaw=Math.PI,walkPitch=0,tapTarget=null;const walkRoute=[];const walkingKeys=new Set();
   const onlineAvatars=new Map();
   // Local avatar is a separate scene object, never confused with remote peers.
   const me=new THREE.Group();const meTorso=new THREE.Mesh(new THREE.CapsuleGeometry(.34,.8,4,8),mat('#687b48'));meTorso.position.y=1.05;me.add(meTorso);
@@ -429,13 +429,13 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();const map={w:'forward',s:'back',a:'turnleft',d:'turnright',arrowup:'forward',arrowdown:'back',arrowleft:'turnleft',arrowright:'turnright'};if(map[k])walkingKeys.delete(map[k])});
   document.querySelector('#walkReset').onclick=()=>{walking=false;walkingKeys.clear();selectZone('gate')};
   document.querySelector('#sendGreeting').onclick=()=>{window.dispatchEvent(new Event('anyen-greet'));document.querySelector('#greetingStatus').textContent='🙏 Đã gửi lời chào tới khách trong cùng phòng (nếu đang kết nối).'};
-  renderer.domElement.addEventListener('pointermove',e=>{if(!dragging3d||!document.body.classList.contains('immersive'))return;walking=true;walkYaw-=e.movementX*.003;walkPitch=Math.max(-.5,Math.min(.5,walkPitch-e.movementY*.002))});
+  renderer.domElement.addEventListener('pointermove',e=>{if(!dragging3d||!document.body.classList.contains('immersive'))return;walking=true;viewYaw-=e.movementX*.003;walkYaw=viewYaw;walkPitch=Math.max(-.5,Math.min(.5,walkPitch-e.movementY*.002))});
   window.addEventListener('yen-zone',()=>{walking=false;walkingKeys.clear()});
   let clock=new THREE.Clock(),lastWalkFrame=performance.now();function animate(){requestAnimationFrame(animate);if(document.hidden)return;let t=clock.getElapsedTime();
     const nowWalk=performance.now(),dt=Math.min(.05,(nowWalk-lastWalkFrame)/1000);lastWalkFrame=nowWalk;
     if(document.body.classList.contains('immersive')){
-      if(!walking){walking=true;walkYaw=Math.PI}
-      if(walkingKeys.has('turnleft'))walkYaw+=dt*1.5;if(walkingKeys.has('turnright'))walkYaw-=dt*1.5;
+      if(!walking){walking=true;walkYaw=Math.PI;viewYaw=Math.PI}
+      if(walkingKeys.has('turnleft')){walkYaw+=dt*1.5;viewYaw+=dt*1.5;}if(walkingKeys.has('turnright')){walkYaw-=dt*1.5;viewYaw-=dt*1.5;}
       let step=(walkingKeys.has('forward')?1:0)-(walkingKeys.has('back')?1:0);
       if(step&&meActivity!=='sit'&&meActivity!=='walk'){let nx=mePosition.x+Math.sin(walkYaw)*dt*4*step,nz=mePosition.z+Math.cos(walkYaw)*dt*4*step;if(walkable(nx,nz)){mePosition.x=nx;mePosition.z=nz}}
       if(meActivity==='walk'){if(!walkGoal){const a=walkSeed+(walkCount++*.87),r=5+(walkCount%4)*1.3;walkGoal=[Math.sin(a)*r,21+Math.cos(a)*r];}const dx=walkGoal[0]-mePosition.x,dz=walkGoal[1]-mePosition.z,dist=Math.hypot(dx,dz);if(dist<.35)walkGoal=null;else{const d=Math.min(dist,dt*1.35),nx=mePosition.x+dx/dist*d,nz=mePosition.z+dz/dist*d;if(walkable(nx,nz)){mePosition.set(nx,0,nz);walkYaw=Math.atan2(dx,dz);}else walkGoal=null;}}
@@ -445,7 +445,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
         else{const step=Math.min(dist,dt*3.2),nx=mePosition.x+dx/dist*step,nz=mePosition.z+dz/dist*step;
           if(walkable(nx,nz)){mePosition.set(nx,0,nz);walkYaw=Math.atan2(dx,dz);}else{walkRoute.length=0;document.getElementById('zenHint').textContent='Đường bị chắn, vui lòng chọn điểm khác';}}
       }
-      const sittingNow=meActivity==='sit';const behind=sittingNow?4.8:6.7,up=sittingNow?3.2:4.2;camera.position.lerp(new THREE.Vector3(mePosition.x-Math.sin(walkYaw)*behind,up,mePosition.z-Math.cos(walkYaw)*behind),.13);camera.lookAt(mePosition.x,1.45+Math.sin(walkPitch)*2,mePosition.z);
+      const sittingNow=meActivity==='sit';const behind=sittingNow?4.8:6.7,up=sittingNow?3.2:4.2;camera.position.lerp(new THREE.Vector3(mePosition.x-Math.sin(viewYaw)*behind,up,mePosition.z-Math.cos(viewYaw)*behind),.13);camera.lookAt(mePosition.x,1.45+Math.sin(walkPitch)*2,mePosition.z);
     }else{camera.position.lerp(targetPosition,.035);currentLook.lerp(targetLook,.04);camera.lookAt(currentLook.x+Math.sin(lookOffset)*7,currentLook.y,currentLook.z)}
     me.visible=document.body.classList.contains('immersive');me.position.copy(mePosition);if(meActivity==='sit'){const seat=cushions.find(c=>Math.hypot(c.x-mePosition.x,c.z-mePosition.z)<.8);if(seat)me.position.y=seat.group.position.y+.14;}me.rotation.y=0;if(gesture){const u=(performance.now()-gesture.start)/1100;if(u>=1){gesture=null;}else if(gesture.kind==='jump'){me.position.y+=Math.sin(Math.PI*u)*.8;}else if(gesture.kind==='spin'){me.rotation.y=u*Math.PI*2;}else if(gesture.kind==='namaste'){me.rotation.z=Math.sin(Math.PI*u)*.12;}else if(gesture.kind==='handshake'){me.rotation.z=Math.sin(u*Math.PI*6)*.09;}else if(gesture.kind==='hello'){me.rotation.z=Math.sin(u*Math.PI*4)*.07;}}poseAvatar(meTorso,meHead,meTag,meActivity==='sit');dressAvatar(meOutfit,meTorso,myColor,myStyle,meActivity==='sit');
     for(const peer of onlineAvatars.values()){
