@@ -1,12 +1,14 @@
 -- LÀNG YÊN 3.1. Run in Supabase SQL Editor as project owner.
 -- Requires Anonymous Sign-Ins enabled, Realtime public access OFF.
-create extension if not exists pgcrypto;
+-- No pgcrypto required: use built-in md5 and gen_random_uuid.
 create table if not exists public.anyen_private_rooms (
  id uuid primary key default gen_random_uuid(),
  invite_hash text not null unique,
+ room_name text not null default 'Phòng Yên Riêng',
  owner_id uuid not null references auth.users(id) on delete cascade,
  created_at timestamptz not null default now()
 );
+alter table public.anyen_private_rooms add column if not exists room_name text not null default 'Phòng Yên Riêng';
 create table if not exists public.anyen_private_members (
  room_id uuid not null references public.anyen_private_rooms(id) on delete cascade,
  user_id uuid not null references auth.users(id) on delete cascade,
@@ -17,14 +19,15 @@ alter table public.anyen_private_rooms enable row level security;
 alter table public.anyen_private_members enable row level security;
 revoke all on public.anyen_private_rooms from anon,authenticated;
 revoke all on public.anyen_private_members from anon,authenticated;
-create or replace function public.anyen_create_private_room()
+drop function if exists public.anyen_create_private_room();
+create or replace function public.anyen_create_private_room(p_room_name text default null)
 returns text language plpgsql security definer set search_path = '' as $$
 declare code text; rid uuid;
 begin
  if auth.uid() is null then raise exception 'Login required'; end if;
- code:=upper(encode(gen_random_bytes(12),'hex'));
- insert into public.anyen_private_rooms(invite_hash,owner_id)
- values (encode(digest(code,'sha256'),'hex'),auth.uid()) returning id into rid;
+ code:=upper(md5(gen_random_uuid()::text || clock_timestamp()::text));
+ insert into public.anyen_private_rooms(invite_hash,owner_id,room_name)
+ values (md5(code),auth.uid(),left(coalesce(nullif(trim(p_room_name),''),'Phòng của ' || left(auth.uid()::text,8)),50)) returning id into rid;
  insert into public.anyen_private_members(room_id,user_id) values(rid,auth.uid());
  return code;
 end $$;
@@ -33,16 +36,16 @@ returns uuid language plpgsql security definer set search_path = '' as $$
 declare rid uuid;
 begin
  if auth.uid() is null then raise exception 'Login required'; end if;
- if length(invite_code)>32 or length(invite_code)<20 then return null; end if;
+ if length(invite_code)<>32 then return null; end if;
  select id into rid from public.anyen_private_rooms
- where invite_hash=encode(digest(upper(trim(invite_code)),'sha256'),'hex');
+ where invite_hash=md5(upper(trim(invite_code)));
  if rid is null then return null; end if;
  insert into public.anyen_private_members(room_id,user_id) values(rid,auth.uid()) on conflict do nothing;
  return rid;
 end $$;
-revoke all on function public.anyen_create_private_room() from public,anon;
+revoke all on function public.anyen_create_private_room(p_room_name text default null) from public,anon;
 revoke all on function public.anyen_join_private_room(text) from public,anon;
-grant execute on function public.anyen_create_private_room() to authenticated;
+grant execute on function public.anyen_create_private_room(p_room_name text default null) to authenticated;
 grant execute on function public.anyen_join_private_room(text) to authenticated;
 -- Restrict membership checks to authenticated user only.
 create or replace function public.anyen_is_private_member(room_uuid uuid)
