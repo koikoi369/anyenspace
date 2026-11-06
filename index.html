@@ -271,7 +271,7 @@ window.addEventListener('anyen-item-receive',e=>{const {id,emoji,name}=e.detail|
 window.addEventListener('anyen-wish-select',e=>{const l=wishLakes.find(v=>v.name===e.detail?.lake);if(!l)return;
  const candidates=[];for(let k=0;k<24;k++){const a=k*Math.PI/12,r=l.name==='Niệm'?12.8:4.65;candidates.push([l.x+Math.cos(a)*r,l.z+Math.sin(a)*r]);}
  candidates.sort((a,b)=>Math.hypot(a[0]-mePosition.x,a[1]-mePosition.z)-Math.hypot(b[0]-mePosition.x,b[1]-mePosition.z));
- let ok=false;for(const p of candidates){if(walkable(...p)&&navigateTo(...p)){ok=true;break;}}
+ let ok=false;for(const p of candidates){if(!walkable(...p))continue;if(navigateTo(...p)){ok=true;break;}}
  wishDestination=ok?l.name:null;if(!ok)document.getElementById('zenHint').textContent='Chưa tìm được đường đến Hồ '+l.name+'. Hãy thử đến gần hơn.';});
 window.addEventListener('anyen-coin',e=>{if(!e.detail?.lake)return;animateCoin(e.detail.lake,!!e.detail.remote);if(!e.detail.remote)wishQuote(e.detail.lake)});
   const box=(w,h,d,m,x,y,z)=>{let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o};
@@ -397,21 +397,20 @@ window.addEventListener('anyen-coin',e=>{if(!e.detail?.lake)return;animateCoin(e
   function clearWalk(a,b){for(let i=0;i<=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/.35);i++){const n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/.35)),t=i/n;if(!walkable(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t))return false;}return true;}
   // A* grid pathfinding. Unlike the old sparse visibility graph, this can route
   // around the central lotus pond and reach all five peripheral ponds.
-  function findWalkPath(targetX,targetZ){
-    const unit=1.0,minX=-33,minZ=-27,maxX=33,maxZ=33;
-    const nx=Math.floor((maxX-minX)/unit)+1,nz=Math.floor((maxZ-minZ)/unit)+1;
-    const toWorld=(i)=>[minX+(i%nx)*unit,minZ+Math.floor(i/nx)*unit];
-    const toCell=(x,z)=>Math.max(0,Math.min(nx-1,Math.round((x-minX)/unit)))+nx*Math.max(0,Math.min(nz-1,Math.round((z-minZ)/unit)));
-    const nearest=(x,z)=>{const center=toCell(x,z);if(walkable(...toWorld(center)))return center;for(let r=1;r<=7;r++){let best=-1,score=Infinity;const cx=center%nx,cz=Math.floor(center/nx);for(let dz=-r;dz<=r;dz++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dz))!==r)continue;const xx=cx+dx,zz=cz+dz;if(xx<0||zz<0||xx>=nx||zz>=nz)continue;const i=zz*nx+xx,p=toWorld(i);if(!walkable(...p))continue;const d=Math.hypot(p[0]-x,p[1]-z);if(d<score){score=d;best=i}}if(best>=0)return best;}return -1};
-    const source=nearest(mePosition.x,mePosition.z),target=nearest(targetX,targetZ);if(source<0||target<0)return null;
-    const n=nx*nz,g=new Float64Array(n).fill(Infinity),f=new Float64Array(n).fill(Infinity),prev=new Int32Array(n).fill(-1),closed=new Uint8Array(n),open=[source],inOpen=new Uint8Array(n);
-    g[source]=0;f[source]=Math.hypot(...[toWorld(source)[0]-targetX,toWorld(source)[1]-targetZ]);inOpen[source]=1;
-    let iterations=0;
-    while(open.length&&iterations++<n*3){let best=0;for(let i=1;i<open.length;i++)if(f[open[i]]<f[open[best]])best=i;const current=open[best];open[best]=open[open.length-1];open.pop();inOpen[current]=0;
-      if(current===target){const raw=[];for(let i=current;i!==source&&i>=0;i=prev[i])raw.push(toWorld(i));raw.reverse();const out=[];let anchor=[mePosition.x,mePosition.z],j=0;while(j<raw.length){let k=j;while(k+1<raw.length&&clearWalk(anchor,raw[k+1]))k++;out.push(raw[k]);anchor=raw[k];j=k+1;}if(clearWalk(anchor,[targetX,targetZ]))out.push([targetX,targetZ]);return out;}
-      closed[current]=1;const cx=current%nx,cz=Math.floor(current/nx);
-      for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dz)continue;const xx=cx+dx,zz=cz+dz;if(xx<0||zz<0||xx>=nx||zz>=nz)continue;const v=zz*nx+xx;if(closed[v])continue;const p=toWorld(v);if(!walkable(...p)||!clearWalk(toWorld(current),p))continue;const next=g[current]+Math.hypot(dx,dz);if(next>=g[v])continue;prev[v]=current;g[v]=next;f[v]=next+Math.hypot(p[0]-targetX,p[1]-targetZ);if(!inOpen[v]){open.push(v);inOpen[v]=1;}}
-    }return null;
+  // Reliable, bounded A* grid routing, with a binary heap for mobile.
+  function findWalkPath(tx,tz){
+    const step=1.25,minX=-32.5,minZ=-26.5,nx=53,nz=49,N=nx*nz;
+    const pos=i=>[minX+(i%nx)*step,minZ+Math.floor(i/nx)*step];
+    const cell=(x,z)=>Math.max(0,Math.min(nx-1,Math.round((x-minX)/step)))+nx*Math.max(0,Math.min(nz-1,Math.round((z-minZ)/step)));
+    function nearest(x,z){const c=cell(x,z),cx=c%nx,cz=Math.floor(c/nx);for(let r=0;r<=9;r++){let best=-1,dist=Infinity;for(let dz=-r;dz<=r;dz++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dz))!==r)continue;const xx=cx+dx,zz=cz+dz;if(xx<0||zz<0||xx>=nx||zz>=nz)continue;const i=xx+zz*nx,p=pos(i);if(!walkable(...p))continue;const d=Math.hypot(p[0]-x,p[1]-z);if(d<dist){dist=d;best=i}}if(best>=0)return best}return -1}
+    const source=nearest(mePosition.x,mePosition.z),target=nearest(tx,tz);if(source<0||target<0)return null;
+    const g=new Float64Array(N).fill(Infinity),prev=new Int32Array(N).fill(-1),closed=new Uint8Array(N),heap=[];
+    function push(id,score){const v={id,score};heap.push(v);let i=heap.length-1;while(i){const p=(i-1)>>1;if(heap[p].score<=score)break;heap[i]=heap[p];i=p}heap[i]=v}
+    function pop(){const top=heap[0],last=heap.pop();if(heap.length){let i=0;while(true){let c=i*2+1;if(c>=heap.length)break;if(c+1<heap.length&&heap[c+1].score<heap[c].score)c++;if(heap[c].score>=last.score)break;heap[i]=heap[c];i=c}heap[i]=last}return top}
+    g[source]=0;push(source,0);const goal=pos(target);let n=0;
+    while(heap.length&&n++<N*8){const u=pop().id;if(closed[u])continue;if(u===target){const raw=[];for(let i=u;i!==source&&i>=0;i=prev[i])raw.push(pos(i));raw.reverse();const result=[];let anchor=[mePosition.x,mePosition.z],k=0;while(k<raw.length){let j=k;while(j+1<raw.length&&clearWalk(anchor,raw[j+1]))j++;result.push(raw[j]);anchor=raw[j];k=j+1}if(clearWalk(anchor,[tx,tz]))result.push([tx,tz]);return result}
+      closed[u]=1;const ux=u%nx,uz=Math.floor(u/nx),p=pos(u);for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dz)continue;const xx=ux+dx,zz=uz+dz;if(xx<0||zz<0||xx>=nx||zz>=nz)continue;const v=xx+zz*nx;if(closed[v])continue;const q=pos(v);if(!walkable(...q)||!clearWalk(p,q))continue;const score=g[u]+Math.hypot(dx,dz);if(score>=g[v])continue;g[v]=score;prev[v]=u;push(v,score+Math.hypot(q[0]-goal[0],q[1]-goal[1])/step)}}
+    return null;
   }
   function navigateTo(x,z){pendingSeat=null;
     if(meActivity==='sit')document.getElementById('realtimeSit')?.click();
@@ -627,7 +626,7 @@ document.querySelector('#openRooms').onclick=()=>go('community');document.queryS
  window.addEventListener('anyen-peers',e=>{onlinePeople=e.detail||{};if(document.body.classList.contains('zen-sheet-bag'))renderBag();});
  window.addEventListener('anyen-gift-received',e=>{const d=e.detail||{};if(addBagItem(d.id,'gift',d.fromName,d.giftId)){document.getElementById('zenBagMessage').textContent='🎁 Bạn vừa nhận quà từ '+(d.fromName||'một người bạn')+'!';}});
  window.addEventListener('anyen-gift-ack',e=>{const d=e.detail||{};const index=bag.findIndex(x=>x.uuid===d.giftId);if(index>=0){bag.splice(index,1);saveBag();renderBag();document.getElementById('zenBagMessage').textContent='💝 Đã tặng vật phẩm thành công.';}});
- itemSheet.addEventListener('click',e=>{if(e.target.closest('[data-close]')){setSheet(null);return;}const id=e.target.closest('[data-item]')?.dataset.item;if(!id)return;const item=itemData.find(v=>v[0]===id);if(!item)return;addBagItem(id,'self');document.getElementById('zenItemInfo').textContent='✨ Đã thỉnh '+item[1]+'. Mở Túi An Yên để xem hoặc tặng.';});
+ itemSheet.addEventListener('click',e=>{if(e.target.closest('[data-close]')){setSheet(null);return;}const id=e.target.closest('[data-item]')?.dataset.item;if(!id)return;const item=itemData.find(v=>v[0]===id);if(!item)return;addBagItem(id,'self');document.getElementById('zenItemInfo').textContent='✨ Đã thỉnh '+item[1]+'. Mở Túi An Yên để xem hoặc tặng.';setSheet('bag');});
  bagSheet.addEventListener('click',e=>{if(e.target.closest('[data-close]'))setSheet(null);});
 
  unified.querySelector('#zenMenuDismiss').onclick=()=>setSheet(null);
