@@ -651,7 +651,7 @@ body.immersive #anyenWishPanel.open{display:block}
 </div>
 <script id="anyen-wish-ui">
 (()=>{const btn=document.getElementById('anyenWishButton'),panel=document.getElementById('anyenWishPanel'),close=document.getElementById('anyenWishClose'),throwBtn=document.getElementById('anyenWishThrow'),quote=document.getElementById('anyenWishQuote');
-btn.onclick=()=>panel.classList.toggle('open');close.onclick=()=>panel.classList.remove('open');
+btn.onclick=()=>{panel.classList.toggle('open');if(panel.classList.contains('open'))window.dispatchEvent(new CustomEvent('anyen-wish-select',{detail:{lake:document.getElementById('anyenWishLake').value}}))};close.onclick=()=>panel.classList.remove('open');
 const advice={
 'Sắc':['Thịnh vượng bền lâu bắt đầu từ những lựa chọn đủ tỉnh táo.','Hãy chăm sóc điều mình đang có trước khi theo đuổi điều mình chưa có.'],
 'Thanh':['Một bước nhỏ hôm nay cũng là tiến bộ.','Điều quan trọng không phải làm tất cả, mà là làm điều cần thiết trước.'],
