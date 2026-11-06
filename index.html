@@ -194,7 +194,7 @@ body:not(.immersive) #profileBar,body:not(.immersive) #realtimeBox{display:none!
 </section><div id="rtActivityStatus" aria-live="polite"></div><small>Chỉ chia sẻ nickname, trang phục và vị trí khi bạn chọn Kết nối. Không chia sẻ nhật ký.</small></div></aside><div aria-label="Cá nhân hóa khách tham quan" aria-modal="true" class="profile-modal" id="profileModal" role="dialog"><div class="profile-dialog"><div class="eyebrow">YOUR QUIET PRESENCE</div><h2>Chọn dáng vẻ bình an</h2><p>Không cần đăng ký tài khoản. Tên và trang phục chỉ lưu trên thiết bị này.</p><label for="guestName">Tên hoặc nickname</label><input id="guestName" maxlength="24" placeholder="Ví dụ: Một người đang Yên"/><label for="outfitStyle">Kiểu trang phục</label><select id="outfitStyle"><option value="robe">Thiền phục truyền thống</option><option value="linen">Trang phục linen tối giản</option><option value="casual">Trang phục thường ngày</option></select><label>Màu sắc trang phục</label><div class="color-options"><label><input checked="" name="outfitColor" type="radio" value="#d9b67d"/> Vàng</label><label><input name="outfitColor" type="radio" value="#90b7a5"/> Xanh</label><label><input name="outfitColor" type="radio" value="#f0e5d4"/> Kem</label><label><input name="outfitColor" type="radio" value="#b5a1c7"/> Tím</label><label><input name="outfitColor" type="radio" value="#687b48"/> Rêu</label><label><input name="outfitColor" type="radio" value="#e8a1b4"/> Hồng</label></div><div class="row"><button class="cta" id="saveProfile">Lưu &amp; tiếp tục</button><button class="chip" id="closeProfile">Đóng</button></div></div></div><div class="toast" id="toast"></div></div><script>
 window.LangYenAudio={current:null,stopAll(except){window.dispatchEvent(new CustomEvent('langyen-audio-stop',{detail:{except:except||null}}));this.current=except||null},claim(name){this.stopAll(name)}};
 </script><script>
-const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);window.addEventListener('langyen-audio-stop',e=>{if(e.detail.except!=='rain'&&typeof stopRain==='function')stopRain();if(e.detail.except!=='youtube'){const f=document.getElementById('ytFrame');if(f&&f.hasAttribute('src')){f.removeAttribute('src');document.getElementById('ytContainer')?.classList.add('hidden')}}});let page='home';function go(p){if(p===page&&p!=='home')p='home';if(p!=='home')window.dispatchEvent(new CustomEvent('langyen-audio-stop',{detail:{except:null}}));page=p;$$('main section').forEach(x=>x.classList.toggle('hidden',x.id!==p));$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));}$$('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('main section.panel').forEach(panel=>{const b=document.createElement('button');b.className='panel-close';b.type='button';b.setAttribute('aria-label','Đóng '+(panel.querySelector('h2')?.textContent||'bảng'));b.textContent='✕ Đóng';b.onclick=()=>go('home');panel.insertBefore(b,panel.firstChild)});function enter3D(){go('home');if(document.body.classList.contains('yen-3d-error')){toast('3D chưa tải được. Hãy kiểm tra kết nối rồi tải lại trang.');return;}document.body.classList.add('immersive');selectZone('gate');$('#exit3D').focus()}function exit3D(){document.body.classList.remove('immersive');$('#enter3D').focus()}let activeZone='gate';
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);window.addEventListener('langyen-audio-stop',e=>{if(e.detail.except!=='rain'&&typeof stopRain==='function')stopRain();if(e.detail.except!=='youtube'){const f=document.getElementById('ytFrame');if(f&&f.hasAttribute('src')){f.removeAttribute('src');document.getElementById('ytContainer')?.classList.add('hidden')}}});let page='home';function go(p){if(p===page&&p!=='home')p='home';if(p!=='home')window.dispatchEvent(new CustomEvent('langyen-audio-stop',{detail:{except:null}}));page=p;$$('main section').forEach(x=>x.classList.toggle('hidden',x.id!==p));$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));}$$('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('main section.panel').forEach(panel=>{const b=document.createElement('button');b.className='panel-close';b.type='button';b.setAttribute('aria-label','Đóng '+(panel.querySelector('h2')?.textContent||'bảng'));b.textContent='✕ Đóng';b.onclick=()=>go('home');panel.insertBefore(b,panel.firstChild)});function enter3D(){go('home');if(document.body.classList.contains('yen-3d-error')){toast('3D chưa tải được. Hãy kiểm tra kết nối rồi tải lại trang.');return;}document.body.classList.add('immersive');selectZone('gate');window.dispatchEvent(new Event('anyen-3d-enter'));$('#exit3D').focus()}function exit3D(){document.body.classList.remove('immersive');$('#enter3D').focus()}let activeZone='gate';
 const zoneInfo={gate:['Cổng Yên','Bước vào hành trình bình an','meditate'],garden:['Sân vườn','Dạo giữa thiên nhiên và hơi thở','sound'],lotus:['Hồ sen','Nghe nhạc InWellness bên hồ sen','sound'],meditation:['Thiền đường','Bắt đầu phiên Tĩnh Tâm','meditate'],sanctuary:['Chánh điện','Thực hành nghi thức chánh niệm','ritual']};
 function selectZone(z){if(!zoneInfo[z])return;activeZone=z;document.querySelectorAll('[data-zone]').forEach(b=>b.classList.toggle('active',b.dataset.zone===z));$('#zoneHelp').textContent=zoneInfo[z][0]+' · '+zoneInfo[z][1]+' · Dùng các nút để chuyển khu vực';$('#zoneAction').textContent=z==='lotus'||z==='garden'?'♫ Mở Âm nhạc':z==='sanctuary'?'✧ Mở Nghi thức':'🪷 Bắt đầu Tĩnh Tâm';window.dispatchEvent(new CustomEvent('yen-zone',{detail:z}));document.body.classList.remove('zen-sheet-zones');}
 document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>selectZone(b.dataset.zone));
@@ -236,6 +236,36 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
   const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness,side:THREE.DoubleSide});
   const ground=new THREE.Mesh(new THREE.PlaneGeometry(200,200),mat('#234c3e'));ground.rotation.x=-Math.PI/2;ground.position.y=-.1;scene.add(ground);
   const water=new THREE.Mesh(new THREE.CircleGeometry(10.5,80),new THREE.MeshStandardMaterial({color:'#306c68',metalness:.35,roughness:.24,transparent:true,opacity:.91}));water.rotation.x=-Math.PI/2;water.position.set(0,.02,-4);scene.add(water);
+
+// Six contemplative ponds, placed away from the main bridge and sanctuary.
+const wishLakes=[
+ {name:'Sắc',x:-23,z:18,color:'#547d81',theme:'thịnh vượng'},
+ {name:'Thanh',x:23,z:18,color:'#57758b',theme:'công việc'},
+ {name:'Hương',x:-25,z:2,color:'#688b78',theme:'sức khỏe'},
+ {name:'Vị',x:25,z:2,color:'#947a67',theme:'tình duyên'},
+ {name:'Chạm',x:-23,z:-19,color:'#8c7188',theme:'kết nối'},
+ {name:'Niệm',x:0,z:-4,color:'#5a9b91',theme:'an yên'}
+];
+const lakeVisuals=new Map();
+for(const l of wishLakes){
+ const group=new THREE.Group();group.position.set(l.x,.035,l.z);scene.add(group);
+ if(l.name!=='Niệm'){
+   const rim=new THREE.Mesh(new THREE.TorusGeometry(3.35,.13,8,56),mat('#c1a676'));rim.rotation.x=-Math.PI/2;group.add(rim);
+   const pool=new THREE.Mesh(new THREE.CircleGeometry(3.25,56),new THREE.MeshStandardMaterial({color:l.color,transparent:true,opacity:.88,metalness:.3,roughness:.23,side:THREE.DoubleSide}));pool.rotation.x=-Math.PI/2;group.add(pool);
+ }
+ const labelCanvas=document.createElement('canvas');labelCanvas.width=512;labelCanvas.height=128;const ctx=labelCanvas.getContext('2d');ctx.fillStyle='#f1d69f';ctx.font='bold 48px serif';ctx.textAlign='center';ctx.fillText('HỒ '+l.name.toUpperCase(),256,62);ctx.font='28px sans-serif';ctx.fillText(l.theme,256,103);
+ const tex=new THREE.CanvasTexture(labelCanvas);const label=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));label.position.set(0,1.5,0);label.scale.set(5,1.25,1);group.add(label);
+ lakeVisuals.set(l.name,group);
+}
+function animateCoin(lake){
+ const l=wishLakes.find(v=>v.name===lake);if(!l)return;
+ const coin=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.045,24),new THREE.MeshStandardMaterial({color:'#e5c178',metalness:.8,roughness:.2}));
+ coin.rotation.x=Math.PI/2;coin.position.set(l.x,3.2,l.z);scene.add(coin);
+ const start=performance.now();
+ function tick(now){const t=Math.min(1,(now-start)/1100);coin.position.y=3.2-3.13*t*t;coin.rotation.z+=.18;coin.scale.setScalar(1-.4*t);if(t<1)requestAnimationFrame(tick);else{scene.remove(coin);coin.geometry.dispose();coin.material.dispose();}}
+ requestAnimationFrame(tick);
+}
+window.addEventListener('anyen-coin',e=>{if(e.detail?.lake)animateCoin(e.detail.lake)});
   const box=(w,h,d,m,x,y,z)=>{let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o};
   const wood=mat('#654c33'),roof=mat('#23332f'),gold=mat('#c8a96a'),stone=mat('#8a8d78');
   box(11,.6,7,stone,0,.35,-15);for(let x of [-4.6,4.6])for(let z of [-17.5,-12.5])box(.55,6,.55,wood,x,3.5,z);
@@ -349,7 +379,7 @@ function draw(time){let w=canvas.width,h=canvas.height,scale=devicePixelRatio; c
     
   }
   const meOutfit=outfitParts(me,meTorso);let myStyle='robe',myColor='#687b48';
-  let meActivity='idle', mePosition=new THREE.Vector3(0,0,24), thirdPerson=true;
+  let meActivity='idle', mePosition=new THREE.Vector3(0,0,24), thirdPerson=true;const spawnSlots=[[-8,24],[-4,27],[0,24],[4,27],[8,24],[-12,20],[12,20],[-16,17],[16,17]];const spawnIndex=(crypto.getRandomValues(new Uint32Array(1))[0])%spawnSlots.length;mePosition.set(spawnSlots[spawnIndex][0]+(Math.random()-.5)*1.2,0,spawnSlots[spawnIndex][1]+(Math.random()-.5)*1.2);
   // Navigation around the lotus pond and temple: visibility graph, shortest valid route.
   const zoneWalkPoints={gate:[0,24],garden:[-17,8],lotus:[13,7],meditation:[0,-13],sanctuary:[0,-16]};
   const routeGuides=[[-17,-19],[-17,-10],[-17,4],[-17,13],[17,-19],[17,-10],[17,4],[17,13],[-11,-22],[11,-22],[-23,0],[23,0],[0,24],[0,14],[0,9],[0,3],[0,-3],[0,-9],[0,-12],[0,-15],[0,-18],[-3,-12],[3,-12]];
@@ -604,4 +634,36 @@ document.getElementById('realtimeSessionEnd')?.addEventListener('click',()=>wind
 document.getElementById('resonanceJoin')?.addEventListener('click',()=>{stopWalk();setActivity('sit');status.textContent='🧘 Bạn đã chọn tọa cụ và tham gia thiền.';});
 window.addEventListener('pagehide',stopWalk);
 })();
-</script><script>(()=>{const b=document.createElement('button');b.id='zenGestureOpen';b.type='button';b.textContent='🙏 Tương tác';const p=document.createElement('div');p.id='zenGestures';const gestures=[['hello','👋 Xin chào'],['handshake','🤝 Bắt tay'],['namaste','🙏 Chắp tay chào'],['jump','✨ Nhảy lên'],['spin','🌀 Xoay một vòng']];gestures.forEach(([kind,label])=>{const x=document.createElement('button');x.type='button';x.textContent=label;x.addEventListener('click',()=>{window.dispatchEvent(new CustomEvent('anyen-gesture',{detail:{kind}}));document.body.classList.remove('zen-sheet-gestures')});p.append(x)});b.onclick=()=>{document.body.classList.toggle('zen-sheet-gestures');document.body.classList.remove('zen-sheet-zones','zen-sheet-people','zen-sheet-walk','zen-sheet-profile')};document.body.append(p);b.remove();})();</script></body></html>
+</script><script>(()=>{const b=document.createElement('button');b.id='zenGestureOpen';b.type='button';b.textContent='🙏 Tương tác';const p=document.createElement('div');p.id='zenGestures';const gestures=[['hello','👋 Xin chào'],['handshake','🤝 Bắt tay'],['namaste','🙏 Chắp tay chào'],['jump','✨ Nhảy lên'],['spin','🌀 Xoay một vòng']];gestures.forEach(([kind,label])=>{const x=document.createElement('button');x.type='button';x.textContent=label;x.addEventListener('click',()=>{window.dispatchEvent(new CustomEvent('anyen-gesture',{detail:{kind}}));document.body.classList.remove('zen-sheet-gestures')});p.append(x)});b.onclick=()=>{document.body.classList.toggle('zen-sheet-gestures');document.body.classList.remove('zen-sheet-zones','zen-sheet-people','zen-sheet-walk','zen-sheet-profile')};document.body.append(p);b.remove();})();</script><style id="anyen-wish-style">
+#anyenWishButton{position:fixed;right:16px;bottom:115px;z-index:10002;border:1px solid #c8a96a;background:#0b3029;color:#f3ddb3;border-radius:28px;padding:12px 16px;display:none}
+body.immersive #anyenWishButton{display:block}
+#anyenWishPanel{position:fixed;inset:auto 12px 100px;z-index:10003;max-width:440px;max-height:min(76dvh,660px);overflow:auto;margin:auto;padding:20px;background:#0a2b26f5;border:1px solid #c8a96a;border-radius:20px;color:#f5f1e6;box-shadow:0 12px 45px #0008;display:none}
+body.immersive #anyenWishPanel.open{display:block}
+#anyenWishPanel h3{margin:0 0 8px;color:#ead09a}#anyenWishPanel p{font-size:14px;line-height:1.5;color:#d6d4c5}
+#anyenWishPanel select,#anyenWishPanel textarea{width:100%;margin:8px 0;padding:12px;background:#123d34;color:#f5f1e6;border:1px solid #9b8b64;border-radius:10px}
+#anyenWishPanel button{padding:11px 16px;border-radius:20px;border:1px solid #c8a96a;background:#1a483b;color:#f5e6c9}
+#anyenWishPanel .wish-actions{display:flex;gap:10px;justify-content:space-between}
+#anyenWishQuote{padding:12px 0;font-style:italic;color:#ead09a}
+@media(max-width:600px){#anyenWishButton{right:12px;bottom:105px;padding:9px 12px;font-size:13px}#anyenWishPanel{bottom:98px}}
+</style>
+<button type="button" id="anyenWishButton">🪙 Hồ nguyện ước</button>
+<div id="anyenWishPanel" role="dialog" aria-modal="true" aria-label="Hồ nguyện ước">
+<h3>🪙 Sáu hồ nguyện ước</h3><p>Sắc · Thịnh vượng | Thanh · Công việc | Hương · Sức khỏe | Vị · Tình duyên | Chạm · Kết nối | Niệm · An yên</p>
+<label for="anyenWishLake">Chọn hồ</label><select id="anyenWishLake"><option>Sắc</option><option>Thanh</option><option>Hương</option><option>Vị</option><option>Chạm</option><option selected>Niệm</option></select>
+<label for="anyenWishText">Điều bạn đang quan tâm (chỉ xử lý trên thiết bị, không gửi lên Sảnh chung)</label>
+<textarea id="anyenWishText" rows="3" maxlength="240" placeholder="Ví dụ: Tôi đang lo lắng về công việc..."></textarea>
+<div class="wish-actions"><button id="anyenWishClose" type="button">Đóng</button><button id="anyenWishThrow" type="button">🪙 Ném đồng xu</button></div><div id="anyenWishQuote" aria-live="polite"></div>
+</div>
+<script id="anyen-wish-ui">
+(()=>{const btn=document.getElementById('anyenWishButton'),panel=document.getElementById('anyenWishPanel'),close=document.getElementById('anyenWishClose'),throwBtn=document.getElementById('anyenWishThrow'),quote=document.getElementById('anyenWishQuote');
+btn.onclick=()=>panel.classList.toggle('open');close.onclick=()=>panel.classList.remove('open');
+const advice={
+'Sắc':['Thịnh vượng bền lâu bắt đầu từ những lựa chọn đủ tỉnh táo.','Hãy chăm sóc điều mình đang có trước khi theo đuổi điều mình chưa có.'],
+'Thanh':['Một bước nhỏ hôm nay cũng là tiến bộ.','Điều quan trọng không phải làm tất cả, mà là làm điều cần thiết trước.'],
+'Hương':['Lắng nghe cơ thể là một cách yêu thương chính mình.','Nghỉ ngơi cũng là một phần của hành trình khỏe mạnh.'],
+'Vị':['Một mối quan hệ tốt cần cả chân thành và ranh giới.','Hãy cho tình cảm thời gian để lớn lên bằng sự thấu hiểu.'],
+'Chạm':['Kết nối bắt đầu bằng một lời hỏi thăm chân thành.','Đôi khi điều người khác cần nhất là được lắng nghe.'],
+'Niệm':['Trở về với hơi thở, rồi hãy quyết định bước tiếp.','Bạn không cần giải quyết cả tương lai trong một ngày.']};
+throwBtn.onclick=()=>{const lake=document.getElementById('anyenWishLake').value;const note=document.getElementById('anyenWishText').value.trim();let selected=lake;if(/việc làm|công việc|sếp|nghề nghiệp/i.test(note))selected='Thanh';else if(/sức khỏe|mệt|ngủ|bệnh/i.test(note))selected='Hương';else if(/tình yêu|người yêu|hôn nhân/i.test(note))selected='Vị';else if(/tiền|tài chính|kinh doanh/i.test(note))selected='Sắc';else if(/gia đình|bạn bè|cô đơn/i.test(note))selected='Chạm';const arr=advice[selected];quote.textContent='✧ '+arr[Math.floor(Math.random()*arr.length)]+'\nLời gợi mở để suy ngẫm, không phải lời tiên đoán.';quote.style.whiteSpace='pre-line';window.dispatchEvent(new CustomEvent('anyen-coin',{detail:{lake}}));};
+})();
+</script></body></html>
