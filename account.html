@@ -195,10 +195,13 @@ var ERR={
 };
 function vi(e){var m=(e&&e.message)||String(e||'');var c=e&&(e.code||'');
  if(ERR[m])return ERR[m];
+ if(c==='session_not_found'||/auth session missing|session.*(missing|expired)/i.test(m))return 'Liên kết đặt lại mật khẩu đã hết hạn. Hãy bấm "Quên mật khẩu" để nhận mã mới.';
  if(c==='over_email_send_rate_limit'||/rate limit/i.test(m))return 'Gửi email quá nhanh. Hãy đợi vài phút rồi thử lại.';
  if(c==='weak_password'||/password/i.test(m)&&/(least|weak|short)/i.test(m))return 'Mật khẩu quá yếu. Dùng ít nhất 8 ký tự.';
  if(/network|fetch/i.test(m))return 'Không kết nối được mạng. Hãy thử lại.';
  return 'Có lỗi: '+m}
+/* Cùng tên cho thẻ trên đầu nhân vật 3D (hồ sơ khách lưu trong trình duyệt). */
+function syncGuestName(n){try{n=String(n||'').replace(/[<>]/g,'').trim().slice(0,24);if(!n)return;var p=JSON.parse(localStorage.getItem('yenGuestProfile17')||'{}');if(p.name===n)return;p.name=n;localStorage.setItem('yenGuestProfile17',JSON.stringify(p))}catch(e){}}
 function okEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)}
 
 /* ---- Tab ---- */
@@ -266,7 +269,7 @@ $('#f-reset').addEventListener('submit',async function(e){e.preventDefault();
  try{
   if(!recovering){var code=$('#rCode').value.replace(/\s/g,'');if(code.length<6)throw {message:'Hãy nhập đủ 6 chữ số.'};var v=await client.auth.verifyOtp({email:pending.email,token:code,type:'recovery'});if(v.error)throw v.error}
   var u=await client.auth.updateUser({password:pass});if(u.error)throw u.error;recovering=false;await loadProfile(true);
- }catch(err){msg('#rMsg','err',vi(err))}finally{busy($('#rBtn'),false,'Lưu mật khẩu')}
+ }catch(err){if(recovering&&(err&&(err.code==='session_not_found'||/auth session missing/i.test(err.message||'')))){recovering=false;$('#rCodeRow').hidden=false;try{show('forgot');msg('#fMsg','err',vi(err))}catch(_){msg('#rMsg','err',vi(err))}}else msg('#rMsg','err',vi(err))}finally{busy($('#rBtn'),false,'Lưu mật khẩu')}
 });
 
 /* ---- Hồ sơ ---- */
@@ -279,6 +282,7 @@ async function loadProfile(fromAuth){
  profile=r.data;
  if(fromAuth&&NEXT&&profile&&profile.role!=='guest'){location.href=NEXT;return}
  if(!profile||profile.role==='guest'){show('guestin');return}
+ syncGuestName(profile.display_name);
  var th=profile.role==='therapist',ts=profile.therapist_status||'none',ms=profile.member_status||'active';
  $('#pBadge').textContent=(th&&ts==='approved')?'NHÀ TRỊ LIỆU':(th&&ts==='pending')?'THÀNH VIÊN · CHỜ DUYỆT TRỊ LIỆU':(th&&ts==='suspended')?'THÀNH VIÊN · TRỊ LIỆU TẠM KHOÁ':'THÀNH VIÊN';
  $('#pAdminBadge').hidden=!profile.is_admin;$('#adminLink').hidden=!profile.is_admin;
@@ -303,7 +307,7 @@ async function loadProfile(fromAuth){
 $('#f-profile').addEventListener('submit',async function(e){e.preventDefault();
  var name=$('#pName').value.trim();if(!name)return msg('#pMsg','err','Tên hiển thị không được trống.');
  msg('#pMsg');busy($('#pBtn'),true,'Đang lưu...');
- try{var r=await client.rpc('anyen_update_my_profile',{p_display_name:name,p_bio:$('#pBio').value,p_specialty:$('#pSpec').value,p_prefs:null});if(r.error)throw r.error;profile=r.data;$('#pTitle').textContent=profile.display_name;msg('#pMsg','ok','Đã lưu.')}
+ try{var r=await client.rpc('anyen_update_my_profile',{p_display_name:name,p_bio:$('#pBio').value,p_specialty:$('#pSpec').value,p_prefs:null});if(r.error)throw r.error;profile=r.data;$('#pTitle').textContent=profile.display_name;syncGuestName(profile.display_name);msg('#pMsg','ok','Đã lưu.')}
  catch(err){msg('#pMsg','err',vi(err))}finally{busy($('#pBtn'),false,'Lưu hồ sơ')}
 });
 $('#f-pass').addEventListener('submit',async function(e){e.preventDefault();
