@@ -7,6 +7,8 @@ Các đảo đá phụ được rải ngẫu nhiên có hạt giống cố đị
 chừa trống các luồng tàu du lịch, nên mọi máy đều thấy cùng một vịnh.
 
 Chạy lại sau khi sửa:  python3 tools/build_halong_bay.py
+LƯU Ý (26/11): data/world-halong_bay.json đã được chỉnh tay sau lần sinh gần nhất (danh sách đảo đá, màu thuyền…);
+chạy lại script sẽ ghi đè các chỉnh sửa đó. Muốn đổi một danh thắng thì sửa thẳng trong JSON (và ghi lại ở đây cho khớp).
 """
 import json, math, random, os
 
@@ -32,22 +34,24 @@ LANDMARKS = [
      "Trên tuyến tham quan số 1, giữa Đầu Gỗ và Đỉnh Hương", "Hòn đá có dáng chú chó ngồi canh"),
     ("hon_dinh_huong", "Hòn Đỉnh Hương", 20.9088, 107.0418, "incense", 14, 26, "approx",
      "Gần Hòn Trống Mái, phía bắc", "Như một lư hương dâng lên trời"),
-    ("hon_trong_mai", "Hòn Trống Mái", 20.9030, 107.0440, "pair", 6, 15, "approx",
+    ("hon_trong_mai", "Hòn Trống Mái", 20.9030, 107.0440, "pair", 24, 30, "approx",
      "Cách cảng Tuần Châu khoảng 5 km, phía nam Hòn Đỉnh Hương (Ban quản lý vịnh)", "Biểu tượng du lịch Hạ Long: đôi gà đá tựa vào nhau"),
+    ("hon_con_coc", "Hòn Con Cóc", 20.8747, 107.131, "toad", 9, 18, "approx",
+     "Cục Du lịch Quốc gia & Ban quản lý vịnh: cách cảng tàu du lịch Bãi Cháy 12 km về phía đông nam (cao khoảng 9 m)", "Khối đá nghiêng như chú cóc vươn mình ra biển"),
     ("lang_chai_ba_hang", "Làng chài Ba Hang", 20.8895, 107.0605, "village", 0, 0, "approx",
      "Khu Ba Hang, phía nam Trống Mái", "Những nhà bè nổi bình yên giữa vòng đá"),
     ("dao_ti_top", "Đảo Ti Tốp", 20.8589, 107.0809, "titop", 58, 28, "source",
      "Waymarking: N 20°51.528 E 107°04.858; khớp Wikipedia tiếng Pháp 20°51′32″N 107°04′49″E", "Bãi cát hình trăng lưỡi liềm, đỉnh ngắm toàn cảnh"),
     ("hang_sung_sot", "Hang Sửng Sốt · đảo Bồ Hòn", 20.8556, 107.0905, "big_island", 85, 70, "approx",
      "Trên đảo Bồ Hòn, đối diện Ti Tốp", "Hang lớn và đẹp bậc nhất vịnh Hạ Long"),
-    ("hang_luon", "Hang Luồn", 20.8478, 107.0985, "arch", 40, 34, "approx",
+    ("hang_luon", "Hang Luồn", 20.8478, 107.0985, "arch", 52, 40, "approx",
      "Phía đông nam đảo Bồ Hòn", "Vòm đá dẫn vào hồ nước lặng giữa núi"),
     ("lang_chai_cua_van", "Làng chài Cửa Vạn", 20.8000, 107.1280, "village", 0, 0, "approx",
      "Khoảng 20 km từ đảo Tuần Châu, vùng Vạn Giã · Cửa Vạn", "Làng chài nổi lớn nhất vịnh Hạ Long"),
     # ---- Vịnh Lan Hạ (Hải Phòng): phía nam vịnh Hạ Long, phía đông đảo Cát Bà ----
     ("hang_sang_toi", "Hang Sáng Tối", 20.7900, 107.0790, "arch", 34, 30, "approx",
      "Phía bắc vịnh Lan Hạ, tuyến kayak quen thuộc", "Hang xuyên thủy, tối rồi bừng sáng ra hồ nước lặng"),
-    ("ba_trai_dao", "Hòn Ba Trái Đào", 20.7680, 107.0860, "trio", 26, 22, "approx",
+    ("ba_trai_dao", "Hòn Ba Trái Đào", 20.7680, 107.0860, "trio", 40, 26, "approx",
      "Giữa vịnh Lan Hạ", "Ba đỉnh đá tròn như ba trái đào, ôm bãi cát nhỏ"),
     ("dao_khi", "Đảo Khỉ · Cát Dứa", 20.7370, 107.0850, "beach", 44, 26, "approx",
      "Khoảng 10 phút đi thuyền từ bến Bèo, Cát Bà", "Bãi cát trắng và đàn khỉ sống tự do"),
@@ -56,6 +60,8 @@ LANDMARKS = [
     ("cau_bai_chay", "Cầu Bãi Cháy", 20.9560, 107.0712, "bridge", 0, 0, "approx",
      "Bắc qua eo Cửa Lục giữa Bãi Cháy và Hòn Gai", "Cây cầu dây văng nối hai bờ thành phố Hạ Long"),
     # ---- Bổ sung (bản đồ du lịch vịnh Hạ Long của vietnamtourism.com; hành trình vịnh Bái Tử Long, QĐ 2119/QĐ-UBND Quảng Ninh) ----
+    ("nui_bai_tho", "Núi Bài Thơ", 20.9500, 107.0815, "mountain", 110, 100, "approx",
+     "Trung tâm Hòn Gai, đường Lê Thánh Tông cạnh chợ Hạ Long, phía đông cầu Bãi Cháy; cao 168 m", "Núi đá vôi nhiều đỉnh, điểm ngắm toàn cảnh vịnh"),
     ("dong_me_cung", "Động Mê Cung", 20.8665, 107.0620, "big_island", 62, 48, "approx",
      "Đảo Lom Bò, gần Ti Tốp (tuyến 2)", "Hang nhiều ngách như mê cung, cửa hang nhìn ra vịnh"),
     ("dao_soi_sim", "Đảo Soi Sim", 20.8710, 107.0890, "beach", 40, 30, "approx",
@@ -66,7 +72,9 @@ LANDMARKS = [
      "Tuyến 4, đi qua hang Cao vào áng nước kín", "Làng chài yên ả nhất vịnh, nhà bè nép chân vách đá"),
     ("dao_cong_do", "Đảo Cống Đỏ", 20.8600, 107.2350, "cove", 70, 58, "approx",
      "Tuyến 4, giáp vịnh Bái Tử Long", "Những áng nước kín giữa vách đá dựng, nước trong xanh"),
-    ("ho_ba_ham", "Hồ Ba Hầm", 20.7880, 107.1050, "arch", 36, 32, "approx",
+    ("dao_mat_rong", "Đảo Mắt Rồng · Hòn Bái Đông", 20.7983, 107.2293, "dragon_eye", 70, 44, "approx",
+     "Báo Quảng Ninh (qua CafeF): rìa phía nam vịnh Hạ Long, giáp Bái Tử Long, khu Bái Đông – Ra Cát; cách Cảng tàu khách quốc tế Tuần Châu ~28 km và Cảng tàu khách quốc tế Hạ Long ~25 km (vị trí suy từ hai khoảng cách này)", "Hồ nước mặn tròn giữa lòng núi như con mắt rồng, vụng nông xanh ngọc"),
+    ("ho_ba_ham", "Hồ Ba Hầm", 20.7880, 107.1050, "arch", 60, 45, "approx",
      "Giữa vịnh Hạ Long và Lan Hạ, vào hồ qua các vòm đá", "Ba hồ nước kín nối nhau bằng hang xuyên thủy"),
     ("cua_viet_hai", "Làng Việt Hải · cửa Việt Hải", 20.7930, 107.0450, "village", 0, 0, "approx",
      "Bờ đông đảo Cát Bà, trên tuyến 2 vịnh Lan Hạ", "Làng cổ trong thung lũng, bến thuyền ở cửa Việt Hải"),
@@ -286,10 +294,11 @@ def main():
             karsts.append([round(x, 1), round(z, 1), round(r, 1), round(h, 1), shape])
             made += 1
 
-    # Chỉ giữ khoảng 1/3 số đảo: ưu tiên đảo lớn (bề ngang × chiều cao), danh thắng biểu tượng dựng riêng nên luôn còn.
-    KEEP_RATIO = 1 / 3
-    vol = lambda k: k[2] * (1.9 if k[4] == 3 else 1) * k[3]
-    keep = sorted(karsts, key=vol, reverse=True)[:max(1, round(len(karsts) * KEEP_RATIO))]
+    # Chỉ giữ 333 đảo lớn nhất (mặt đứng nhìn từ tàu: bề ngang × chiều cao). Đảo check-in, danh thắng và đảo trên tour
+    # là các danh thắng (props kind "landmark") dựng riêng nên luôn còn, không tính vào 333.
+    KEEP_COUNT = 333
+    size = lambda k: k[2] * (1.9 if k[4] == 3 else 1.35 if k[4] == 4 else 1) * k[3]
+    keep = sorted(karsts, key=size, reverse=True)[:KEEP_COUNT]
     keep_ids = {id(k) for k in keep}
     karsts = [k for k in karsts if id(k) in keep_ids]
 
@@ -322,7 +331,7 @@ def main():
     bridge = next(l for l in landmark_rows if l["id"] == "cau_bai_chay")
     bridge["approach"] = [bridge["x"] - 20, bridge["z"] + 190]
 
-    # Thuyền gỗ nhỏ chạy vòng trong vùng nước thoáng; phao vịnh dọc luồng.
+    # Thuyền gỗ nhỏ chạy vòng trong vùng nước thóang; phao vịnh dọc luồng.
     junks, buoys = [], []
     # Không còn thuyền chạy vòng hay phao trên luồng (từng đi xuyên qua du thuyền).
     # Chỉ vài thuyền gỗ neo yên sát chân các đảo lớn, nằm trong vùng đảo nên tàu không bao giờ đi qua.
@@ -354,7 +363,7 @@ def main():
                 "morning": {"status": "live", "label": "Buổi sáng", "sky_top": "#7fb6dc", "sky_horizon": "#dfeef2", "haze": "#cfe0e6",
                             "sun_elevation": 0.55, "sun_azimuth": 2.4, "water_deep": "#1f7f74", "water_shallow": "#47b39d",
                             "cloud_cover": 0.42},
-                "dawn_dusk": {"status": "draft", "label": "Bình minh / Hoàng hôn"},
+                "dawn_dusk": {"status": "draft", "label": "Bình minh / Hòang hôn"},
                 "night": {"status": "draft", "label": "Buổi tối", "lights": ["den_du_thuyen"]}
             },
             "active_time_slot": "morning",
@@ -369,7 +378,7 @@ def main():
                 ],
                 "accessories": [{"id": "hat", "label": "Nón"}, {"id": "glasses", "label": "Kính"}, {"id": "scarf", "label": "Khăn"}],
                 "colors": [["Vàng", "#d9b67d"], ["Xanh", "#90b7a5"], ["Kem", "#f0e5d4"], ["Tím", "#b5a1c7"], ["Rêu", "#687b48"], ["Hồng", "#e8a1b4"]],
-                "default": {"style": "tee_jeans", "color": "#90b7a5", "acc": ["hat"]}
+                "default": {"style": "tee_jeans", "color": "#90b7a5", "acc": []}
             }
         },
         "nature": [

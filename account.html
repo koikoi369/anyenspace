@@ -48,10 +48,11 @@ input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
 ul.soon{margin:10px 0 0;padding-left:20px;color:var(--mut);font-size:14px}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 </style>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}*{touch-action:manipulation}@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:max(16px,1em)!important}}</style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><a class="back" href="index.html">← LÀNG YÊN</a><span class="eyebrow" style="font-size:11px">Tài khoản</span></header>
+<header class="top"><a class="back" href="index.html">🏠 Trang chính</a><span class="eyebrow" style="font-size:11px">Tài khoản</span></header>
 
 <!-- Chưa đăng nhập -->
 <div class="view on" id="v-auth">
@@ -70,7 +71,7 @@ ul.soon{margin:10px 0 0;padding-left:20px;color:var(--mut);font-size:14px}
 <form class="card" id="f-signup" novalidate hidden>
 <div style="font-size:13px;color:var(--mut)">Bạn đăng ký với tư cách</div>
 <div class="kinds">
-<label class="kind"><input type="radio" name="kind" value="member" checked><span><b>Thành viên</b><small>Nhật ký riêng, cá nhân hoá các hoạt động trong làng</small></span></label>
+<label class="kind"><input type="radio" name="kind" value="member" checked><span><b>Thành viên</b><small>Nhật ký riêng, cá nhân hóa các hoạt động trong làng</small></span></label>
 <label class="kind"><input type="radio" name="kind" value="therapist"><span><b>Nhà trị liệu</b><small>Đồng hành 1:1 với khách và thành viên khi họ đồng ý</small></span></label>
 </div>
 <label class="f">Tên hiển thị<input type="text" id="sName" maxlength="40" autocomplete="nickname" required></label>
@@ -157,20 +158,21 @@ ul.soon{margin:10px 0 0;padding-left:20px;color:var(--mut);font-size:14px}
 <button class="btn ghost" type="submit">Đổi mật khẩu</button>
 </form>
 
+<a class="btn" href="lich.html">🗓 Lịch hẹn</a>
 <a class="btn" id="adminLink" href="admin.html" hidden>Trang quản trị</a>
-<a class="btn ghost" href="index.html">Về Làng Yên</a>
+<a class="btn ghost" href="index.html">🏠 Trang chính</a>
 <button class="btn ghost" id="logout" type="button">Đăng xuất</button>
 </div>
 
 <div class="view" id="v-guestin">
 <span class="badge">KHÁCH</span>
 <h1>Bạn đang là khách</h1>
-<p class="sub">Bạn có thể vào làng ngay. Muốn có nhật ký riêng và cá nhân hoá, hãy đăng ký làm thành viên.</p>
+<p class="sub">Bạn có thể vào làng ngay. Muốn có nhật ký riêng và cá nhân hóa, hãy đăng ký làm thành viên.</p>
 <a class="btn" href="index.html">Vào làng</a>
 <button class="btn ghost" id="guestToSignup" type="button">Đăng ký thành viên hoặc nhà trị liệu</button>
 </div>
 
-<div class="view" id="v-nocfg"><h1>Chưa kết nối được</h1><p class="sub">Thiếu cấu hình Supabase hoặc thư viện chưa tải. Tải lại trang, hoặc quay về Làng Yên.</p><a class="btn" href="index.html">Về Làng Yên</a></div>
+<div class="view" id="v-nocfg"><h1>Chưa kết nối được</h1><p class="sub">Thiếu cấu hình Supabase hoặc thư viện chưa tải. Tải lại trang, hoặc quay về Làng Yên.</p><a class="btn" href="index.html">🏠 Trang chính</a></div>
 </div>
 
 <script src="config.js"></script>
@@ -294,13 +296,13 @@ async function loadProfile(fromAuth){
  if(ms==='restricted'){st=['Tài khoản đang bị hạn chế','Bạn vẫn đi dạo được trong làng nhưng không tham gia các hoạt động.'+(profile.status_reason?' Lý do: '+profile.status_reason:'')+' Hãy liên hệ quản trị viên nếu cần hỏi thêm.']}
  else if(ts==='pending'){st=['Đang chờ duyệt nhà trị liệu','Quản trị viên sẽ liên hệ với bạn qua email để xác minh. Trong lúc chờ, bạn dùng như thành viên và có thể hoàn thiện phần giới thiệu bên trên.']}
  else if(ts==='rejected'){st=['Đơn nhà trị liệu chưa được duyệt',(profile.status_reason?'Lý do: '+profile.status_reason+'. ':'')+'Bạn có thể cập nhật thông tin và nộp lại.'];canApply=true}
- else if(ts==='suspended'){st=['Quyền nhà trị liệu đang tạm khoá','Hãy liên hệ quản trị viên để biết thêm.'+(profile.status_reason?' Lý do: '+profile.status_reason:'')]}
+ else if(ts==='suspended'){st=['Quyền nhà trị liệu đang tạm khóa','Hãy liên hệ quản trị viên để biết thêm.'+(profile.status_reason?' Lý do: '+profile.status_reason:'')]}
  else if(ts==='approved'&&th){st=null}
  else{st=['Bạn muốn đồng hành cùng người khác?','Thành viên có thể đăng ký làm nhà trị liệu. Quản trị viên sẽ liên hệ qua email để xác minh trước khi duyệt.'];canApply=true}
  $('#pStatus').hidden=!st;if(st){$('#pStatusTitle').textContent=st[0];$('#pStatusText').textContent=st[1]}
  $('#applyBtn').hidden=!canApply||ms==='restricted';
  $('#pSoonTitle').textContent=(th&&ts==='approved')?'Sắp có cho nhà trị liệu':'Sắp có cho thành viên';
- var items=(th&&ts==='approved')?['Giới thiệu cơ bản tự gửi tới khách khi bắt đầu trò chuyện','Trò chuyện 1:1, mỗi lúc chỉ với một người','Chọn toà nhà bạn làm chủ (do quản trị viên duyệt)','Mời vào không gian kiến trúc, chỉ khi người kia đồng ý']:['Nhật ký riêng lưu theo tài khoản','Cá nhân hoá trang phục, không gian xuất phát, nhịp thở, âm thanh'];
+ var items=(th&&ts==='approved')?['Giới thiệu cơ bản tự gửi tới khách khi bắt đầu trò chuyện','Trò chuyện 1:1, mỗi lúc chỉ với một người','Chọn toà nhà bạn làm chủ (do quản trị viên duyệt)','Mời vào không gian kiến trúc, chỉ khi người kia đồng ý']:['Nhật ký riêng lưu theo tài khoản','Cá nhân hóa trang phục, không gian xuất phát, nhịp thở, âm thanh'];
  var ul=$('#pSoonList');ul.textContent='';items.forEach(function(t){var li=document.createElement('li');li.textContent=t;ul.appendChild(li)});
  msg('#pMsg');show('profile');
 }
@@ -323,6 +325,7 @@ $('#logout').onclick=async function(){try{await client.auth.signOut()}catch(_){}
  if(!cfg.supabaseUrl||!cfg.publishableKey||!create){show('nocfg');return}
  client=create(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  client.auth.onAuthStateChange(function(ev){if(ev==='PASSWORD_RECOVERY'){recovering=true;$('#rCodeRow').hidden=true;msg('#rMsg');show('reset')}});
+ if(/[?&]logout=1/.test(location.search)){try{await client.auth.signOut()}catch(_){}location.replace(NEXT||'index.html');return}
  if(/type=recovery/.test(location.hash+location.search)){recovering=true;$('#rCodeRow').hidden=true;show('reset');return}
  try{await loadProfile()}catch(e){show('auth')}
  var h=location.hash.replace('#','');if(h==='signup')tab('signup');

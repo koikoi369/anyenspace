@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AnSense · Cửa Thân của Làng Yên</title>
-<meta name="description" content="Làm test 3 phút, nhận gợi ý theo 6 giác quan: một sản phẩm, một việc làm ngay và một trải nghiệm.">
+<meta name="description" content="36 câu hỏi chia 4 bộ luân phiên, mỗi lần vào một bộ 9 câu. Nhận gợi ý theo 6 giác quan: một sản phẩm, một việc làm ngay và một trải nghiệm.">
 <meta name="theme-color" content="#04201b">
 <style>
 :root{--bg:#04201b;--bg2:#062a23;--surf:#0a302a;--line:rgba(200,169,106,.28);--ivory:#f4e7c6;--ivory2:#f8ebc9;--mut:#b9c7bd;--mut2:#9fb0a6;--gold:#d8b575;--cta:linear-gradient(135deg,#e0c183,#b8935a);--ink:#1a2a22;--serif:Georgia,"Times New Roman",serif}
@@ -64,8 +64,10 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 .bar{height:6px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--cta);border-radius:999px;transition:width .3s}
 .q{font-size:clamp(24px,6vw,30px);line-height:1.25;margin-top:12px}
 .opts{display:flex;flex-direction:column;gap:12px;margin-top:26px}
-.opt{min-height:58px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;text-align:left;border-radius:18px;border:1px solid var(--line);background:rgba(10,48,42,.75);font-size:16px;width:100%}
+.opt{min-height:58px;padding:12px 18px;display:flex;align-items:center;gap:14px;justify-content:flex-start;line-height:1.4;text-align:left;border-radius:18px;border:1px solid var(--line);background:rgba(10,48,42,.75);font-size:16px;width:100%}
 .opt:hover,.opt:focus-visible{border-color:rgba(216,181,117,.8)}
+.opt .lt{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid rgba(216,181,117,.6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--gold)}
+.opt.sel .lt{background:var(--gold);color:var(--ink)}
 .opt.sel{border-color:rgba(216,181,117,.9);background:linear-gradient(160deg,#17493d,#0a2d25);font-weight:600}
 /* result */
 .rcard{padding:26px;border-radius:26px;border:1px solid rgba(216,181,117,.5);background:linear-gradient(160deg,#17493d,#0a2d25);box-shadow:0 20px 50px rgba(0,0,0,.4)}
@@ -76,6 +78,22 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 .srow b{font-size:12px;letter-spacing:2.5px}.srow div{margin-top:2px;font-size:14.5px;color:#c9d5cc}
 .three{padding:20px}.three .k{font-size:11px;letter-spacing:2.5px;color:var(--gold)}.three h3{font:600 17px system-ui;margin:6px 0 0;color:var(--ivory)}.three p{margin:2px 0 12px;font-size:14px;color:var(--mut)}.three .btn{width:100%;min-height:46px;font-size:15px}
 .stack{display:flex;flex-direction:column;gap:10px}
+.tbl .r{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(200,169,106,.15);font-size:14px}.tbl .r:last-child{border-bottom:0}.tbl .r b{flex:0 0 118px;font-weight:600;color:var(--ivory)}.tbl .r span{flex:1;color:#c9d5cc}.tbl .r em{font-style:normal;color:var(--gold);white-space:nowrap}
+.ckc{padding:26px}.ckc p{margin:8px 0 0;color:var(--mut);font-size:15px}.ckc b{color:var(--ivory)}
+[data-soon]{opacity:.7;cursor:default}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}.tabs .tab{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;font-size:13.5px}.tabs .tab.on{background:var(--gold);color:var(--ink);border-color:var(--gold);font-weight:600}
+.warnline{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:rgba(224,160,120,.14);font-size:13.5px;color:#f1d3bd}
+.screen b{display:block;font-size:14.5px;margin-bottom:4px}.chk.sm{margin-top:10px;font-size:14px}.chk.sm .bx{width:22px;height:22px}
+.lbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.lb{border-radius:14px;padding:10px;background:rgba(4,32,27,.5);border-top:3px solid var(--c);min-height:86px}.lb b{display:block;font-size:11px;letter-spacing:2px;color:var(--c)}.lb span{display:block;margin-top:4px;font-size:13px;line-height:1.35}
+.jbox p{margin:8px 0 0;color:var(--mut);font-size:14.5px}.jbox .btn{margin-top:14px}.jdots{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:12px;max-width:300px}.jdots i{aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.1)}.jdots i.miss{background:rgba(255,255,255,.04);outline:1px dashed rgba(255,255,255,.15)}
+.two2{display:flex;gap:12px;margin-top:12px}.two2>div{flex:1;padding:12px;border-radius:14px;background:rgba(4,32,27,.5)}.two2 small{display:block;color:var(--mut2);font-size:12px}.two2 b{font-weight:500}
+.sugcard{margin-top:22px;padding:22px;border-color:rgba(216,181,117,.55);background:linear-gradient(160deg,#17493d,#0a2d25)}
+.sug{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(4,32,27,.55);text-decoration:none;min-height:64px}
+.sug:hover,.sug:focus-visible{border-color:rgba(216,181,117,.9)}
+.sug .ic{flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(216,181,117,.14)}
+.sug .tx{flex:1;min-width:0}.sug b{display:block;font-weight:600;font-size:15.5px;color:var(--ivory)}.sug small{display:block;margin-top:3px;font-size:13px;line-height:1.45;color:var(--mut)}
+.sug .go{flex:none;font-size:13px;color:var(--gold);white-space:nowrap}
+@media(max-width:420px){.sug .go{display:none}}
 /* khoang lang */
 .kl{text-align:center;padding-block:10px 40px}
 .orb{position:relative;width:min(62vw,240px);aspect-ratio:1;margin:26px auto;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -88,7 +106,8 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0a302a;border:1px solid var(--line);padding:12px 20px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:9;max-width:90vw;text-align:center}
 #toast.on{opacity:1}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-</style>
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--gold);text-decoration:underline;cursor:pointer}</style>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}*{touch-action:manipulation}@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:max(16px,1em)!important}}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -99,29 +118,39 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 <div class="view on" id="v-home">
 <div class="wrap">
 <header class="top">
-<a class="back" href="index.html">← LÀNG YÊN</a>
+<a class="back" href="index.html">🏠 Trang chính</a>
 <div class="brand"><svg width="30" height="30"><use href="#lotus"/></svg>AnSense</div>
-<nav class="links"><a href="#how">Cách hoạt động</a><a href="#senses">6 giác quan</a><a href="#products">Sản phẩm</a><button class="btn sm" data-go="consent">Làm test</button></nav>
+<nav class="links"><a href="#sang-nay">Check-in</a><a href="#how">Cách hoạt động</a><a href="#sets">4 bộ câu hỏi</a><a href="#senses">6 giác quan</a><a href="#products">Sản phẩm</a><button class="btn sm" data-go="consent">Làm test</button></nav>
 </header>
 <section class="hero">
 <div class="l">
 <div class="eyebrow">Cửa Thân · Làng Yên</div>
 <h1>Biết mình,<br>chọn đúng.</h1>
-<p class="sub">Làm bài test 3 phút. AnSense gợi ý theo 6 giác quan: một sản phẩm, một việc làm ngay tại nhà và một trải nghiệm đặt được.</p>
-<div class="row"><button class="btn" data-go="consent" id="startBtn">Làm test 3 phút →</button><button class="btn ghost" data-go="silence">Khoảng Lặng 18 phút</button></div>
+<p class="sub">Mỗi lần vào, bạn trả lời một bộ 9 câu. AnSense lắng nghe Thân, Tâm, Tính, Giác của bạn và gợi ý theo 6 giác quan: một sản phẩm, một việc làm ngay tại nhà và một trải nghiệm đặt được.</p>
+<div class="row"><button class="btn" data-go="consent" id="startBtn">Bắt đầu Bộ 1 · Lắng nghe chính mình →</button><button class="btn ghost" data-go="silence">Khoảng Lặng 18 phút</button></div>
 <div id="again" class="note" hidden></div>
+<div id="acct" class="note" style="margin-top:8px"></div>
 </div>
 <div class="r"><div class="rcard"><div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" style="font-size:11px;letter-spacing:3px">Thẻ kết quả mẫu</span><svg width="36" height="36"><use href="#lotus"/></svg></div>
 <div class="two"><div><small>Thể trạng nền</small><div class="big">Nhiệt</div></div><div><small>Hôm nay</small><div class="big">Tịnh</div></div></div>
 <div class="dots"><i style="background:#7fb3b8"></i><i style="background:#86a8c4"></i><i style="background:#9cc7a9"></i><i style="background:#d0a98c"></i><i style="background:#c3a0bd"></i><i style="background:#86cfc2"></i></div></div></div>
 </section>
 
-<section class="blk" id="how"><div class="eyebrow">Cách hoạt động</div><h2>Ba bước, ba phút.</h2>
+<section class="blk" id="sang-nay"><div class="grid" style="margin-top:0">
+<div class="card ckc"><div class="eyebrow" style="font-size:11px">Mỗi sáng · 30 giây</div><h3 style="font:400 26px var(--serif);color:var(--ivory2);margin-top:8px">Lá bài hôm nay</h3><p id="ckHomeBox"></p><button class="btn sm" id="ckGo" style="margin-top:14px">Check-in sáng nay →</button></div>
+<div class="card ckc"><div class="eyebrow" style="font-size:11px">Hành trình</div><h3 style="font:400 26px var(--serif);color:var(--ivory2);margin-top:8px">27 ngày</h3><div id="jBox" class="jbox"></div></div>
+</div></section>
+
+<section class="blk" id="how"><div class="eyebrow">Cách hoạt động</div><h2>Ba bước, vài phút.</h2>
 <div class="grid">
-<div class="card step"><b>1</b><h3>Làm test 18 câu</h3><p>Khoảng 3 phút. Nhận thẻ kết quả gồm thể trạng nền và trạng thái hôm nay.</p></div>
+<div class="card step"><b>1</b><h3>Trả lời một bộ 9 câu</h3><p>36 câu chia thành 4 bộ luân phiên. Mỗi lần vào chỉ một bộ, khoảng 2 phút, nhận ngay thẻ kết quả gồm thể trạng nền và trạng thái hôm nay.</p></div>
 <div class="card step"><b>2</b><h3>Nhận gợi ý 6 giác quan</h3><p>Mỗi gợi ý gồm một sản phẩm, một việc làm ngay tại nhà và một lớp hoặc trải nghiệm đặt được.</p></div>
 <div class="card step"><b>3</b><h3>Dừng lại 18 phút</h3><p>Nghi thức Khoảng Lặng dẫn bạn qua sáu chặng, mỗi chặng 3 phút, ngay tại nhà.</p></div>
 </div></section>
+
+<section class="blk" id="sets"><div class="eyebrow">Bốn bộ câu hỏi</div><h2>Mỗi lần vào, một bộ. Hết vòng lại bắt đầu.</h2>
+<div class="grid" id="setGrid"></div>
+<p class="note">Mỗi bộ đều có đủ bốn lớp Thân, Tâm, Tính, Giác, nhưng nhấn mạnh một lớp, nên ngay từ bộ đầu tiên bạn đã có gợi ý riêng. Làm xong bộ hiện tại mới chuyển sang bộ kế tiếp; nếu dừng giữa chừng, lần sau tiếp tục đúng câu đang dừng. Sau Bộ 4, vòng mới quay lại Bộ 1 để theo dõi sự thay đổi của bạn.</p></section>
 
 <section class="blk" id="senses"><div class="eyebrow">Sáu giác quan</div><h2>Sáu cánh sen, sáu hồ trong làng.</h2>
 <div class="grid" id="senseGrid"></div></section>
@@ -131,15 +160,20 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 
 <section class="blk" id="products"><div class="eyebrow">Sản phẩm NỞ HOA</div><h2>Gợi ý luôn đi cùng một việc làm tại nhà.</h2>
 <div class="grid">
-<div class="card prod"><div class="ph" style="background:linear-gradient(160deg,#1d5a50,#0d3a31)"><svg width="54" height="84" viewBox="0 0 64 96" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5" stroke-linejoin="round"><rect x="24" y="4" width="16" height="12" rx="2"/><path d="M26 16v8M38 16v8"/><path d="M20 24h24a6 6 0 0 1 6 6v54a6 6 0 0 1-6 6H20a6 6 0 0 1-6-6V30a6 6 0 0 1 6-6Z" fill="#9cc7a9" fill-opacity=".25"/></svg></div><div class="bd"><span class="tag">CÓ HÀNG</span><h3>Tinh dầu Giọt</h3><div class="d">Chai 10 ml, bản lăn 159.000đ</div><div class="pr">189.000đ</div><button class="btn ghost sm" data-soon>Xem tại nhà bán ↗</button></div></div>
-<div class="card prod"><div class="ph" style="background:linear-gradient(160deg,#4c3f4f,#2a2430)"><svg width="110" height="60" viewBox="0 0 130 64" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5"><g id="mini"><rect x="8" y="2" width="10" height="8" rx="2"/><rect x="3" y="12" width="20" height="50" rx="5" fill="#c3a0bd" fill-opacity=".3"/></g><use href="#mini" x="26"/><use href="#mini" x="52"/><use href="#mini" x="78"/><use href="#mini" x="104"/></svg></div><div class="bd"><span class="tag">CÓ HÀNG</span><h3>Bộ khám phá tinh dầu</h3><div class="d">5 chai mini, mỗi chai một trạng thái</div><div class="pr">396.000đ</div><button class="btn ghost sm" data-soon>Xem tại nhà bán ↗</button></div></div>
-<div class="card prod"><div class="ph" style="background:linear-gradient(160deg,#5a4a38,#2f261c)"><svg width="64" height="82" viewBox="0 0 70 90" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5" stroke-linejoin="round"><path d="M35 6c5 7 5 12 0 16c-5-4-5-9 0-16Z" fill="#f2d7a0" fill-opacity=".6"/><path d="M35 22v8"/><path d="M12 32h46v46a8 8 0 0 1-8 8H20a8 8 0 0 1-8-8V32Z" fill="#d0a98c" fill-opacity=".28"/></svg></div><div class="bd"><span class="tag">CÓ HÀNG</span><h3>Nến NỞ HOA</h3><div class="d">Thắp cùng nghi thức Khoảng Lặng</div><div class="pr" style="font-size:16px;color:var(--mut)">Giá sẽ cập nhật</div><button class="btn ghost sm" data-soon>Xem tại nhà bán ↗</button></div></div>
-<div class="card prod" style="border-color:rgba(216,181,117,.5)"><div class="ph" style="background:linear-gradient(160deg,#2c5a4a,#10392f)"><svg width="90" height="70" viewBox="0 0 96 76" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5" stroke-linejoin="round"><rect x="10" y="22" width="76" height="46" rx="6" fill="#9cc7a9" fill-opacity=".22"/><path d="M10 34h76"/><path d="M40 6l8 10 8-10"/><circle cx="48" cy="50" r="7"/></svg></div><div class="bd"><span class="tag pre">ĐẶT TRƯỚC</span><h3>Ngũ Thiên Trà</h3><div class="d">Hộp 18 túi lọc, một vị. Dự kiến kịp Tết Đinh Mùi 2027.</div><div class="pr">189.000đ</div><button class="btn sm" data-soon>Đặt trước</button></div></div>
+<div class="card prod"><div class="ph" style="background:linear-gradient(160deg,#1d5a50,#0d3a31)"><svg width="54" height="84" viewBox="0 0 64 96" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5" stroke-linejoin="round"><rect x="24" y="4" width="16" height="12" rx="2"/><path d="M26 16v8M38 16v8"/><path d="M20 24h24a6 6 0 0 1 6 6v54a6 6 0 0 1-6 6H20a6 6 0 0 1-6-6V30a6 6 0 0 1 6-6Z" fill="#9cc7a9" fill-opacity=".25"/></svg></div><div class="bd"><span class="tag">CÓ HÀNG</span><h3>Tinh dầu Giọt</h3><div class="d">Chai 10 ml, bản lăn 159.000đ</div><div class="pr">189.000đ</div><button class="btn ghost sm" data-soon>Nhà bán: sắp có</button></div></div>
+<div class="card prod"><div class="ph" style="background:linear-gradient(160deg,#4c3f4f,#2a2430)"><svg width="110" height="60" viewBox="0 0 130 64" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5"><g id="mini"><rect x="8" y="2" width="10" height="8" rx="2"/><rect x="3" y="12" width="20" height="50" rx="5" fill="#c3a0bd" fill-opacity=".3"/></g><use href="#mini" x="26"/><use href="#mini" x="52"/><use href="#mini" x="78"/><use href="#mini" x="104"/></svg></div><div class="bd"><span class="tag">CÓ HÀNG</span><h3>Bộ khám phá tinh dầu</h3><div class="d">5 chai mini, mỗi chai một trạng thái</div><div class="pr">396.000đ</div><button class="btn ghost sm" data-soon>Nhà bán: sắp có</button></div></div>
+<div class="card prod"><div class="ph" style="background:linear-gradient(160deg,#5a4a38,#2f261c)"><svg width="64" height="82" viewBox="0 0 70 90" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5" stroke-linejoin="round"><path d="M35 6c5 7 5 12 0 16c-5-4-5-9 0-16Z" fill="#f2d7a0" fill-opacity=".6"/><path d="M35 22v8"/><path d="M12 32h46v46a8 8 0 0 1-8 8H20a8 8 0 0 1-8-8V32Z" fill="#d0a98c" fill-opacity=".28"/></svg></div><div class="bd"><span class="tag">CÓ HÀNG</span><h3>Nến NỞ HOA</h3><div class="d">Thắp cùng nghi thức Khoảng Lặng</div><div class="pr" style="font-size:16px;color:var(--mut)">Giá sẽ cập nhật</div><button class="btn ghost sm" data-soon>Nhà bán: sắp có</button></div></div>
+<div class="card prod" style="border-color:rgba(216,181,117,.5)"><div class="ph" style="background:linear-gradient(160deg,#2c5a4a,#10392f)"><svg width="90" height="70" viewBox="0 0 96 76" fill="none" stroke="#f4e7c6" stroke-opacity=".7" stroke-width="1.5" stroke-linejoin="round"><rect x="10" y="22" width="76" height="46" rx="6" fill="#9cc7a9" fill-opacity=".22"/><path d="M10 34h76"/><path d="M40 6l8 10 8-10"/><circle cx="48" cy="50" r="7"/></svg></div><div class="bd"><span class="tag pre">ĐẶT TRƯỚC</span><h3>Ngũ Thiên Trà</h3><div class="d">Hộp 18 túi lọc, một vị. Dự kiến kịp Tết Đinh Mùi 2027.</div><div class="pr">189.000đ</div><button class="btn sm" data-soon>Đặt trước: sắp mở</button></div></div>
 </div>
-<p class="note">Đây là link liên kết: nhà bán tự thu tiền, giao hàng và xuất hoá đơn, AnSense nhận hoa hồng. Dữ liệu bài test và sức khoẻ của bạn không chia sẻ cho nhà bán.</p></section>
+<div class="grid" style="margin-top:22px">
+<div class="card" style="padding:22px"><div class="eyebrow" style="font-size:11px">Ngũ Thiên Trà · đặt trước</div><div class="tbl" id="teaTbl"></div></div>
+<div class="card" style="padding:22px"><div class="eyebrow" style="font-size:11px">Tinh dầu Giọt NỞ HOA</div><div class="tbl" id="dropTbl"></div></div>
+</div>
+<div class="card" style="padding:22px;margin-top:16px"><div class="eyebrow" style="font-size:11px">Bảng giá đề xuất</div><div class="tbl" id="priceTbl"></div><p class="note" style="margin-top:12px">Mỗi túi trà, nắp nến, chai Giọt có mã QR mở đúng bài Khoảng Lặng 18 phút của trạng thái đó. Tinh dầu không uống, pha loãng khi dùng lên da, thận trọng với phụ nữ mang thai, trẻ nhỏ và thú cưng.</p></div>
+<p class="note">Đây là link liên kết: nhà bán tự thu tiền, giao hàng và xuất hóa đơn, AnSense nhận hoa hồng. Dữ liệu bài test và sức khoẻ của bạn không chia sẻ cho nhà bán.</p></section>
 
 <section class="blk" style="padding-bottom:48px"><div class="card warn"><span class="eyebrow">Lưu ý</span><span style="flex:1 1 420px">AnSense là ứng dụng wellness, không phải y khoa. Các gợi ý về thể trạng và nghi thức chỉ để tham khảo, không thay thế tư vấn của bác sĩ. Tinh dầu chỉ dùng ngoài, không uống.</span></div></section>
-<section style="text-align:center;padding:0 0 80px"><h2 style="font-size:clamp(30px,5vw,44px)">Hôm nay bạn cần gì?</h2><p style="color:var(--mut);margin:14px 0 0">Ba phút để biết, mười tám phút để dừng lại.</p><div class="row" style="justify-content:center"><button class="btn" data-go="consent">Làm test 3 phút →</button></div></section>
+<section style="text-align:center;padding:0 0 80px"><h2 style="font-size:clamp(30px,5vw,44px)">Hôm nay bạn cần gì?</h2><p style="color:var(--mut);margin:14px 0 0">Chín câu để biết, mười tám phút để dừng lại.</p><div class="row" style="justify-content:center"><button class="btn" data-go="consent">Trả lời bộ câu hỏi →</button></div></section>
 <footer><span>AnSense · cửa Thân của LÀNG YÊN</span><span>anyen.space</span></footer>
 </div>
 </div>
@@ -148,9 +182,9 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 <div class="view" id="v-consent"><div class="narrow panel">
 <header class="top"><button class="back" data-go="home">← AnSense</button><span class="eyebrow" style="font-size:11px">Trước khi bắt đầu</span></header>
 <h1>Vài lời trước khi làm test</h1>
-<p style="color:#c9d5cc;margin:12px 0 0;font-size:15px">18 câu, khoảng 3 phút. Bạn có thể dừng bất cứ lúc nào.</p>
+<p style="color:#c9d5cc;margin:12px 0 0;font-size:15px"><b id="cSet" style="color:var(--gold);font-weight:600"></b>. 9 câu, khoảng 2 phút. Bạn có thể dừng bất cứ lúc nào, lần sau tiếp tục đúng câu đang dừng.</p>
 <div class="card info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b575" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z"/><path d="M9 12l2 2 4-4"/></svg><p style="margin:0">Đây là công cụ wellness, không phải y khoa. Kết quả là gợi ý về thể trạng và nghi thức, không phải chẩn đoán hay điều trị.</p></div>
-<div class="card info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b575" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><p style="margin:0">Câu trả lời chỉ lưu trên thiết bị của bạn để tạo thẻ kết quả. Chúng tôi không chia sẻ cho nhà bán.</p></div>
+<div class="card info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b575" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><p style="margin:0">Câu trả lời lưu trên thiết bị của bạn, và theo tài khoản nếu bạn đăng nhập, để tạo thẻ kết quả, ghi vào Nhật ký bình an và nhớ bộ câu đang làm. Chúng tôi không chia sẻ cho nhà bán.</p></div>
 <div class="card info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b575" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 16h.01"/></svg><p style="margin:0">Đang mang thai, có bệnh nền hoặc đang điều trị? Hãy hỏi bác sĩ trước khi dùng tinh dầu, trà hay tập luyện được gợi ý.</p></div>
 <label class="chk"><input type="checkbox" id="agree"><span class="bx"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1a2a22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><span>Tôi hiểu và đồng ý cho AnSense dùng câu trả lời để tạo gợi ý cho riêng tôi.</span></label>
 <div style="margin-top:26px"><button class="btn" id="goQuiz" disabled style="width:100%">Bắt đầu làm test →</button></div>
@@ -170,19 +204,39 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 <!-- KẾT QUẢ -->
 <div class="view" id="v-result"><div class="narrow panel">
 <header class="top"><button class="back" data-go="home">← AnSense</button><span class="eyebrow" style="font-size:11px">Kết quả của bạn</span></header>
+<div class="eyebrow" id="rSet" style="font-size:11px;margin:0 0 12px"></div>
 <div class="rcard" id="rCard">
 <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:20px var(--serif)">AnSense</span><svg width="34" height="34"><use href="#lotus"/></svg></div>
 <div class="two"><div><small>Thể trạng nền</small><div class="big" id="rBody"></div></div><div><small>Hôm nay</small><div class="big" id="rState"></div></div></div>
 <p id="rLine" style="margin:14px 0 0;font-size:14px;color:#c9d5cc"></p>
 <div class="dots"><i style="background:#7fb3b8"></i><i style="background:#86a8c4"></i><i style="background:#9cc7a9"></i><i style="background:#d0a98c"></i><i style="background:#c3a0bd"></i><i style="background:#86cfc2"></i></div>
 </div>
-<div class="row" style="margin-top:14px;gap:10px"><button class="btn sm" id="shareBtn" style="flex:1">Chia sẻ thẻ</button><button class="btn ghost sm" id="retake" style="flex:1">Làm lại</button></div>
+<div class="row" style="margin-top:14px;gap:10px"><button class="btn sm" id="shareBtn" style="flex:1">Chia sẻ thẻ</button><button class="btn ghost sm" id="retake" style="flex:1">Làm lại bộ này</button></div>
+<p class="note" id="rNext" style="margin-top:14px"></p>
+<div class="card sugcard" id="rSug" hidden><div class="eyebrow" style="font-size:11px">Gợi ý cho bạn hôm nay</div><h2 style="font-size:24px;line-height:1.2;margin-top:6px">Ba hoạt động ở Làng Yên</h2><p style="margin:6px 0 0;font-size:13.5px;color:var(--mut)">Chọn theo kết quả bốn lớp của bạn. Bấm vào là đi thẳng tới đó.</p><div class="stack" id="rSugList" style="margin-top:14px"></div></div>
+<div class="eyebrow" style="margin-top:28px;font-size:11px">Bốn lớp của bạn</div>
+<div class="stack" id="rLayers" style="margin-top:14px"></div>
 <div class="eyebrow" style="margin-top:32px;font-size:11px" id="rKicker"></div>
 <h2 style="font-size:26px;line-height:1.2;margin-top:8px">Sáu giác quan, sáu cách cân lại</h2>
 <div class="stack" id="rSenses" style="margin-top:16px"></div>
 <div class="eyebrow" style="margin-top:32px;font-size:11px">Ba điều cho hôm nay</div>
+<p class="note" id="rKicker2" style="margin-top:6px"></p>
 <div class="stack" id="rThree" style="margin-top:14px"></div>
-<p class="note" style="margin-top:24px">AnSense là công cụ wellness, không thay thế tư vấn y khoa. Tinh dầu chỉ dùng ngoài. Nếu có bệnh nền hoặc đang mang thai, hãy hỏi bác sĩ trước.</p>
+<p class="note" style="margin-top:24px">Thể trạng nền (Nhiệt, Hàn, Thấp, Táo, Hư, Bình hòa) và trạng thái (Khởi, Giao, An, Hoa, Tịnh) là các nhãn nhận diện wellness, không phải kết luận chẩn đoán y khoa. AnSense là công cụ wellness, không thay thế tư vấn y khoa. Tinh dầu chỉ dùng ngoài. Nếu có bệnh nền hoặc đang mang thai, hãy hỏi bác sĩ trước.</p>
+</div></div>
+
+<!-- CHECK-IN BUỔI SÁNG -->
+<div class="view" id="v-checkin"><div class="narrow panel">
+<header class="top"><button class="back" id="ckBack">← AnSense</button><span class="eyebrow" style="font-size:11px">Check-in buổi sáng</span></header>
+<div id="ckQ"><div class="bar"><i id="ckBar"></i></div><div class="eyebrow" id="ckNum" style="margin-top:30px;font-size:11px"></div><h1 class="q" id="ckText"></h1><div class="opts" id="ckOpts"></div><p class="note" style="margin-top:22px;text-align:center">Câu hỏi soạn theo Thang đo thể chất Y học cổ truyền (CCMQ). Kết quả là gợi ý wellness, không phải chẩn đoán.</p></div>
+<div id="ckCard" hidden>
+<div class="rcard"><div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" style="font-size:11px">Lá bài hôm nay</span><svg width="32" height="32"><use href="#lotus"/></svg></div>
+<div class="big" id="ckState" style="margin-top:10px"></div><p id="ckLine" style="margin:6px 0 0;font-size:14px;color:#c9d5cc"></p>
+<div class="lbs" id="ckCards"></div></div>
+<div class="card three" style="margin-top:14px"><div class="k">LÀM NGAY TẠI NHÀ</div><h3 id="ckHome"></h3><button class="btn ghost" data-go="silence" style="margin-top:12px">Khoảng Lặng 18 phút</button></div>
+<p class="note" id="ckJourney"></p>
+<div class="row" style="gap:10px"><button class="btn ghost sm" id="ckRedo" style="flex:1">Check-in lại</button><button class="btn sm" data-go="home" style="flex:1">Về AnSense</button></div>
+</div>
 </div></div>
 
 <!-- KHOẢNG LẶNG -->
@@ -205,23 +259,19 @@ footer{padding:26px 0 44px;border-top:1px solid rgba(200,169,106,.2);display:fle
 <div id="klDone" hidden>
 <h1>Bạn đã dừng lại đủ rồi.</h1>
 <p class="hint" style="min-height:0">Hít một hơi dài. Khi sẵn sàng, mở mắt và quay lại với ngày của mình.</p>
-<div class="row" style="justify-content:center"><button class="btn" data-go="home">Về AnSense</button><a class="btn ghost" href="index.html">Về Làng Yên</a></div>
+<div class="row" style="justify-content:center"><button class="btn" data-go="home">Về AnSense</button><a class="btn ghost" href="index.html">🏠 Trang chính</a></div>
 </div>
 </div></div>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
+<script src="config.js"></script>
+<script src="vendor/supabase.js"></script>
 <script>
 (function(){
 'use strict';
 var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-var KEY='anyen-ansense-v1';
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
-function save(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
-var store=load();
-function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove('on')},2600)}
-
 /* ---------- DỮ LIỆU ---------- */
 var SENSES=[
  {k:'SẮC',c:'#7fb3b8',d:'Màu sắc và ánh sáng quanh bạn.',lake:'Hồ Sắc'},
@@ -231,33 +281,102 @@ var SENSES=[
  {k:'CHẠM',c:'#c3a0bd',d:'Cảm giác trên da và đôi tay.',lake:'Hồ Chạm'},
  {k:'NIỆM',c:'#86cfc2',d:'Hơi thở và ý niệm của bạn.',lake:'Hồ Niệm'}];
 var STAGES=[['Nhìn','SẮC'],['Nghe','THANH'],['Ngửi','HƯƠNG'],['Nhâm nhi','VỊ'],['Chạm','CHẠM'],['Thiền dẫn','NIỆM']];
+/* ---------- 36 CÂU HỎI · 4 BỘ ---------- */
+/* Mỗi câu: [lớp, giác quan (nếu là câu về Giác), câu hỏi, [A, nhãn], [B, nhãn], [C, nhãn], [D, nhãn]].
+   Nhãn: thể trạng nền (nhiet han thap tao hu binh), trạng thái (khoi giao an hoa tinh),
+   khuynh hướng Tính (lang ket kham sang ly), giác quan (sac thanh huong vi cham niem); số là trọng số. */
+var SETS=[
+ {n:'Lắng nghe chính mình',f:'Cơ thể và tâm trạng hiện tại',sub:'Nhận diện trạng thái hiện tại'},
+ {n:'Nhịp sống của mình',f:'Giấc ngủ, năng lượng, thói quen và áp lực',sub:'Nhận diện nhịp sinh hoạt và mức độ cân bằng'},
+ {n:'Bản sắc của mình',f:'Tính cách, cảm xúc và cách kết nối',sub:'Khám phá tính cách, cách ứng xử và kết nối'},
+ {n:'Điều nuôi dưỡng mình',f:'Sáu giác quan, sở thích và nhu cầu trải nghiệm',sub:'Khám phá sáu giác quan và trải nghiệm yêu thích'}];
 var Q=[
- ['Cơ thể · nóng hay lạnh','Bạn thấy người nóng, hay bực bội, khó chịu khi trời oi?','nhiet'],
- ['Cơ thể · nóng trong','Miệng hay đắng, nổi mụn nhọt hoặc nhiệt miệng?','nhiet'],
- ['Cơ thể · nóng hay lạnh','Tay chân hay lạnh, kể cả khi trời không lạnh?','han'],
- ['Cơ thể · ăn uống','Bạn thích đồ ăn uống ấm nóng, ăn đồ lạnh dễ đau bụng hoặc đi lỏng?','han'],
- ['Cơ thể · khô hay ẩm','Người nặng nề, hay phù nhẹ, mặt hoặc da dễ bóng dầu?','thap'],
- ['Cơ thể · khô hay ẩm','Trời nồm ẩm là bạn thấy uể oải, đầy bụng hoặc khó chịu hơn?','thap'],
- ['Cơ thể · khô hay ẩm','Họng, miệng hay khô, môi hoặc da dễ nẻ?','tao'],
- ['Cơ thể · khô hay ẩm','Bạn hay khát nước, đi vệ sinh phân khô hoặc táo bón?','tao'],
- ['Cơ thể · năng lượng','Làm một việc nhẹ cũng thấy mệt, nói nhiều là hụt hơi?','hu'],
- ['Cơ thể · năng lượng','Bạn dễ ra mồ hôi, dễ cảm lạnh, ốm vặt?','hu'],
- ['Cơ thể · giấc ngủ','Bạn khó ngủ, ngủ chập chờn hoặc dậy vẫn thấy mệt?','chung'],
- ['Cơ thể · ăn uống','Bạn ăn uống thất thường, hay bỏ bữa hoặc ăn quá no?','chung'],
- ['Tâm trạng tuần này','Sáng dậy, bạn thấy khó bắt đầu ngày mới, thiếu động lực?','khoi'],
- ['Tâm trạng tuần này','Bạn thấy ngại trò chuyện, muốn thu mình hoặc thấy cô đơn?','giao'],
- ['Tâm trạng tuần này','Đầu óc cứ nghĩ lo, khó thả lỏng?','an'],
- ['Tâm trạng tuần này','Đêm nằm xuống vẫn thấy căng, khó vào giấc?','an'],
- ['Tâm trạng tuần này','Bạn thấy tràn năng lượng, muốn sáng tạo hoặc chia sẻ điều gì đó?','hoa'],
- ['Tâm trạng tuần này','Việc dồn dập khiến bạn quá tải, dễ nóng nảy?','tinh']];
-var OPTS=['Hiếm khi hoặc không bao giờ','Thỉnh thoảng','Khá thường xuyên','Gần như lúc nào cũng vậy'];
+ /* Bộ 1 – Lắng nghe chính mình */
+ ['Thân',0,'Khi thức dậy vào buổi sáng, bạn thường cảm thấy thế nào?',
+  ['Tỉnh táo, nhẹ nhàng và có năng lượng.','binh2 hoa1'],['Bình thường, cần một chút thời gian để bắt đầu ngày mới.','binh1'],['Uể oải, thiếu năng lượng.','hu1 thap1 khoi1'],['Mệt mỏi, nặng nề và khó bắt đầu ngày mới.','hu2 khoi2']],
+ ['Thân',0,'Trong những ngày gần đây, cơ thể bạn thường có cảm giác nào?',
+  ['Dễ chịu, thoải mái.','binh2'],['Thỉnh thoảng nóng hoặc lạnh hơn bình thường.','nhiet1 han1'],['Thường cảm thấy nặng nề, trì trệ.','thap2'],['Thường khô, nóng, bứt rứt hoặc thiếu sức sống.','tao2 nhiet1']],
+ ['Tâm',0,'Khi có nhiều việc phải giải quyết cùng lúc, bạn thường phản ứng thế nào?',
+  ['Bình tĩnh sắp xếp và giải quyết từng việc.','binh1 hoa1 ly1'],['Hơi căng thẳng nhưng vẫn kiểm soát được.','tinh1'],['Dễ rối, khó tập trung.','an2'],['Cảm thấy quá tải và muốn tạm dừng mọi thứ.','tinh2 hu1']],
+ ['Tâm',0,'Khi ở một mình, tâm trạng của bạn thường như thế nào?',
+  ['Bình yên, thoải mái và tận hưởng khoảng riêng.','hoa1 lang1'],['Thích sự yên tĩnh nhưng đôi lúc cảm thấy cô đơn.','giao1 lang1'],['Dễ suy nghĩ nhiều hoặc nhớ lại chuyện cũ.','an2'],['Khó thư giãn, thường muốn tìm việc gì đó để làm.','tinh1 kham1']],
+ ['Tâm',0,'Khi gặp một chuyện không như mong đợi, bạn thường làm gì?',
+  ['Chấp nhận, tìm cách giải quyết và bước tiếp.','hoa1'],['Buồn một lúc rồi dần lấy lại cân bằng.','an1'],['Suy nghĩ nhiều về nguyên nhân và kết quả.','an2'],['Dễ bị cảm xúc chi phối trong một khoảng thời gian dài.','tinh1 giao1']],
+ ['Tính',0,'Bạn cảm thấy mình được nạp năng lượng nhiều nhất khi nào?',
+  ['Được ở một mình trong không gian yên tĩnh.','lang2'],['Được ở bên người thân thiết.','ket2'],['Được gặp gỡ, giao lưu và khám phá điều mới.','kham2'],['Được làm điều mình yêu thích mà không bị gián đoạn.','sang2']],
+ ['Giác','sac','Không gian nào khiến bạn cảm thấy dễ chịu nhất lúc này?',
+  ['Khu vườn xanh, có cây cối và hoa lá.',''],['Bờ biển, hồ nước hoặc thiên nhiên rộng mở.',''],['Căn phòng ấm áp, riêng tư và tĩnh lặng.','lang1'],['Không gian nghệ thuật, có màu sắc và cảm hứng.','sang1']],
+ ['Giác','thanh','Âm thanh nào bạn muốn được nghe khi cần thư giãn?',
+  ['Tiếng mưa, tiếng suối, tiếng chim.',''],['Nhạc không lời, piano hoặc nhạc thiền.',''],['Tiếng chuông, âm thanh trị liệu nhẹ nhàng.',''],['Giọng nói ấm áp, lời chia sẻ hoặc câu chuyện.','giao1']],
+ ['Giác','niem','Nếu được dành 15 phút cho bản thân ngay lúc này, bạn muốn làm gì?',
+  ['Ngồi yên, hít thở và tĩnh tâm.',''],['Nghe nhạc hoặc ngắm thiên nhiên.',''],['Viết nhật ký, suy ngẫm về bản thân.','lang1'],['Trò chuyện hoặc kết nối với một người thân thiết.','giao1 ket1']],
+ /* Bộ 2 – Nhịp sống của mình */
+ ['Thân',0,'Trong khoảng hai tuần gần đây, giấc ngủ của bạn như thế nào?',
+  ['Ngủ ngon, thức dậy cảm thấy khỏe khoắn.','binh2'],['Đôi lúc khó ngủ hoặc thức giấc giữa đêm.','an1'],['Thường khó đi vào giấc ngủ hoặc ngủ không sâu.','an2 hu1'],['Giấc ngủ thường xuyên bị ảnh hưởng và làm mình mệt mỏi ban ngày.','hu2 an1']],
+ ['Thân',0,'Trong một ngày bình thường, năng lượng của bạn thường thay đổi ra sao?',
+  ['Khá ổn định từ sáng đến chiều.','binh2'],['Tốt vào buổi sáng, giảm dần về cuối ngày.','hu1'],['Lúc nhiều năng lượng, lúc rất uể oải.','thap1 khoi1'],['Thường thiếu năng lượng trong phần lớn thời gian.','hu2 khoi1']],
+ ['Tâm',0,'Khi công việc hoặc trách nhiệm gia đình chiếm nhiều thời gian, bạn thường làm gì?',
+  ['Biết sắp xếp và vẫn dành thời gian cho bản thân.','binh1 hoa1'],['Tạm gác sở thích cá nhân nhưng sau đó có thể cân bằng lại.','khoi1'],['Thường bỏ quên nhu cầu nghỉ ngơi của mình.','hu1 tinh1'],['Cảm thấy cuộc sống bị cuốn đi và khó tìm được khoảng riêng.','tinh2']],
+ ['Tính',0,'Khi có một khoảng thời gian rảnh bất ngờ, bạn thường lựa chọn điều gì?',
+  ['Nghỉ ngơi hoặc ngủ thêm.','hu1 lang1'],['Vận động, đi dạo hoặc ra ngoài.','kham2'],['Đọc sách, học hỏi hoặc làm việc mình yêu thích.','sang1 ly1'],['Gặp gỡ bạn bè, người thân.','ket2']],
+ ['Tâm',0,'Khi cảm thấy căng thẳng, bạn thường nhận thấy điều gì ở bản thân?',
+  ['Cơ thể vẫn khá thoải mái, tâm trí dễ bình tĩnh lại.','binh1 hoa1'],['Dễ mỏi vai gáy, mệt hoặc khó thư giãn.','thap1 an1'],['Đầu óc suy nghĩ liên tục, khó tập trung.','an2'],['Dễ cáu gắt, mất kiên nhẫn hoặc muốn tránh giao tiếp.','tinh2 nhiet1']],
+ ['Thân',0,'Bạn thường ăn uống theo nhịp độ nào?',
+  ['Đúng giờ, tương đối điều độ.','binh2'],['Có lúc đúng giờ, có lúc thay đổi theo công việc.','binh1'],['Thường ăn vội hoặc bỏ bữa.','hu1 tao1'],['Ăn uống thay đổi nhiều theo tâm trạng và lịch sinh hoạt.','thap1 an1']],
+ ['Tính',0,'Khi cần đưa ra một quyết định quan trọng, bạn thường dựa vào điều gì?',
+  ['Phân tích thông tin và cân nhắc logic.','ly2'],['Cảm nhận và trực giác của mình.','sang1 lang1'],['Trao đổi với người đáng tin cậy.','ket2'],['Kết hợp nhiều yếu tố nhưng cần thời gian mới quyết định.','lang1 ly1']],
+ ['Tính',0,'Trong một nhóm, bạn thường thích đảm nhận vai trò nào?',
+  ['Người tổ chức, lên kế hoạch.','ly2'],['Người lắng nghe, hỗ trợ.','ket1 lang1'],['Người đưa ra ý tưởng và khơi gợi cảm hứng.','sang2'],['Người kết nối mọi người và tạo không khí vui vẻ.','kham1 ket1']],
+ ['Giác','huong','Mùi hương nào thường đem lại cảm giác dễ chịu cho bạn?',
+  ['Hương hoa nhẹ nhàng.',''],['Hương gỗ, trầm hoặc thảo mộc.',''],['Hương cam, chanh, bạc hà tươi mát.',''],['Hương trà, hương tự nhiên dịu nhẹ.','']],
+ /* Bộ 3 – Bản sắc của mình */
+ ['Tính',0,'Khi bước vào một môi trường có nhiều người chưa quen, bạn thường thế nào?',
+  ['Chủ động bắt chuyện và làm quen.','kham2'],['Quan sát trước rồi mới tham gia.','lang1 ly1'],['Chỉ trò chuyện với một vài người mình cảm thấy phù hợp.','ket1 lang1'],['Thường ngại giao tiếp và muốn giữ khoảng cách.','lang2 giao1']],
+ ['Tính',0,'Khi có một ý tưởng mới, bạn thường làm gì?',
+  ['Bắt tay thực hiện ngay.','kham2'],['Suy nghĩ, lên kế hoạch trước.','ly2'],['Chia sẻ với người khác để cùng phát triển.','ket1 sang1'],['Giữ lại, tiếp tục quan sát và hoàn thiện ý tưởng.','lang1 sang1']],
+ ['Tính',0,'Điều gì khiến bạn cảm thấy được trân trọng nhất?',
+  ['Được lắng nghe và thấu hiểu.','ket1 lang1'],['Được tin tưởng và tôn trọng.','ly1'],['Được quan tâm bằng những hành động nhỏ.','ket2'],['Được ghi nhận và khích lệ.','kham1 sang1']],
+ ['Tâm',0,'Khi một người thân thiết có quan điểm khác bạn, bạn thường phản ứng thế nào?',
+  ['Bình tĩnh trao đổi để hiểu nhau hơn.','hoa1 ket1'],['Lắng nghe trước khi đưa ra ý kiến.','ket1 lang1'],['Cần thời gian suy nghĩ rồi mới tiếp tục trao đổi.','lang1 an1'],['Dễ cảm thấy tổn thương hoặc khó chịu.','giao2 an1']],
+ ['Tâm',0,'Bạn thường thể hiện cảm xúc của mình bằng cách nào?',
+  ['Nói trực tiếp với người mình tin tưởng.','ket2'],['Viết ra hoặc ghi lại trong nhật ký.','lang1'],['Thể hiện qua âm nhạc, nghệ thuật hoặc sáng tạo.','sang2 hoa1'],['Giữ trong lòng và tự suy ngẫm.','lang2 an1']],
+ ['Tính',0,'Bạn cảm thấy điều gì mang lại ý nghĩa lớn nhất cho cuộc sống?',
+  ['Gia đình và những mối quan hệ thân thiết.','ket2'],['Công việc, thành tựu và sự phát triển.','ly1 kham1'],['Tự do, khám phá và trải nghiệm.','kham2'],['Bình an nội tâm và đóng góp cho người khác.','lang1 ket1']],
+ ['Tính',0,'Bạn thích hình thức kết nối cộng đồng nào nhất?',
+  ['Nhóm nhỏ, thân mật và chia sẻ sâu.','ket1 lang1'],['Cộng đồng cùng sở thích hoặc đam mê.','sang1 kham1'],['Hoạt động thiện nguyện và giúp đỡ người khác.','ket2'],['Sự kiện, giao lưu và hoạt động tập thể.','kham2']],
+ ['Tính',0,'Khi muốn tìm hiểu một điều mới, bạn thích cách tiếp cận nào?',
+  ['Đọc và nghiên cứu có hệ thống.','ly2'],['Xem hình ảnh, video và trải nghiệm trực quan.','sang1'],['Nghe người khác chia sẻ hoặc hướng dẫn.','ket1'],['Tự thực hành, thử nghiệm và khám phá.','kham2']],
+ ['Tâm',0,'Bạn muốn nuôi dưỡng phẩm chất nào nhất ở bản thân?',
+  ['Bình tĩnh và kiên nhẫn.','an1'],['Tự tin và quyết đoán.','khoi1'],['Dịu dàng và biết yêu thương.','giao1'],['Sáng tạo và cởi mở.','hoa1']],
+ /* Bộ 4 – Điều nuôi dưỡng mình */
+ ['Giác','sac','Bạn thường bị thu hút bởi gam màu nào?',
+  ['Xanh lá, xanh ngọc, màu của thiên nhiên.',''],['Trắng, kem, be và những gam màu nhẹ.',''],['Nâu, vàng đất, màu gỗ và màu trầm ấm.',''],['Hồng, tím, xanh lam hoặc những màu giàu cảm xúc.','hoa1']],
+ ['Giác','sac','Cảnh vật nào khiến bạn muốn dừng lại ngắm nhìn lâu hơn?',
+  ['Rừng cây, thảm cỏ và những khu vườn.',''],['Biển, sông, hồ và mặt nước.',''],['Núi non, mây trời và những khoảng không rộng lớn.',''],['Hoa lá, kiến trúc và những không gian nghệ thuật.','sang1']],
+ ['Giác','thanh','Bạn thích trải nghiệm âm thanh nào nhất?',
+  ['Âm thanh tự nhiên: mưa, gió, nước chảy.',''],['Nhạc thiền, nhạc không lời, piano.',''],['Chuông, tiếng mõ hoặc âm thanh nghi thức.',''],['Nhạc có giai điệu, ca từ và cảm xúc.','']],
+ ['Giác','vi','Khi thưởng thức đồ uống, bạn thường yêu thích hương vị nào?',
+  ['Thanh nhẹ, tự nhiên.','binh1'],['Ngọt dịu, thơm và dễ uống.','hu1'],['Đậm đà, có chiều sâu.','han1'],['Chua thanh, tươi mát và mới lạ.','nhiet1']],
+ ['Giác','cham','Bạn thích cảm nhận chất liệu nào khi chạm vào?',
+  ['Gỗ tự nhiên, tre, mây.',''],['Vải mềm, cotton, lụa.',''],['Đá, gốm, đất nung.',''],['Nước, cát, lá cây và những chất liệu tự nhiên.','']],
+ ['Giác','niem','Nếu được chọn một hoạt động để chăm sóc bản thân, bạn muốn làm gì?',
+  ['Thiền, hít thở hoặc tĩnh tâm.','an1'],['Nghe nhạc, đọc sách hoặc thưởng trà.','an1'],['Làm vườn, chăm cây hoặc đi dạo giữa thiên nhiên.','khoi1'],['Viết nhật ký, vẽ tranh hoặc sáng tạo.','hoa1']],
+ ['Giác','niem','Bạn có cảm thấy dễ chịu với những nghi thức mang tính biểu tượng như thắp hương, lần tràng hạt, thỉnh chuông không?',
+  ['Rất yêu thích và thường thực hành.',''],['Có hứng thú, muốn tìm hiểu thêm.',''],['Thỉnh thoảng muốn trải nghiệm.',''],['Không thực sự phù hợp với sở thích của mình.','']],
+ ['Tính',0,'Khi muốn tìm lại cảm hứng sống, bạn thường tìm đến điều gì?',
+  ['Thiên nhiên và những chuyến đi.','kham2'],['Sách, tri thức và những câu chuyện hay.','ly1 lang1'],['Nghệ thuật, âm nhạc và sáng tạo.','sang2'],['Những người tích cực, hoạt động cộng đồng và việc thiện.','ket2']],
+ ['Tâm',0,'Sau khi trải nghiệm tại Làng Yên, bạn mong muốn mang điều gì trở lại cuộc sống thường ngày?',
+  ['Một tâm trí bình an và nhẹ nhàng hơn.','an1'],['Một thói quen tốt để chăm sóc bản thân.','khoi1'],['Một nguồn cảm hứng để học hỏi và phát triển.','hoa1'],['Một kết nối ý nghĩa hoặc động lực để làm điều tử tế.','giao1']]];
+var LETTER=['A','B','C','D','E'];
+var TINH={lang:'Tĩnh lặng, hướng vào bên trong',ket:'Ấm áp, trọng sự gắn kết',kham:'Cởi mở, thích khám phá',sang:'Sáng tạo, cần khoảng tự do',ly:'Ngăn nắp, thiên về lý trí'};
+var GIAC=[['sac','Sắc'],['thanh','Thanh'],['huong','Hương'],['vi','Vị'],['cham','Chạm'],['niem','Niệm']];
 var BODY={
  nhiet:{n:'Nhiệt',line:'Người dễ nóng, nên ưu tiên cái mát và dịu.'},
  han:{n:'Hàn',line:'Người dễ lạnh, nên ưu tiên cái ấm và đều.'},
  thap:{n:'Thấp',line:'Người dễ nặng và ẩm, nên ưu tiên cái nhẹ và khô thoáng.'},
  tao:{n:'Táo',line:'Người dễ khô, nên ưu tiên cái dịu, nhuận và đủ nước.'},
  hu:{n:'Hư',line:'Người dễ hụt sức, nên ưu tiên nghỉ đủ, ấm và nhẹ nhàng.'},
- binh:{n:'Bình hoà',line:'Cơ thể khá cân bằng. Giữ nhịp sống đều là đủ.'}};
+ binh:{n:'Bình hòa',line:'Cơ thể khá cân bằng. Giữ nhịp sống đều là đủ.'}};
 var STATE={
  khoi:{n:'Khởi',line:'Hôm nay cần một cú đẩy nhẹ để bắt đầu.',tint:'#e0c183',
   s:['Vàng cam, ánh sáng sớm','Nhịp vừa, tiếng chim sáng','Giọt Khởi Động','Thiên Khởi','Vươn vai, xoa ấm tay','Đặt 1 ý định'],
@@ -274,7 +393,63 @@ var STATE={
  tinh:{n:'Tịnh',line:'Hôm nay cần lắng xuống và hạ nhiệt.',tint:'#86cfc2',
   s:['Trắng ngà, xanh nước','Chuông, nước chảy','Giọt TỊNH','Thiên Tịnh','Rửa tay nước mát','Buông 1 điều'],
   prod:'Tinh dầu Giọt TỊNH',act:'Rửa tay bằng nước mát, thở ra dài hơn hít vào, rồi buông một điều đang nắm giữ.',cls:['Bơi, pilates, giãn cơ','Chọn lớp vận động nhẹ gần bạn']}};
+/* Bảng "Mỗi gợi ý = sản phẩm + hoạt động + trải nghiệm" của đề án */
+var PLAN={
+ khoi:{tea:'Trà Thiên Khởi',drop:'Giọt Khởi Động',home:'Pha trà gừng sả, nhỏ Giọt, vươn vai đón nắng.',lop:'Yoga buổi sáng, đi bộ nhanh',trip:'Trekking, đón bình minh trên núi',move:1},
+ giao:{tea:'Trà Thiên Giao',drop:'Giọt Kết Nối',candle:1,home:'Rủ một người uống trà, gửi thiệp biết ơn.',lop:'Contact Improvisation, khiêu vũ, vòng tròn chia sẻ',trip:'Retreat nhóm, du lịch cùng gia đình',move:1},
+ an:{tea:'Trà Thiên An',drop:'Giọt An Nhiên',candle:1,home:'Thắp nến, thở chậm, đếm tràng hạt 108.',lop:'Yin yoga, thiền chuông, tắm âm thanh, Reiki',trip:'Retreat tĩnh lặng, suối khoáng nóng',move:0},
+ hoa:{tea:'Trà Thiên Hoa',drop:'Giọt Nở Hoa',home:'Pha trà đổi màu, chụp ảnh Khiêu Thực.',lop:'Workshop gốm, vẽ, hương liệu; dance',trip:'Du lịch văn hoá, tour ẩm thực',move:0},
+ tinh:{tea:'Trà Thiên Tịnh',drop:'Giọt TỊNH',home:'Rửa tay nước mát, viết ra một điều muốn buông.',lop:'Bơi, pilates, giãn cơ',trip:'Tắm rừng, biển, retreat thanh lọc',move:1,water:1}};
+/* Ghi chú theo thể trạng nền (đề án mục 6) */
+var BODYNOTE={hu:'Thể trạng Hư: chọn phiên bản chuyển động nhẹ, nghỉ giữa chừng khi thấy mệt.',han:'Thể trạng Hàn: tránh nước lạnh và gió lạnh buổi tối, giữ ấm sau khi tập.',nhiet:'Thể trạng Nhiệt: tránh nắng gắt giữa trưa, uống đủ nước.',thap:'Thể trạng Thấp: chọn nơi khô thoáng, vận động cho ra mồ hôi nhẹ.',tao:'Thể trạng Táo: uống đủ nước, tránh phòng điều hoà quá khô.'};
+var SCREEN=[['back','Đau lưng hoặc đau khớp'],['preg','Đang mang thai'],['heart','Có vấn đề tim mạch, huyết áp']];
+/* Check-in buổi sáng: 3 câu, 30 giây. Soạn theo các mục của Thang đo thể chất Y học cổ truyền
+   (CCMQ, tiêu chuẩn 中医体质分类与判定 ZYYXH/T157-2009 của Hiệp hội Trung y dược Trung Quốc):
+   mệt mỏi (khí hư), mất ngủ, và nhóm cảm xúc buồn, lo âu, bực bội, nóng trong (khí uất, thấp nhiệt, âm hư).
+   Thang trả lời 5 mức như CCMQ. Đây là nhãn wellness, không phải chẩn đoán. */
+var FREQ=['Không','Ít khi','Đôi khi','Thường xuyên','Gần như lúc nào cũng vậy'];
+var CHECKIN=[
+ ['Sáng nay bạn có thấy mệt mỏi, uể oải, thiếu sức không?',FREQ.map(function(t,k){return [t,['','','khoi1','khoi2','khoi3'][k]]})],
+ ['Mấy đêm gần đây bạn có khó ngủ, ngủ không yên giấc không?',FREQ.map(function(t,k){return [t,['','','an1','an2','an3'][k]]})],
+ ['Lúc này bạn thấy mình gần với điều nào nhất?',[['Vui vẻ, nhẹ nhõm, muốn sáng tạo','hoa2'],['Buồn, cô đơn, muốn có người bên cạnh','giao2'],['Lo âu, bồn chồn, căng thẳng','an2'],['Bứt rứt, dễ cáu, thấy nóng trong','tinh2'],['Uể oải, chưa muốn bắt đầu gì','khoi2']]]];
 var KLNOTE='Bài này có hướng dẫn riêng theo trạng thái hôm nay của bạn nếu bạn đã làm test.';
+
+/* ---------- LƯU TRỮ: theo tài khoản (Supabase) và trên máy ---------- */
+var BASE='anyen-ansense-v2',uid=null,client=null,sync='guest',pushT=null;
+function blank(){return {v:2,t:0,next:0,cur:null,last:{},done:[],result:null,agreed:false,checkins:[],journey:null,screen:null}}
+function lkey(){return BASE+':'+(uid||'guest')}
+function readKey(k){try{var o=JSON.parse(localStorage.getItem(k));return o&&o.v===2?o:null}catch(e){return null}}
+function norm(o){var b=blank();o=o||{};for(var k in b)if(o[k]===undefined)o[k]=b[k];if(!Array.isArray(o.done))o.done=[];if(!o.last||typeof o.last!=='object')o.last={};if(!Array.isArray(o.checkins))o.checkins=[];return o}
+var store=norm(readKey(lkey()));
+function save(){store.t=Date.now();try{localStorage.setItem(lkey(),JSON.stringify(store))}catch(e){}writeJournal();shareToday();if(client&&uid&&sync==='account'){clearTimeout(pushT);pushT=setTimeout(push,400)}}
+function push(){if(!client||!uid)return;client.rpc('anyen_ansense_save',{p_state:store}).then(function(r){if(r.error){sync='local';refreshHome()}})}
+function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove('on')},2600)}
+function dayKey(ms){var d=new Date(ms);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function lastDone(){return store.done.length?store.done[store.done.length-1]:null}
+function doneToday(){var d=lastDone();return !!(d&&dayKey(d.at)===dayKey(Date.now()))}
+function fmtTime(ms){var d=new Date(ms);return d.toLocaleDateString('vi-VN')+' '+d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}
+function fmtDur(ms){var s=Math.max(1,Math.round(ms/1000)),m=Math.floor(s/60),r=s%60;return m?(m+' phút'+(r?' '+r+' giây':'')):(r+' giây')}
+
+/* Trạng thái hôm nay: check-in sáng nay, nếu chưa có thì kết quả bộ câu gần nhất */
+function todayCheckin(){var c=store.checkins[store.checkins.length-1];return c&&dayKey(c.at)===dayKey(Date.now())?c:null}
+function todayState(){var c=todayCheckin();return c?c.state:(store.result?store.result.state:null)}
+/* Các nhà trong làng (Nhà Niệm, kệ thẻ, nến) đọc trạng thái hôm nay từ khóa này */
+function shareToday(){try{var st=todayState();localStorage.setItem('anyen-ansense-v1',JSON.stringify(st?{result:{state:st,body:store.result?store.result.body:'binh',at:Date.now()}}:{}))}catch(e){}}
+/* Nhật ký bình an (trang chính) đọc mục "Kết quả AnSense" từ khóa này. */
+function writeJournal(){
+ try{
+  var log=store.done.slice(-40).reverse().map(function(d){
+   var b=BODY[d.body]||BODY.binh,s=STATE[d.state]||STATE.hoa;
+   return {set:d.set+1,name:SETS[d.set].n,redo:!!d.redo,start:d.start||d.at,end:d.at,
+    when:fmtTime(d.start||d.at),dur:d.start?fmtDur(d.at-d.start):'',body:b.n,state:s.n,tinh:d.tinh?TINH[d.tinh]:'',
+    sug:(d.sug||[]).filter(function(x){return ACT[x.k]}).map(function(x){return {t:ACT[x.k][0]+' '+ACT[x.k][1],why:x.why,href:ACT[x.k][2]}}),
+    qa:d.answers.map(function(a,j){var i=d.set*9+j,q=Q[i];return {n:i+1,q:q[2],a:a==null?'':LETTER[a]+'. '+q[3+a][0]}})}});
+  var ck=store.checkins.slice(-30).map(function(c){var s=STATE[c.state]||STATE.hoa;return {kind:'checkin',title:'Check-in buổi sáng',start:c.at,end:c.at,when:fmtTime(c.at),dur:'',line:'Trạng thái hôm nay '+s.n+' · Lá bài: '+s.s.map(function(v,i){return SENSES[i].k.charAt(0)+SENSES[i].k.slice(1).toLowerCase()+' '+v}).join(' · '),
+   qa:c.answers.map(function(a,j){var q=CHECKIN[j];return {n:j+1,q:q[0],a:a==null?'':q[1][a][0]}})}});
+  log=log.concat(ck).sort(function(a,b){return b.end-a.end}).slice(0,60);
+  localStorage.setItem('yenAnsenseLog',JSON.stringify(log));
+ }catch(e){}
+}
 
 /* ---------- ĐIỀU HƯỚNG ---------- */
 function show(id){
@@ -282,87 +457,278 @@ function show(id){
  $('#v-'+id).classList.add('on');window.scrollTo(0,0);
  klReset();
  if(id==='home')refreshHome();
+ if(id!=='silence')klState=null;
  location.hash=id==='home'?'':id;
 }
 document.addEventListener('click',function(e){
  var g=e.target.closest('[data-go]');
  if(g){e.preventDefault();var t=g.getAttribute('data-go');
-  if(t==='consent'&&store.result&&!g.dataset.force){show('result');renderResult();return}
-  if(t==='result')renderResult();show(t);return}
- if(e.target.closest('[data-soon]'))toast('Link nhà bán sẽ có khi mở bán chính thức.');
+  if(t==='consent'){begin(false);return}
+  if(t==='result'){if(!store.result){show('home');return}renderResult()}
+  show(t);return}
+ if(e.target.closest('[data-soon]'))toast('Danh sách nhà bán và đối tác đang được hoàn thiện. AnSense sẽ mở ngay khi có.');
 });
-function refreshHome(){
- var a=$('#again');
- if(store.result){a.hidden=false;a.innerHTML='Bạn đã có kết quả: <b>'+BODY[store.result.body].n+' · '+STATE[store.result.state].n+'</b>. <a href="#" id="seeRes" style="color:var(--gold)">Xem lại</a> · <a href="#" id="redo" style="color:var(--gold)">Làm lại</a>';
-  $('#seeRes').onclick=function(e){e.preventDefault();renderResult();show('result')};
-  $('#redo').onclick=function(e){e.preventDefault();startConsent()};
-  $('#startBtn').textContent='Xem kết quả của tôi →';
- }else{a.hidden=true;$('#startBtn').textContent='Làm test 3 phút →'}
+function setLabel(i){return 'Bộ '+(i+1)+' · '+SETS[i].n}
+function begin(force){
+ if(store.cur){openQuiz();return}
+ if(!force&&doneToday()&&store.result){renderResult();show('result');return}
+ startSet(store.next,false);
 }
-function startConsent(){store.answers=[];store.result=null;store.step=0;save(store);$('#agree').checked=false;$('#goQuiz').disabled=true;show('consent')}
+function startSet(si,redo){store.cur={set:si,step:0,answers:[],redo:!!redo,start:Date.now()};save();openQuiz()}
+function openQuiz(){if(!store.agreed){$('#agree').checked=false;$('#goQuiz').disabled=true;$('#cSet').textContent=setLabel(store.cur.set);show('consent');return}renderQ();show('quiz')}
+function refreshHome(){
+ var a=$('#again'),btn=$('#startBtn'),h='';
+ if(store.cur){
+  btn.textContent='Tiếp tục '+setLabel(store.cur.set)+' →';
+  h='Bạn đang làm dở '+setLabel(store.cur.set)+' (đã trả lời '+store.cur.step+'/9 câu). Lần này tiếp tục từ câu đang dừng.';
+ }else if(doneToday()&&store.result){
+  var d=lastDone();btn.textContent='Xem kết quả hôm nay →';
+  h='Hôm nay bạn đã làm '+setLabel(d.set)+'. Lần vào sau (từ ngày mai) sẽ là '+setLabel(store.next)+'. <button type="button" class="linkbtn" id="nowNext">Làm '+'Bộ '+(store.next+1)+' ngay</button> · <button type="button" class="linkbtn" id="redo">Làm lại Bộ '+(d.set+1)+'</button>';
+ }else{
+  btn.textContent='Bắt đầu '+setLabel(store.next)+' →';
+  h=store.result?'Kết quả gần nhất: <b>'+BODY[store.result.body].n+' · '+STATE[store.result.state].n+'</b>. <button type="button" id="seeRes" class="linkbtn">Xem lại</button>':'Lần đầu vào, bạn bắt đầu với Bộ 1 · '+SETS[0].n+'.';
+ }
+ a.hidden=false;a.innerHTML=h;
+ var x;
+ if((x=$('#seeRes')))x.onclick=function(){renderResult();show('result')};
+ if((x=$('#nowNext')))x.onclick=function(){begin(true)};
+ if((x=$('#redo')))x.onclick=function(){startSet(lastDone().set,true)};
+ renderSets();renderJourney();
+ var tc=todayCheckin();
+ $('#ckHomeBox').innerHTML=tc?'Sáng nay bạn đã check-in: <b>'+STATE[tc.state].n+'</b>. '+STATE[tc.state].line:'Chưa check-in sáng nay. 3 câu, 30 giây, nhận lá bài cho sáu giác quan.';
+ $('#ckGo').textContent=tc?'Xem lá bài hôm nay →':'Check-in sáng nay →';
+ var x2=$('#ckSee');if(x2)x2.onclick=function(){ck.step=9;renderCk();show('checkin')};
+ var ac=$('#acct');
+ ac.innerHTML=sync==='account'?'Tiến độ bốn bộ câu hỏi được lưu theo tài khoản của bạn.':
+  sync==='local'?'Tiến độ đang lưu trên máy này (chưa đồng bộ được với tài khoản).':
+  'Bạn chưa đăng nhập: tiến độ lưu trên máy này. <a href="account.html?next=ansense.html" style="color:var(--gold)">Đăng nhập</a> để giữ tiến độ theo tài khoản.';
+}
+function renderSets(){
+ var lastSet={};store.done.forEach(function(d){lastSet[d.set]=d.at});
+ $('#setGrid').innerHTML=SETS.map(function(s,i){
+  var st=store.cur&&store.cur.set===i?['Đang làm','pre']:(!store.cur&&store.next===i?['Lượt tiếp theo','pre']:(lastSet[i]?['Đã làm '+new Date(lastSet[i]).toLocaleDateString('vi-VN'),'']:['Chưa làm','']));
+  return '<div class="card step"><b>'+(i+1)+'</b><h3>'+s.n+'</h3><p>'+s.f+'</p><span class="tag '+st[1]+'" style="margin-top:12px;display:inline-block">'+st[0]+'</span></div>'}).join('');
+}
 
 /* ---------- TRANG CHỦ: lưới ---------- */
 $('#senseGrid').innerHTML=SENSES.map(function(s){return '<div class="card sense"><i style="background:'+s.c+'"></i><div><b>'+s.k+'</b><p>'+s.d+'</p><div style="margin-top:8px;font-size:12px;color:var(--gold)">'+s.lake+'</div></div></div>'}).join('');
 $('#stageStrip').innerHTML=STAGES.map(function(s,i){return '<div style="border-top:4px solid '+SENSES[i].c+'"><small>3 phút</small><b>'+s[0]+'</b></div>'}).join('');
 
+/* ---------- SẢN PHẨM NỞ HOA (đề án mục 7) ---------- */
+var TEA=[['Thiên Khởi','khoi','Gừng, sả, quế','Ấm','Tỉnh táo, ấm người buổi sáng'],['Thiên Giao','giao','Trà xanh Thái Nguyên, nụ hồng','Bình','Dịu, dễ mở lòng, hợp uống cùng nhau'],['Thiên An','an','Tâm sen, lạc tiên, hoa cúc','Mát nhẹ','Thư giãn buổi tối'],['Thiên Hoa','hoa','Hoa đậu biếc, sả, vỏ cam','Bình','Nước đổi từ xanh sang tím khi vắt chanh'],['Thiên Tịnh','tinh','Atiso, la hán, rau má','Mát','Thanh, nhẹ người khi "nóng trong"']];
+var DROP=[['Giọt Khởi Động','khoi','Sả chanh, quế, vỏ bưởi','Khuếch tán buổi sáng; 1 giọt lên khăn, hít sâu 3 lần'],['Giọt Kết Nối','giao','Hoa nhài, ngọc lan, cam','Khuếch tán khi có bạn ghé nhà; bản lăn xoa cổ tay'],['Giọt An Nhiên','an','Oải hương, cỏ hương bài, trầm nhẹ','Khuếch tán phòng ngủ; xoa bàn chân bằng bản đã pha dầu nền'],['Giọt Nở Hoa','hoa','Hoa bưởi, hoa hồng, cam ngọt','Nhỏ vào bát nước ấm trong Khoảng Lặng'],['Giọt TỊNH','tinh','Tràm, bạc hà, chanh','Khuếch tán khi đầu óc quá tải']];
+var PRICE=[['Ngũ Thiên Trà','Hộp 18 túi lọc, 1 vị','189.000đ'],['Hộp Khám phá trà','5 vị × 3 túi','369.000đ'],['Tinh dầu Giọt','Chai 10 ml nguyên chất','189.000đ'],['Tinh dầu bản lăn','Chai 10 ml pha sẵn','159.000đ'],['Bộ khám phá tinh dầu','5 chai mini','396.000đ'],['Signature 9 Tầng Hương','Phối 9 nốt hương, chai đặc biệt','999.000đ'],['Hộp Khoảng Lặng hằng tháng','Trà, nến mini, Giọt, đổi theo check-in','699.000đ/tháng']];
+$('#teaTbl').innerHTML=TEA.map(function(t){return '<div class="r"><b>'+t[0]+'</b><span>'+t[2]+' · tính '+t[3].toLowerCase()+'. '+t[4]+'.</span><em>'+STATE[t[1]].n+'</em></div>'}).join('');
+$('#dropTbl').innerHTML=DROP.map(function(t){return '<div class="r"><b>'+t[0]+'</b><span>'+t[2]+'. '+t[3]+'.</span><em>'+STATE[t[1]].n+'</em></div>'}).join('');
+$('#priceTbl').innerHTML=PRICE.map(function(t){return '<div class="r"><b>'+t[0]+'</b><span>'+t[1]+'</span><em>'+t[2]+'</em></div>'}).join('');
+
 /* ---------- ĐỒNG Ý ---------- */
+$('#ckGo').onclick=function(){if(todayCheckin()){ck.step=9;renderCk();show('checkin')}else startCheckin()};
 $('#agree').onchange=function(){$('#goQuiz').disabled=!this.checked};
-$('#goQuiz').onclick=function(){store.answers=[];store.step=0;save(store);renderQ();show('quiz')};
+$('#goQuiz').onclick=function(){store.agreed=true;save();renderQ();show('quiz')};
 
 /* ---------- CÂU HỎI ---------- */
 function renderQ(){
- var i=store.step||0,a=store.answers||[];
- $('#qNum').textContent=(i+1)+' / '+Q.length;
- $('#qBar').style.width=(i/Q.length*100)+'%';
- $('#qCat').textContent=Q[i][0];
- $('#qText').textContent=Q[i][1];
- $('#qSub').textContent=i<12?'Chọn điều đúng nhất với bạn trong vài tuần gần đây.':'Chọn điều đúng nhất với bạn trong tuần này.';
- $('#qOpts').innerHTML=OPTS.map(function(t,n){return '<button class="opt'+(a[i]===n?' sel':'')+'" data-n="'+n+'"><span>'+t+'</span></button>'}).join('');
- $('#qBack').style.visibility='visible';
+ var c=store.cur;if(!c){show('home');return}
+ var i=c.step,n=c.set*9+i,q=Q[n],a=c.answers;
+ $('#qNum').textContent='Câu '+(n+1)+' · '+(i+1)+'/9';
+ $('#qBar').style.width=(i/9*100)+'%';
+ $('#qCat').textContent=setLabel(c.set)+' · '+q[0];
+ $('#qText').textContent=q[2];
+ $('#qSub').textContent=i===0?'9 câu · '+SETS[c.set].sub:'';
+ $('#qOpts').innerHTML=[0,1,2,3].map(function(k){return '<button class="opt'+(a[i]===k?' sel':'')+'" data-n="'+k+'"><span class="lt">'+LETTER[k]+'</span><span>'+q[3+k][0]+'</span></button>'}).join('');
 }
 $('#qOpts').addEventListener('click',function(e){
- var b=e.target.closest('.opt');if(!b)return;
- var i=store.step,n=+b.dataset.n;store.answers[i]=n;
+ var b=e.target.closest('.opt');if(!b||!store.cur)return;
+ var c=store.cur,i=c.step;c.answers[i]=+b.dataset.n;
  $$('.opt').forEach(function(x){x.classList.toggle('sel',x===b)});
  setTimeout(function(){
-  if(i<Q.length-1){store.step=i+1;save(store);renderQ()}
-  else{store.result=compute(store.answers);save(store);renderResult();show('result')}
+  if(i<8){c.step=i+1;save();renderQ()}
+  else finish();
  },160);
 });
-$('#qBack').onclick=function(){if(store.step>0){store.step--;renderQ()}else show('consent')};
+$('#qBack').onclick=function(){if(store.cur&&store.cur.step>0){store.cur.step--;save();renderQ()}else show('home')};
+function finish(){
+ var c=store.cur,s=c.set;
+ store.last[s]=c.answers.slice(0,9);
+ var r=compute(s);r.sug=suggest(r);
+ store.done.push({set:s,start:c.start,at:Date.now(),answers:c.answers.slice(0,9),redo:!!c.redo,body:r.body,state:r.state,tinh:r.tinh,sug:r.sug});
+ if(store.done.length>60)store.done=store.done.slice(-60);
+ if(!c.redo)store.next=(s+1)%4;
+ journeyAfterSet(r);
+ store.result=r;store.cur=null;save();renderResult();show('result');
+}
 
-/* ---------- TÍNH KẾT QUẢ ---------- */
-function compute(a){
- var keys=['nhiet','han','thap','tao','hu'],sc={},mx={};
- keys.forEach(function(k){sc[k]=0;mx[k]=0});
- Q.forEach(function(q,i){if(sc[q[2]]!==undefined){sc[q[2]]+=a[i]||0;mx[q[2]]=Math.max(mx[q[2]],a[i]||0)}});
- var body='binh',best=2;
- keys.forEach(function(k){
-  if(sc[k]>best||(sc[k]===best&&body!=='binh'&&mx[k]>mx[body])){best=sc[k];body=k}
- });
- if(best<3)body='binh';
- var m={khoi:a[12]||0,giao:a[13]||0,an:((a[14]||0)+(a[15]||0))/2,hoa:a[16]||0,tinh:a[17]||0};
- var order=['tinh','an','khoi','giao','hoa'],state='hoa',top=-1;
- order.forEach(function(k){if(m[k]>top){top=m[k];state=k}});
- if(top<=1)state='hoa';
- return {body:body,state:state,at:Date.now()};
+/* ---------- TÍNH KẾT QUẢ: 4 lớp Thân · Tâm · Tính · Giác ---------- */
+function tags(str,acc){(str||'').split(' ').forEach(function(t){var m=/^([a-z]+)(\d)$/.exec(t);if(m)acc[m[1]]=(acc[m[1]]||0)+(+m[2])})}
+function addSet(si,acc){var ans=store.last[si];if(!ans)return;for(var j=0;j<9;j++){var a=ans[j];if(a==null)continue;tags(Q[si*9+j][3+a][1],acc)}}
+function topOf(acc,keys){var best=null,v=0;keys.forEach(function(k){if((acc[k]||0)>v){v=acc[k];best=k}});return {k:best,v:v}}
+function compute(si){
+ var all={},now={};[0,1,2,3].forEach(function(i){addSet(i,all)});addSet(si,now);
+ var b=topOf(all,['hu','thap','tao','nhiet','han']);
+ var body=(b.v>=2&&b.v>=(all.binh||0))?b.k:'binh';
+ var s=topOf(now,['tinh','an','khoi','giao','hoa']);
+ var state=s.k||(store.result&&store.result.state)||'hoa';
+ var t=topOf(all,['lang','ket','kham','sang','ly']);
+ var giac={};
+ [0,1,2,3].forEach(function(i){var ans=store.last[i];if(!ans)return;for(var j=0;j<9;j++){var q=Q[i*9+j];if(q[0]!=='Giác'||ans[j]==null)continue;(giac[q[1]]=giac[q[1]]||[]).push(short(q[3+ans[j]][0]))}});
+ return {body:body,state:state,tinh:t.k,giac:giac,set:si,at:Date.now()};
+}
+function short(t){return t.replace(/[.]$/,'').split(/[,:]/)[0]}
+
+/* ---------- GỢI Ý CHO BẠN HÔM NAY: 3 hoạt động ở Làng Yên, bấm vào đi thẳng tới đó ---------- */
+var ACT={
+ 'tinh-tam':['🪷','Tĩnh Tâm 3 phút','index.html?vao=tinh-tam'],
+ 'thinh-chuong':['🥣','Thỉnh Chuông','index.html?vao=thinh-chuong'],
+ 'toa-thien':['🧘','Toạ thiền ở Nhà Niệm','index.html?vao=nha-niem'],
+ 'bat-buong-bo':['💧','Bát Nước Buông Bỏ ở Nhà Niệm','index.html?vao=nha-niem'],
+ 'vinh-yen':['⛵','Du thuyền Vịnh Yên','index.html?vao=vinh-yen'],
+ 'rung-thong':['🌲','Dạo Rừng Thông','index.html?vao=rung-thong'],
+ 'thap-huong':['🪔','Thắp hương, dâng hoa sen','index.html?vao=thap-huong'],
+ 'mua':['🌧','Âm nhạc · tiếng mưa','index.html?vao=am-nhac&nghe=mua'],
+ 'nhac':['🎹','Âm nhạc · nhạc thiền, piano','index.html?vao=am-nhac&nghe=nhac'],
+ 'chuong':['🔔','Âm nhạc · chuông Tây Tạng','index.html?vao=am-nhac&nghe=chuong'],
+ 'loi':['🎶','Âm nhạc · nhạc có lời','index.html?vao=am-nhac&nghe=loi'],
+ 'nhat-ky':['✎','Viết Nhật ký bình an','index.html?vao=nhat-ky'],
+ 'nha-vi':['🍵','Thưởng trà ở Nhà Vị','index.html?vao=nha-vi'],
+ 'nha-cham':['🏺','Nặn gốm ở Nhà Chạm','index.html?vao=nha-cham'],
+ 'xep-da':['🪨','Xếp đá cân bằng ở Đảo Yên','index.html?vao=xep-da'],
+ 'nhat-so':['🐚','Nhặt và xếp vỏ sò ở Đảo Yên','index.html?vao=nhat-so'],
+ 'xep-da':['🪨','Xếp đá cân bằng ở Đảo Yên','index.html?vao=xep-da'],
+ 'van-hoa':['🏛️','Phòng 36 người ở Nhà Văn Hóa','index.html?vao=nha-van-hoa'],
+ 'cong-dong':['♧','Cộng đồng Yên','index.html?vao=cong-dong'],
+ 'trang-hat':['📿','Lần tràng hạt 108','index.html?vao=trang-hat'],
+ 'healer':['🗓','Đặt lịch với Healer','lich.html']};
+/* Câu Giác → hoạt động theo lựa chọn A–D (số câu tính từ 1) */
+var GACT={7:['rung-thong','vinh-yen','toa-thien','nhac'],8:['mua','nhac','chuong','loi'],9:['tinh-tam','nhac','nhat-ky','cong-dong'],18:['thap-huong','thap-huong','thap-huong','thap-huong'],
+ 28:['rung-thong','toa-thien','rung-thong','thap-huong'],29:['rung-thong','vinh-yen','vinh-yen','thap-huong'],30:['mua','nhac','chuong','loi'],31:['nha-vi','nha-vi','nha-vi','nha-vi'],32:['rung-thong','tinh-tam','nha-cham','nhat-so'],33:['tinh-tam','nhac','rung-thong','nhat-ky'],34:['thap-huong','trang-hat','thinh-chuong',null]};
+function suggest(r){
+ var out=[],used={};
+ function add(k,why){if(!k||used[k]||!ACT[k])return false;if((k==='toa-thien'&&used['bat-buong-bo'])||(k==='bat-buong-bo'&&used['toa-thien']))return false;used[k]=1;out.push({k:k,why:why});return true}
+ var s=STATE[r.state].n,b=BODY[r.body].n;
+ /* nặng: nhiều lựa chọn C/D ở các câu Thân, Tâm của bộ vừa làm */
+ var heavy=0,ans=store.last[r.set]||[];ans.forEach(function(a,j){var q=Q[r.set*9+j];if((q[0]==='Thân'||q[0]==='Tâm')&&a>=2)heavy++});
+ /* 1 · Thân, Tâm */
+ var t1={tinh:['bat-buong-bo','Hôm nay bạn đang căng và quá tải. Thả một nỗi lo vào bát nước rồi để nó tan.'],
+  an:[r.body==='hu'?'tinh-tam':'toa-thien',r.body==='hu'?'Đầu óc chưa thả lỏng, cơ thể lại dễ hụt sức. Ba phút thở chậm là đủ.':'Đầu óc còn nhiều suy nghĩ. Ngồi yên một lúc ở Nhà Niệm để tâm lắng xuống.'],
+  khoi:['thinh-chuong','Cơ thể đang uể oải, cần một cú đẩy nhẹ. Một tiếng chuông để bắt đầu lại.'],
+  giao:['tinh-tam','Lòng đang cần ấm lại. Ba phút thở cùng nhạc nền dịu.'],
+  hoa:['toa-thien','Hôm nay bạn đang khá cân bằng. Toạ thiền để giữ nhịp an này lâu hơn.']}[r.state];
+ if(r.body==='hu'&&r.state!=='an'&&r.state!=='tinh')t1=['tinh-tam','Thể trạng nền '+b+': dễ hụt sức, ngủ chưa sâu. Ba phút thở chậm giúp cơ thể nghỉ.'];
+ add(t1[0],t1[1]);
+ /* 2 · Giác: ưu tiên câu Giác của bộ vừa làm, rồi các bộ trước */
+ var order=[r.set,(r.set+3)%4,(r.set+2)%4,(r.set+1)%4],gotG=false;
+ order.forEach(function(si){if(gotG)return;var a=store.last[si];if(!a)return;for(var j=8;j>=0&&!gotG;j--){var n=si*9+j+1,m=GACT[n];if(!m||a[j]==null)continue;var k=m[a[j]];if(k&&add(k,'Bạn chọn “'+short(Q[n-1][3+a[j]][0])+'” ở câu '+n+'. Hoạt động này hợp với điều nuôi dưỡng bạn.'))gotG=true}});
+ if(!gotG)add('rung-thong','Một vòng dạo giữa rừng thông, nhìn và nghe thật chậm.');
+ /* 3 · Tính, hoặc Healer khi cần sâu hơn */
+ if(heavy>=4){add('healer','Nhiều câu trả lời cho thấy bạn đang mệt hoặc căng kéo dài. Một buổi riêng với Healer sẽ đi sâu hơn.')}
+ else{var t3={lang:[['xep-da','Bạn hướng vào bên trong. Xếp từng viên đá theo một hơi thở, để tâm lặng lại.'],['nhat-ky','Bạn hướng vào bên trong. Viết vài dòng cho chính mình.'],['xep-da','Bạn hướng vào bên trong. Xếp từng viên đá trong yên lặng.']],
+  ket:[['van-hoa','Bạn trọng sự gắn kết. Ngồi cùng mọi người ở phòng 36 người.'],['cong-dong','Bạn trọng sự gắn kết. Ghé Cộng đồng Yên.']],
+  kham:[['vinh-yen','Bạn thích khám phá. Một chuyến du thuyền qua các đảo đá.'],['van-hoa','Bạn cởi mở. Cùng hoạt động với mọi người ở Nhà Văn Hóa.']],
+  sang:[['nhat-so','Bạn sáng tạo. Nhặt vỏ sò và xếp thành hình của riêng bạn.'],['xep-da','Bạn sáng tạo. Xếp một tháp đá cân bằng của riêng bạn trên bãi biển.'],['nha-cham','Bạn sáng tạo. Nặn một món gốm theo ý mình.']],
+  ly:[['trang-hat','Bạn ngăn nắp, thiên về lý trí. Lần 108 hạt, đếm từng hơi thở.'],['nhat-ky','Bạn ngăn nắp. Ghi lại ngày hôm nay vào Nhật ký.']]}[r.tinh]||[['nhat-ky','Viết vài dòng cho chính mình sau bộ câu hỏi này.']];
+  /* nhóm sáng tạo: ngày lẻ gợi ý Nhặt vỏ sò trước, ngày chẵn gợi ý Xếp đá trước */
+  if(r.tinh==='sang'&&new Date().getDate()%2===0)t3=[t3[1],t3[0]].concat(t3.slice(2));
+  t3.some(function(x){return add(x[0],x[1])});}
+ ['tinh-tam','rung-thong','nhat-ky','thap-huong','vinh-yen'].forEach(function(k){if(out.length<3)add(k,'Một khoảng dừng nhẹ cho hôm nay.')});
+ return out.slice(0,3);
 }
 
 /* ---------- KẾT QUẢ ---------- */
 function renderResult(){
  var r=store.result;if(!r)return;
  var b=BODY[r.body],s=STATE[r.state];
+ $('#rSet').textContent=setLabel(r.set)+' · đã hoàn thành';
  $('#rBody').textContent=b.n;$('#rState').textContent=s.n;
  $('#rLine').textContent=b.line+' '+s.line;
+ var g=r.giac||{},gl=GIAC.filter(function(x){return g[x[0]]}).map(function(x){return x[1]+': '+g[x[0]].filter(function(v,i,a){return a.indexOf(v)===i}).slice(-2).join(', ')});
+ var L=[['THÂN','Thể trạng nền '+b.n+'. '+b.line,'#9cc7a9'],['TÂM','Trạng thái '+s.n+'. '+s.line,'#86cfc2'],
+  ['TÍNH',r.tinh?TINH[r.tinh]+'.':'Sẽ rõ hơn sau Bộ 3 · '+SETS[2].n+'.','#c3a0bd'],
+  ['GIÁC',gl.length?gl.join(' · ')+'.':'Sẽ rõ hơn sau Bộ 4 · '+SETS[3].n+'.','#d8b575']];
+ $('#rLayers').innerHTML=L.map(function(x){return '<div class="srow" style="border-left-color:'+x[2]+'"><b>'+x[0]+'</b><div>'+x[1]+'</div></div>'}).join('');
+ if(!r.sug)try{r.sug=suggest(r)}catch(e){r.sug=[]}
+ var sg=r.sug||[];$('#rSug').hidden=!sg.length;
+ $('#rSugList').innerHTML=sg.map(function(x,i){var a=ACT[x.k];return '<a class="sug" href="'+a[2]+'"><span class="ic">'+a[0]+'</span><span class="tx"><b>'+(i+1)+'. '+a[1]+'</b><small>'+x.why+'</small></span><span class="go">Đi tới →</span></a>'}).join('');
+ var d=lastDone();
+ $('#rNext').innerHTML=(d&&d.start?'Thời gian thực hiện: '+fmtDur(d.at-d.start)+'. ':'')+'Kết quả đã ghi vào <a href="index.html" style="color:var(--gold)">Nhật ký bình an</a>, mục Kết quả AnSense. Lần vào sau: <b>'+setLabel(store.next)+'</b>.';
  $('#rKicker').textContent='Gợi ý cho trạng thái '+s.n.toUpperCase();
  $('#rSenses').innerHTML=SENSES.map(function(x,i){return '<div class="srow" style="border-left-color:'+x.c+'"><b>'+x.k+'</b><div>'+s.s[i]+'</div></div>'}).join('');
- $('#rThree').innerHTML=
-  '<div class="card three" style="border-color:rgba(216,181,117,.5)"><div class="k">1 SẢN PHẨM</div><h3>'+s.prod+'</h3><p>10 ml · 189.000đ</p><button class="btn" data-soon>Xem tại nhà bán ↗</button><div style="margin-top:8px;font-size:12px;color:var(--mut2)">Link liên kết. Nhà bán thu tiền và giao hàng.</div></div>'+
-  '<div class="card three"><div class="k">1 VIỆC LÀM NGAY</div><h3>Ba phút, ngay tại nhà</h3><p>'+s.act+'</p><button class="btn ghost" data-go="silence">Bắt đầu Khoảng Lặng 18 phút</button></div>'+
-  '<div class="card three"><div class="k">1 LỚP · TRẢI NGHIỆM</div><h3>'+s.cls[0]+'</h3><p>Vận động và trải nghiệm hợp trạng thái hôm nay.</p><button class="btn ghost" data-soon>'+s.cls[1]+' ↗</button></div>';
+ renderThree(r);
 }
-$('#retake').onclick=startConsent;
+$('#retake').onclick=function(){if(store.result)startSet(store.result.set,true)};
+var threeTab='15';
+function screenNote(){var sc=store.screen;if(!sc)return '';var on=SCREEN.filter(function(x){return sc[x[0]]}).map(function(x){return x[1].toLowerCase()});return on.length?'<p class="warnline">Bạn có: '+on.join(', ')+'. Hãy hỏi bác sĩ hoặc huấn luyện viên trước, chọn phiên bản nhẹ và dừng ngay khi thấy khó chịu.'+(store.screen.preg?' Đang mang thai: chưa dùng tinh dầu khi chưa hỏi bác sĩ.':'')+'</p>':''}
+function screenForm(){return '<div class="screen"><b>Trước khi chọn hoạt động thể chất, bạn có:</b>'+SCREEN.map(function(x){return '<label class="chk sm"><input type="checkbox" data-sc="'+x[0]+'"><span class="bx"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#1a2a22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><span>'+x[1]+'</span></label>'}).join('')+'<button type="button" class="btn sm" id="scOk" style="margin-top:12px">Xong, xem gợi ý</button></div>'}
+function renderThree(r){
+ var st=todayState()||r.state,s=STATE[st],P=PLAN[st],bn=BODYNOTE[r.body]||'';
+ var prod=P.tea+' (đặt trước) · '+P.drop+(P.candle?' · Nến NỞ HOA':'');
+ var tabs=[['15','15 phút'],['buoi','1 buổi'],['chuyen','1 chuyến']].map(function(t){return '<button type="button" class="tab'+(threeTab===t[0]?' on':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>'}).join('');
+ var body;
+ if(threeTab==='15')body='<div class="k">LÀM NGAY TẠI NHÀ · 15 PHÚT</div><h3>'+P.home.replace(/\.$/,'')+'</h3><p>'+s.act+'</p><button class="btn ghost" data-go="silence">Bắt đầu Khoảng Lặng 18 phút</button>';
+ else if(!store.screen&&P.move)body=screenForm();
+ else{var t=threeTab==='buoi'?['LỚP, TRẢI NGHIỆM · 1 BUỔI',P.lop,'Đặt qua đối tác trải nghiệm của AnSense.']:['CHUYẾN ĐI · 1 CHUYẾN',P.trip,'Retreat và tour từ mạng Asia Wellness Brands.'];
+  var note=(r.body==='han'&&P.water)?'<p class="warnline">'+BODYNOTE.han+'</p>':(bn&&(P.move||threeTab==='chuyen')?'<p class="note" style="margin:0 0 10px">'+bn+'</p>':'');
+  body='<div class="k">'+t[0]+'</div><h3>'+t[1]+'</h3><p>'+t[2]+'</p>'+note+(P.move?screenNote():'')+'<button class="btn ghost" data-soon>Đối tác gần bạn: sắp có</button>'+(P.move&&store.screen?'<button type="button" class="linkbtn" id="scRedo" style="margin-top:10px;font-size:13px">Sửa câu sàng lọc</button>':'');}
+ $('#rKicker2').textContent='Theo trạng thái hôm nay: '+s.n+(todayCheckin()?' (check-in sáng nay)':'');
+ $('#rThree').innerHTML=
+  '<div class="card three" style="border-color:rgba(216,181,117,.5)"><div class="k">1 SẢN PHẨM</div><h3>'+prod+'</h3><p>Trà hộp 18 túi 189.000đ · Giọt 10 ml 189.000đ, bản lăn 159.000đ</p><button class="btn" data-soon>Nhà bán: sắp có</button><div style="margin-top:8px;font-size:12px;color:var(--mut2)">Link liên kết. Nhà bán thu tiền và giao hàng.</div></div>'+
+  '<div class="card three"><div class="tabs" role="tablist">'+tabs+'</div>'+body+'</div>';
+}
+$('#rThree').addEventListener('click',function(e){
+ var t=e.target.closest('[data-tab]');if(t){threeTab=t.dataset.tab;renderThree(store.result);return}
+ if(e.target.id==='scOk'){var sc={};$$('[data-sc]').forEach(function(x){sc[x.dataset.sc]=x.checked});store.screen=sc;save();renderThree(store.result);return}
+ if(e.target.id==='scRedo'){store.screen=null;save();renderThree(store.result)}
+});
 
+/* ---------- CHECK-IN BUỔI SÁNG · LÁ BÀI HÔM NAY ---------- */
+var ck={step:0,ans:[]};
+function startCheckin(){ck={step:0,ans:[],start:Date.now()};renderCk();show('checkin')}
+function renderCk(){
+ if(ck.step>=CHECKIN.length){$('#ckQ').hidden=true;$('#ckCard').hidden=false;renderCard(todayCheckin());return}
+ $('#ckQ').hidden=false;$('#ckCard').hidden=true;
+ var q=CHECKIN[ck.step];
+ $('#ckNum').textContent='Câu '+(ck.step+1)+'/3';$('#ckBar').style.width=(ck.step/3*100)+'%';
+ $('#ckText').textContent=q[0];
+ $('#ckOpts').innerHTML=q[1].map(function(o,k){return '<button class="opt" data-n="'+k+'"><span class="lt">'+LETTER[k]+'</span><span>'+o[0]+'</span></button>'}).join('');
+}
+$('#ckOpts').addEventListener('click',function(e){var b=e.target.closest('.opt');if(!b)return;ck.ans[ck.step]=+b.dataset.n;b.classList.add('sel');
+ setTimeout(function(){ck.step++;if(ck.step>=CHECKIN.length)finishCk();renderCk()},160)});
+$('#ckBack').onclick=function(){if(ck.step>0&&ck.step<CHECKIN.length){ck.step--;renderCk()}else show('home')};
+function finishCk(){
+ var acc={};ck.ans.forEach(function(a,j){tags(CHECKIN[j][1][a][1],acc)});
+ var pick=CHECKIN[2][1][ck.ans[2]][1].replace(/\d/,''),best=pick,v=acc[pick]||0;
+ ['tinh','an','khoi','giao','hoa'].forEach(function(k){if((acc[k]||0)>v){v=acc[k];best=k}});
+ var c={at:Date.now(),start:ck.start,answers:ck.ans.slice(),state:best};
+ var t=todayCheckin();if(t)store.checkins.pop();
+ store.checkins.push(c);if(store.checkins.length>120)store.checkins=store.checkins.slice(-120);save();
+}
+function renderCard(c){
+ if(!c)return;var s=STATE[c.state],P=PLAN[c.state];
+ $('#ckState').textContent=s.n;$('#ckLine').textContent=s.line;
+ $('#ckCards').innerHTML=SENSES.map(function(x,i){return '<div class="lb" style="--c:'+x.c+'"><b>'+x.k+'</b><span>'+s.s[i]+'</span></div>'}).join('');
+ $('#ckHome').textContent=P.home;
+ var j=journeyDay();$('#ckJourney').innerHTML=j?'Hành trình 27 ngày: ngày <b>'+Math.min(j,27)+'</b>/27.':'';
+}
+$('#ckRedo').onclick=startCheckin;
+
+/* ---------- HÀNH TRÌNH 27 NGÀY ---------- */
+function dayIndex(ms){var d=new Date(ms);d.setHours(0,0,0,0);return Math.round(d.getTime()/864e5)}
+function journeyDay(){var J=store.journey;if(!J||J.end)return 0;return dayIndex(Date.now())-dayIndex(J.start)+1}
+function renderJourney(){
+ var J=store.journey,box=$('#jBox');
+ if(!J){box.innerHTML='<p>27 ngày, mỗi sáng check-in 30 giây và làm một việc nhỏ theo lá bài hôm nay. Ngày cuối trả lời lại Bộ 1 để thấy mình đã đổi ra sao.</p><button class="btn sm" id="jStart"'+(store.result?'':' disabled')+'>Bắt đầu Hành trình 27 ngày</button>'+(store.result?'':'<p class="note">Trả lời Bộ 1 trước để có điểm xuất phát.</p>');return}
+ if(J.end){var a=J.base,b=J.after||{};box.innerHTML='<p>Bạn đã đi trọn 27 ngày (từ '+new Date(J.start).toLocaleDateString('vi-VN')+'), check-in <b>'+J.count+'</b> buổi sáng.</p><div class="two2"><div><small>Ngày đầu</small><b>'+BODY[a.body].n+' · '+STATE[a.state].n+'</b></div><div><small>Ngày 27</small><b>'+BODY[b.body||'binh'].n+' · '+STATE[b.state||'hoa'].n+'</b></div></div>'+(J.mix?'<p class="note">Trạng thái các buổi sáng: '+J.mix+'.</p>':'')+'<button class="btn ghost sm" id="jNew">Bắt đầu hành trình mới</button>';return}
+ var d=journeyDay(),days={};store.checkins.forEach(function(c){var k=dayIndex(c.at)-dayIndex(J.start);if(k>=0&&k<27)days[k]=c.state});
+ var dots='';for(var k=0;k<27;k++)dots+='<i class="'+(days[k]?'on':(k<d-1?'miss':''))+'"'+(days[k]?' style="background:'+STATE[days[k]].tint+'"':'')+' title="Ngày '+(k+1)+'"></i>';
+ box.innerHTML='<p>Ngày <b>'+Math.min(d,27)+'</b>/27 · đã check-in <b>'+Object.keys(days).length+'</b> buổi sáng.</p><div class="jdots">'+dots+'</div>'+(d>=27?'<button class="btn sm" id="jMeasure">Đo lại: trả lời Bộ 1</button>':'<button type="button" class="linkbtn" id="jStop" style="font-size:13px;margin-top:8px">Dừng hành trình</button>');
+}
+$('#jBox').addEventListener('click',function(e){var id=e.target.id;
+ if(id==='jStart'||id==='jNew'){store.journey={start:Date.now(),base:{body:store.result.body,state:store.result.state}};save();renderJourney();toast('Đã bắt đầu Hành trình 27 ngày. Hẹn bạn sáng mai.')}
+ else if(id==='jStop'){store.journey=null;save();renderJourney()}
+ else if(id==='jMeasure'){store.journey.measuring=true;save();startSet(0,true)}});
+function journeyAfterSet(r){var J=store.journey;if(!J||!J.measuring||r.set!==0)return;
+ var cnt={},n=0;store.checkins.forEach(function(c){if(c.at>=J.start){cnt[c.state]=(cnt[c.state]||0)+1;n++}});
+ J.after={body:r.body,state:r.state};J.count=n;J.mix=Object.keys(cnt).map(function(k){return STATE[k].n+' '+cnt[k]}).join(', ');J.end=Date.now();J.measuring=false}
 /* ---------- CHIA SẺ THẺ ---------- */
 function cardCanvas(){
  var r=store.result,b=BODY[r.body],s=STATE[r.state],W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
@@ -392,9 +758,11 @@ $('#shareBtn').onclick=function(){
 /* ---------- KHOẢNG LẶNG ---------- */
 var kl={i:0,left:0,len:180,t:null,paused:false};
 var GENERIC=['Tìm một màu dịu trong tầm mắt và nhìn thật chậm.','Lắng nghe ba âm thanh: xa, gần và trong chính bạn.','Hít một hơi hương bạn có sẵn: nến, tinh dầu hay vỏ cam.','Nhấp một ngụm trà ấm nhỏ, giữ vị trong miệng.','Đặt một tay lên ngực, một tay lên bụng, cảm nhận hơi ấm.','Thở theo nhịp: hít 4, thở ra 6. Không cần làm gì khác.'];
-function klText(i){var r=store.result;return r?STATE[r.state].s[i]+'. '+GENERIC[i]:GENERIC[i]}
+var klState=null;
+function klCur(){return klState||todayState()}
+function klText(i){var st=klCur();return st?STATE[st].s[i]+'. '+GENERIC[i]:GENERIC[i]}
 function fmt(s){var m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r}
-function klReset(){clearInterval(kl.t);kl.t=null;kl.paused=false;$('#klIntro').hidden=false;$('#klRun').hidden=true;$('#klDone').hidden=true;$('#klPause').textContent='Tạm dừng';$('#klNote').textContent=store.result?'Hướng dẫn theo trạng thái '+STATE[store.result.state].n+' của bạn.':KLNOTE}
+function klReset(){clearInterval(kl.t);kl.t=null;kl.paused=false;$('#klIntro').hidden=false;$('#klRun').hidden=true;$('#klDone').hidden=true;$('#klPause').textContent='Tạm dừng';$('#klNote').textContent=klState?'Bài Khoảng Lặng cho trạng thái '+STATE[klState].n+' · '+PLAN[klState].drop+'.':(todayState()?'Hướng dẫn theo trạng thái '+STATE[todayState()].n+' của bạn.':KLNOTE)}
 function klStage(){
  var i=kl.i,s=STAGES[i];
  $('#klSense').textContent=SENSES[i].k+' · CHẶNG '+(i+1)+'/6';
@@ -421,13 +789,41 @@ $('#klSkip').onclick=klNext;
 $('#klBack').onclick=function(){show('home')};
 
 /* ---------- KHỞI ĐỘNG ---------- */
-refreshHome();klReset();
-var h=location.hash.replace('#','');
-window.addEventListener('hashchange',function(){var n=location.hash.replace('#','')||'home';if(!$('#v-'+n).classList.contains('on')){if(n==='result'&&!store.result)n='home';if(n==='quiz')n='home';if(n==='result')renderResult();show(n)}});
-if(h==='result'&&store.result){renderResult();show('result')}
-else if(h==='silence')show('silence');
-else if(h==='consent')startConsent();
-window.__ansense={compute:compute,Q:Q};
+function route(){
+ var h=location.hash.replace('#','');
+ var q=new URLSearchParams(location.search),k=(q.get('kl')||'').toLowerCase();
+ if(STATE[k]){klState=k;show('silence');return}
+ if(q.get('vao')==='checkin'||h==='checkin'){todayCheckin()?(ck.step=9,renderCk(),show('checkin')):startCheckin();return}
+ if(h==='result'&&store.result){renderResult();show('result')}
+ else if(h==='silence')show('silence');
+ else if(h==='consent'||h==='quiz')begin(false);
+ else{show('home');var sec=h&&document.getElementById(h);if(sec&&sec.tagName==='SECTION')setTimeout(function(){sec.scrollIntoView()},50)}
+}
+klReset();route();
+window.addEventListener('hashchange',function(){var n=location.hash.replace('#','')||'home';if(!$('#v-'+n)){var sec=document.getElementById(n);if(sec&&sec.tagName==='SECTION'&&!$('#v-home').classList.contains('on')){show('home');setTimeout(function(){sec.scrollIntoView()},50)}return}if($('#v-'+n).classList.contains('on'))return;if(n==='result'&&!store.result)n='home';if(n==='quiz'||n==='consent'){begin(false);return}if(n==='checkin'){$('#ckGo').click();return}if(n==='result')renderResult();show(n)});
+/* Đồng bộ theo tài khoản: chỉ với thành viên đăng nhập bằng email (khách ẩn danh lưu trên máy). */
+(async function(){
+ var cfg=window.ANYEN_CONFIG||{},create=window.supabase&&window.supabase.createClient;
+ if(!cfg.supabaseUrl||!cfg.publishableKey||!create)return;
+ try{
+  client=create(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
+  var ss=await client.auth.getSession(),user=ss.data&&ss.data.session&&ss.data.session.user;
+  if(!user||user.is_anonymous){client=null;return}
+  uid=user.id;
+  var local=readKey(lkey()),guest=readKey(BASE+':guest'),remote=null;
+  var r=await client.rpc('anyen_ansense_get');
+  if(r.error){sync='local'}else{sync='account';remote=r.data&&r.data.v===2?r.data:null}
+  var pick=[remote,local,(!local&&!remote)?guest:null].filter(Boolean).sort(function(a,b){return (b.t||0)-(a.t||0)})[0];
+  var mid=store.cur&&$('#v-quiz').classList.contains('on');
+  if(!mid)store=norm(pick||blank());
+  try{localStorage.setItem(lkey(),JSON.stringify(store))}catch(e){}
+  writeJournal();
+  if(sync==='account'&&(!remote||remote.t!==store.t))push();
+  if($('#v-home').classList.contains('on'))refreshHome();
+  else if($('#v-result').classList.contains('on'))renderResult();
+ }catch(e){sync=uid?'local':'guest';if($('#v-home').classList.contains('on'))refreshHome()}
+})();
+window.__ansense={compute:compute,Q:Q,SETS:SETS,store:function(){return store}};
 })();
 </script>
 </body>

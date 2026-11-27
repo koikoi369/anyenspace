@@ -1,6 +1,6 @@
 -- LÀNG YÊN · Rừng Yên: hoa dâng trước tượng Phật.
 -- Bệ có 9 chỗ: trang web hiện 9 bó mới nhất, chỗ đặt = (seq - 1) % 9 (bó mới thay bó cũ nhất ở cùng chỗ).
--- Hoa không tự mất theo thời gian. Bảng chỉ giữ 200 bó gần nhất để nhẹ.
+-- Hoa không tự mất theo thời gian. Sổ giữ 66 bó gần nhất, đầy thì xoá dần bó cũ nhất.
 create table if not exists public.anyen_flower_offerings (
   id uuid primary key default gen_random_uuid(),
   seq bigint generated always as identity,
@@ -27,7 +27,7 @@ create or replace function public.anyen_flower_trim() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
   delete from public.anyen_flower_offerings
-  where seq < (select min(seq) from (select seq from public.anyen_flower_offerings order by seq desc limit 200) t);
+  where seq < (select min(seq) from (select seq from public.anyen_flower_offerings order by seq desc limit 66) t);
   return null;
 end $$;
 drop trigger if exists anyen_flower_trim on public.anyen_flower_offerings;
@@ -36,3 +36,7 @@ create trigger anyen_flower_trim after insert on public.anyen_flower_offerings
 
 -- Hàm dọn bảng chỉ chạy qua trigger, không gọi được từ ngoài.
 revoke execute on function public.anyen_flower_trim() from public, anon, authenticated;
+-- Góc xoay bó hoa người dâng chọn (độ, 0–359): bó hoa trên bệ quay đúng mặt này ra trước.
+alter table public.anyen_flower_offerings add column if not exists yaw smallint not null default 0;
+alter table public.anyen_flower_offerings drop constraint if exists anyen_flower_yaw;
+alter table public.anyen_flower_offerings add constraint anyen_flower_yaw check (yaw between 0 and 359);

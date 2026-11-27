@@ -63,6 +63,7 @@ ul.soon{margin:10px 0 0;padding-left:20px;color:var(--mut);font-size:14px}
 .empty{margin-top:24px;text-align:center;color:var(--mut2)}
 .inline{display:flex;gap:8px;margin-top:16px}.inline input{margin-top:0}.inline .sm{flex:none}
 </style>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}*{touch-action:manipulation}@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:max(16px,1em)!important}}</style>
 </head>
 <body>
 <div class="wrap">
@@ -106,7 +107,7 @@ function err(e){return (e&&e.message)||String(e||'Có lỗi xảy ra')}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
 function fmt(d){try{return new Date(d).toLocaleString('vi-VN')}catch(_){return ''}}
 async function rpc(name,args){var r=await client.rpc(name,args||{});if(r.error)throw r.error;return r.data}
-var TS={none:'Thành viên',pending:'Chờ duyệt',approved:'Nhà trị liệu',rejected:'Chưa được duyệt',suspended:'Tạm khoá trị liệu'};
+var TS={none:'Thành viên',pending:'Chờ duyệt',approved:'Nhà trị liệu',rejected:'Chưa được duyệt',suspended:'Tạm khóa trị liệu'};
 async function act(fn,okText){msg();try{await fn();msg('ok',okText||'Đã cập nhật.');await load()}catch(e){msg('err',err(e))}}
 function ask(text){var r=window.prompt(text,'');return r===null?null:r.trim()}
 function btn(label,cls,fn){var b=el('button','sm '+(cls||''),label);b.type='button';b.onclick=fn;return b}
@@ -117,7 +118,7 @@ function card(p){
  d.appendChild(el('div','em',p.email||''));
  var b=el('div');
  b.appendChild(el('span','bd'+(p.therapist_status==='approved'?' g':p.therapist_status==='pending'?'':''),TS[p.therapist_status]||'Thành viên'));
- if(p.member_status==='restricted')b.appendChild(el('span','bd r','Tạm khoá (chỉ đi dạo)'));
+ if(p.member_status==='restricted')b.appendChild(el('span','bd r','Tạm khóa (chỉ đi dạo)'));
  if(p.is_admin_email)b.appendChild(el('span','bd g','Admin'));
  d.appendChild(b);
  if(p.specialty)d.appendChild(el('p','','Chuyên môn: '+p.specialty));
@@ -129,9 +130,9 @@ function card(p){
  if(!p.is_admin_email){
   if(ts==='pending'||ts==='rejected'||ts==='suspended')a.appendChild(btn('Duyệt nhà trị liệu','pri',function(){act(function(){return rpc('anyen_admin_set_therapist_status',{p_user:id,p_status:'approved',p_reason:null})},'Đã duyệt.')}));
   if(ts==='pending')a.appendChild(btn('Từ chối','dan',function(){var r=ask('Lý do từ chối (người đó sẽ thấy):');if(r===null)return;act(function(){return rpc('anyen_admin_set_therapist_status',{p_user:id,p_status:'rejected',p_reason:r||null})},'Đã từ chối.')}));
-  if(ts==='approved')a.appendChild(btn('Tạm khoá trị liệu','dan',function(){var r=ask('Lý do tạm khoá:');if(r===null)return;act(function(){return rpc('anyen_admin_set_therapist_status',{p_user:id,p_status:'suspended',p_reason:r||null})},'Đã tạm khoá.')}));
+  if(ts==='approved')a.appendChild(btn('Tạm khóa trị liệu','dan',function(){var r=ask('Lý do tạm khóa:');if(r===null)return;act(function(){return rpc('anyen_admin_set_therapist_status',{p_user:id,p_status:'suspended',p_reason:r||null})},'Đã tạm khóa.')}));
   if(p.member_status==='restricted')a.appendChild(btn('Mở lại tài khoản','pri',function(){act(function(){return rpc('anyen_admin_set_member_status',{p_user:id,p_status:'active',p_reason:null})},'Đã mở lại.')}));
-  else a.appendChild(btn('Tạm khoá tài khoản','dan',function(){var r=ask('Lý do tạm khoá (người đó vẫn đi dạo được nhưng không tham gia hoạt động):');if(r===null)return;act(function(){return rpc('anyen_admin_set_member_status',{p_user:id,p_status:'restricted',p_reason:r||null})},'Đã tạm khoá.')}));
+  else a.appendChild(btn('Tạm khóa tài khoản','dan',function(){var r=ask('Lý do tạm khóa (người đó vẫn đi dạo được nhưng không tham gia hoạt động):');if(r===null)return;act(function(){return rpc('anyen_admin_set_member_status',{p_user:id,p_status:'restricted',p_reason:r||null})},'Đã tạm khóa.')}));
  }else a.appendChild(el('span','em','Tài khoản quản trị, không thể thay đổi tại đây.'));
  d.appendChild(a);return d;
 }

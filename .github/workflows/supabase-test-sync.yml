@@ -1,0 +1,27 @@
+# Tự đồng bộ Supabase THỬ mỗi khi có thay đổi trên nhánh main (trang thử cheetahmsu.github.io),
+# hoặc bấm tay ở tab Actions › "Đồng bộ Supabase thử" › Run workflow.
+# Cần 2 secrets của repo: PROD_DB_URL và TEST_DB_URL (xem tools/SUPABASE_THU.md).
+name: Đồng bộ Supabase thử
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cài công cụ Postgres 17
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+      - name: Đồng bộ
+        env:
+          PROD_DB_URL: ${{ secrets.PROD_DB_URL }}
+          TEST_DB_URL: ${{ secrets.TEST_DB_URL }}
+        run: |
+          if [ -z "$PROD_DB_URL" ] || [ -z "$TEST_DB_URL" ]; then echo "Chưa có secrets PROD_DB_URL / TEST_DB_URL — bỏ qua."; exit 0; fi
+          bash tools/supabase-test-sync.sh
